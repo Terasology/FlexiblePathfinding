@@ -28,38 +28,42 @@ import org.slf4j.LoggerFactory;
 import org.terasology.math.geom.Vector3i;
 import org.terasology.world.WorldProvider;
 
-import java.util.*;
-import java.util.concurrent.*;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author kaen
- *
- * An implementation of the algorithm presented in http://users.cecs.anu.edu.au/~dharabor/data/papers/harabor-grastien-aaai11.pdf
- *
- * The implementation is adapted to 3D but is constructed with references to the original paper.
+ *         <p>
+ *         An implementation of the algorithm presented in http://users.cecs.anu.edu.au/~dharabor/data/papers/harabor-grastien-aaai11.pdf
+ *         <p>
+ *         The implementation is adapted to 3D but is constructed with references to the original paper.
  */
 public class JPSImpl implements JPS {
-    private WorldProvider world;
-    private Logger logger = LoggerFactory.getLogger(JPSImpl.class);
-    private List<Vector3i> path = Lists.newArrayList();
-    private Map<Vector3i, JPSJumpPoint> points = Maps.newHashMap();
-    private JPSConfig config;
-
-    private List<JPSJumpPoint> open = Lists.newArrayList();
-    private List<JPSJumpPoint> toOpen = Lists.newArrayList();
-
-    private LoadingCache<VectorPair, Boolean> reachabilityCache;
-    private TimeLimiter timeLimiter;
-
     private static boolean statsEnabled = false;
-    private double startMillis;
+
+    private Logger logger = LoggerFactory.getLogger(JPSImpl.class);
+    private JPSConfig config;
+    private WorldProvider world;
+    private Map<Vector3i, JPSJumpPoint> points = Maps.newHashMap();
+    private List<Vector3i> path = Lists.newArrayList();
+    private List<JPSJumpPoint> open = Lists.newArrayList();
     private JPSJumpPoint start;
     private JPSJumpPoint goal;
+    private double startMillis;
+
+    // some helper classes from Guava
+    private LoadingCache<VectorPair, Boolean> reachabilityCache;
+    private TimeLimiter timeLimiter;
 
     public JPSImpl(JPSConfig config) {
         this.config = config;
 
-        if(config.executor != null) {
+        if (config.executor != null) {
             this.timeLimiter = new SimpleTimeLimiter(config.executor);
         }
     }
@@ -68,65 +72,53 @@ public class JPSImpl implements JPS {
         JPSImpl.statsEnabled = statsEnabled;
     }
 
-    public void start() {
-    }
-
+    /**
+     * Performs the search using a {@link TimeLimiter} if `config.executor` was set. In either case, blocks
+     * synchronously until the search completes or fails.
+     */
     public boolean run() throws InterruptedException {
         startMillis = System.currentTimeMillis();
-        if(config.maxTime == 0) {
+        if (config.maxTime == 0) {
             return false;
         }
         Callable<Boolean> callable = () -> performSearch();
         boolean result = false;
 
-        if(this.timeLimiter != null) {
+        if (this.timeLimiter != null) {
             try {
                 result = timeLimiter.callWithTimeout(callable, (long) (config.maxTime * 1000.0f), TimeUnit.MILLISECONDS, true);
-            } catch(Exception e) {
+            } catch (Exception e) {
                 LoggerFactory.getLogger(this.getClass()).warn(e.toString());
             }
-            recordStats();
+            recordMetrics();
             return result;
         }
 
         result = performSearch();
-        recordStats();
+        recordMetrics();
         return result;
-    }
-
-    private void recordStats() {
-        if (!statsEnabled) {
-            return;
-        }
-
-        PathMetricsRecorder.PathMetric metric = new PathMetricsRecorder.PathMetric();
-        metric.success = path.size() > 0;
-        metric.cost = goal.getCost();
-        metric.size = path.size();
-        metric.time = System.currentTimeMillis() - startMillis;
-        PathMetricsRecorder.recordMetrics(metric);
     }
 
     @Override
     public boolean performSearch() throws InterruptedException {
         reachabilityCache = CacheBuilder.newBuilder()
-            .maximumSize(100000)
-            .build(new CacheLoader<VectorPair, Boolean>() {
-                public Boolean load(VectorPair key) {
-                    return config.plugin.isReachable(key.a, key.b);
-                }
-            });
+                .maximumSize(100000)
+                .build(new CacheLoader<VectorPair, Boolean>() {
+                    public Boolean load(VectorPair key) {
+                        return config.plugin.isReachable(key.a, key.b);
+                    }
+                });
 
         points.clear();
         start = getJumpPoint(config.start);
         goal = getJumpPoint(config.stop);
 
-        if(!config.plugin.isWalkable(goal.getPosition())) {
+        if (!config.plugin.isWalkable(goal.getPosition())) {
             return false;
         }
 
         // let's not waste time ...
-        if(start == goal || (config .useLineOfSight && config.plugin.inSight(start.getPosition(), goal.getPosition()))) {
+        if (start == goal || (config.useLineOfSight && config.plugin.inSight(start.getPosition(), goal.getPosition()))) {
             path.clear();
             path.add(start.getPosition());
             path.add(goal.getPosition());
@@ -134,25 +126,25 @@ public class JPSImpl implements JPS {
         }
 
         open.add(start);
-        while(open.size() > 0) {
-            JPSJumpPoint point = open.remove(open.size()-1);
+        while (open.size() > 0) {
+            JPSJumpPoint point = open.remove(open.size() - 1);
             open.addAll(identifySuccessors(point, start, goal));
-            if(Thread.interrupted()) {
+            if (Thread.interrupted()) {
                 throw new InterruptedException();
             }
 
-            if(goal.getParent() != null) {
+            if (goal.getParent() != null) {
                 break;
             }
 
             open.sort(new Comparator<JPSJumpPoint>() {
                 @Override
                 public int compare(JPSJumpPoint o1, JPSJumpPoint o2) {
-                    if(o1.getHeurisitic() > o2.getHeurisitic()) {
+                    if (o1.getHeurisitic() > o2.getHeurisitic()) {
                         return -1;
                     }
 
-                    if(o1.getHeurisitic() == o2.getHeurisitic()) {
+                    if (o1.getHeurisitic() == o2.getHeurisitic()) {
                         return 0;
                     }
                     return 1;
@@ -160,43 +152,37 @@ public class JPSImpl implements JPS {
             });
         }
 
-        if(goal.getParent() == null) {
+        if (goal.getParent() == null) {
             return false;
         }
 
-//        if(identifySuccessors(null, start, start, goal)) {
         path.clear();
         path.add(goal.getPosition());
         JPSJumpPoint parent = goal.getParent();
-        while(parent != null) {
+        while (parent != null) {
             path.add(0, parent.getPosition());
             parent = parent.getParent();
         }
-//        debug(start, goal);
         return true;
     }
 
-//  Algorithm 1 Identify Successors
-//  Require: x: current node, s: start, g: goal
-// 1: successors(x) ← ∅
-// 2: neighbours(x) ← prune(x, neighbours(x))
-// 3: for all n ∈ neighbours(x) do
-// 4:     n ← jump(x, direction(x, n), s, g)
-// 5:     add n to successors(x)
-// 6: return successors(x)
-
+    //  Algorithm 1 Identify Successors
+    //  Require: x: current node, s: start, g: goal
+    // 1: successors(x) ← ∅
+    // 2: neighbours(x) ← prune(x, neighbours(x))
+    // 3: for all n ∈ neighbours(x) do
+    // 4:     n ← jump(x, direction(x, n), s, g)
+    // 5:     add n to successors(x)
+    // 6: return successors(x)
     private List<JPSJumpPoint> identifySuccessors(JPSJumpPoint current, JPSJumpPoint start, JPSJumpPoint goal) throws InterruptedException {
-//        debug(start, goal);
         List<JPSJumpPoint> result = Lists.newArrayList();
         Map<JPSDirection, JPSJumpPoint> prunedNeighbors = prune(current.getParentDirection(), current);
 
-//        logger.info("" + prunedNeighbors.size());
-        for(Map.Entry<JPSDirection, JPSJumpPoint> neighbor : prunedNeighbors.entrySet()) {
-//            logger.info(neighbor.getKey().name());
+        for (Map.Entry<JPSDirection, JPSJumpPoint> neighbor : prunedNeighbors.entrySet()) {
             double dist = current.getPosition().distance(neighbor.getValue().getPosition());
 
             // don't explore a neighbor that has been more optimally explored
-            if(neighbor.getValue() == start || (neighbor.getValue().getParent() != null && neighbor.getValue().getCost() < current.getCost() + dist)) {
+            if (neighbor.getValue() == start || (neighbor.getValue().getParent() != null && neighbor.getValue().getCost() < current.getCost() + dist)) {
                 continue;
             }
             JPSJumpPoint jumpedNeighbor = jump(current.getPosition(), neighbor.getKey(), start, goal);
@@ -205,24 +191,21 @@ public class JPSImpl implements JPS {
             current.setSuccessor(neighbor.getKey(), jumpedNeighbor);
 
             // not parent means not optimal path, and we don't have to explore
-            if(jumpedNeighbor != null) { // && jumpedNeighbor.getParent() == current) {
+            if (jumpedNeighbor != null) { // && jumpedNeighbor.getParent() == current) {
                 jumpedNeighbor.setHeurisitic(goal.getPosition().distance(jumpedNeighbor.getPosition()));
                 result.add(jumpedNeighbor);
             }
         }
-
-//        logger.info("successors " + current.getPosition().toString() + ": " + result.size());
-
         return result;
     }
 
     private Map<JPSDirection, JPSJumpPoint> getNeighbors(JPSJumpPoint point) {
         Map<JPSDirection, JPSJumpPoint> result = Maps.newHashMap();
         // TODO we don't even need a jump point here
-        for(JPSDirection dir : JPSDirection.values()) {
+        for (JPSDirection dir : JPSDirection.values()) {
             Vector3i neighborPos = new Vector3i(point.getPosition()).add(dir.getVector());
 
-            if(isReachable(neighborPos, point.getPosition())) {
+            if (isReachable(neighborPos, point.getPosition())) {
                 result.put(dir, getJumpPoint(neighborPos));
             }
         }
@@ -231,7 +214,7 @@ public class JPSImpl implements JPS {
 
     private JPSJumpPoint getJumpPoint(Vector3i pos) {
         JPSJumpPoint result = points.get(pos);
-        if(result == null) {
+        if (result == null) {
             result = new JPSJumpPoint(pos);
             points.put(pos, result);
 
@@ -239,34 +222,76 @@ public class JPSImpl implements JPS {
         return result;
     }
 
+    /**
+     * Find forced neighbors as described in the paper. Here we essentially implement an exhaustive search of the 3x3x3
+     * adjacency cube. We retreive some basic statically computable information (the "potential forced neighbors" and
+     * "key nodes").
+     * <p>
+     * Briefly, key nodes are the nodes which determine whether there is an alternative optimal path to one or more
+     * potential forced neighbors. By iterating over the key nodes and potential forced neighbors, and comparing the
+     * "optimality" of paths through the adjacency cube, we can determine whether a given neighbor is actually "forced".
+     *
+     * Recall the general definition of a forced neighbor:
+     *
+     * Definition 1. A node n ∈ neighbours(x) is forced if:
+     *  1. n is not a natural neighbour of x
+     *  2. len( p(x), x, ni ) < len( p(x), ... , ni \ x )
+     *
+     * Also the specific definitions for straight and diagonal pruning rules:
+     *
+     *  Straight Moves: We prune any node n ∈ neighbours(x)
+     *  which satisfies the following dominance constraint:
+     *  len( p(x), ... , ni \ x ) ≤ len( p(x), x, ni )
+     *
+     *  Diagonal Moves: This case is similar to the pruning rules
+     *  we developed for straight moves; the only difference is that
+     *  the path which excludes x must be strictly dominant:
+     *  len( p(x), ... , ni \ x ) < len( p(x), x, ni )
+     *
+     * "Strictly dominant" means that the path has diagonals before the path against which it is being compared. To
+     * extend this into 3D, a path is strictly dominant if its cost is less than or equal to another's, and the
+     * manhatten distance of each delta vector in the first path is greater than or equal to the corresponding delta
+     * vector in the other path.
+     *
+     *
+     * @param parent
+     * @param current
+     * @see JPSDirection
+     * @return
+     */
     private List<Vector3i> findForcedNeighbors(Vector3i parent, Vector3i current) {
+        // reusable vectors
         Vector3i keyPos = new Vector3i();
         Vector3i neighborPos = new Vector3i();
 
+        // constant throughout the loops below
         Vector3i parentDelta = new Vector3i(parent).sub(current);
         JPSDirection dir = JPSDirection.fromVector(new Vector3i(current).sub(parent));
 
         List<Vector3i> potentialForcedNeighbors = dir.getPotentialForcedNeighbors();
         List<Vector3i> keyNodes = dir.getKeyNodes();
 
+        // we immediately prune any potential forced neighbors that are not reachable from the current block
         Set<Vector3i> prunedNeighbors = Sets.newHashSet();
-        for(Vector3i potentialForcedNeighbor : potentialForcedNeighbors) {
+        for (Vector3i potentialForcedNeighbor : potentialForcedNeighbors) {
             neighborPos.set(current).add(potentialForcedNeighbor);
-            if(!isReachable(neighborPos, current)) {
+            if (!isReachable(neighborPos, current)) {
                 prunedNeighbors.add(potentialForcedNeighbor);
             }
         }
 
-        for(Vector3i keyNode : keyNodes) {
+        for (Vector3i keyNode : keyNodes) {
             neighborPos.set(current).add(keyNode);
 
+            // not reachable means not optimal
             boolean parentToKey = isReachable(keyPos, parent);
-            if(!parentToKey) {
+            if (!parentToKey) {
                 continue;
             }
 
-            for(Vector3i potentialForcedNeighbor : potentialForcedNeighbors) {
-                if(prunedNeighbors.contains(potentialForcedNeighbor)) {
+            for (Vector3i potentialForcedNeighbor : potentialForcedNeighbors) {
+                // rather than actually pruning the neighbors each iteration, we skip over them
+                if (prunedNeighbors.contains(potentialForcedNeighbor)) {
                     continue;
                 }
 
@@ -274,32 +299,40 @@ public class JPSImpl implements JPS {
 
                 boolean keyToNeighbor = isReachable(neighborPos, keyPos);
 
-                if(keyToNeighbor) {
+                // again unreachable means not optimal
+                if (keyToNeighbor) {
 
+                    // find the component distances of the paths P -> K -> N and P -> C -> N
                     double parentToKeyDistance = parentDelta.distance(keyNode);
                     double keyToNeighborDistance = keyNode.distance(potentialForcedNeighbor);
                     double parentToCurrentDistance = parentDelta.length();
                     double currentToNeighborDistance = potentialForcedNeighbor.length();
 
+                    //  find the total distances
                     double keyDistance = parentToKeyDistance + keyToNeighborDistance;
                     double currentDistance = parentToCurrentDistance + currentToNeighborDistance;
 
+                    // if the path through the current node is shorter, the neighbor is forced no matter what
                     double epsilon = 0.001;
                     boolean nearlyEqual = Math.abs(keyDistance - currentDistance) < epsilon;
-                    if(currentDistance < keyDistance) {
+                    if (currentDistance < keyDistance) {
                         continue;
                     }
 
-                    if(nearlyEqual) {
-                        if(Math.abs(parentToKeyDistance - parentToCurrentDistance) < epsilon) {
-                            if(keyToNeighborDistance <= currentToNeighborDistance) {
+                    // if the paths are equal in length, we compare the distance (and thereforce the number of axes traveled)
+                    // for each step. The first path with a high distance step is deemed the optimal path, and if this
+                    // is the current node then the neighbor is forced
+                    if (nearlyEqual) {
+                        if (Math.abs(parentToKeyDistance - parentToCurrentDistance) < epsilon) {
+                            if (keyToNeighborDistance <= currentToNeighborDistance) {
                                 continue;
                             }
-                        } else if(parentToKeyDistance <= parentToCurrentDistance) {
+                        } else if (parentToKeyDistance <= parentToCurrentDistance) {
                             continue;
                         }
                     }
 
+                    // if we get here, the neighbor is not forced and we can prune it
                     prunedNeighbors.add(potentialForcedNeighbor);
                 }
             }
@@ -308,6 +341,7 @@ public class JPSImpl implements JPS {
         return potentialForcedNeighbors;
     }
 
+    // proof is left as an excercise to the reader :)
     private List<Vector3i> findNaturalNeighbors(Vector3i parent, Vector3i current) {
         return Lists.newArrayList(JPSDirection.fromVector(new Vector3i(current).sub(parent)).getComponentPermutations());
     }
@@ -320,19 +354,19 @@ public class JPSImpl implements JPS {
      */
     private Map<JPSDirection, JPSJumpPoint> prune(JPSDirection dir, JPSJumpPoint current) {
         Map<JPSDirection, JPSJumpPoint> result = Maps.newHashMap();
-        if(dir == null) {
+        if (dir == null) {
             return getNeighbors(current);
         }
 
         Vector3i parentPos = current.getPosition().sub(dir.getVector());
         Vector3i currentPos = current.getPosition();
         Vector3i pos = new Vector3i();
-        for(Vector3i vec : findNaturalNeighbors(parentPos, current.getPosition())) {
+        for (Vector3i vec : findNaturalNeighbors(parentPos, current.getPosition())) {
             pos.set(vec).add(currentPos);
             result.put(JPSDirection.fromVector(vec), getJumpPoint(pos));
         }
 
-        for(Vector3i vec : findForcedNeighbors(parentPos, current.getPosition())) {
+        for (Vector3i vec : findForcedNeighbors(parentPos, current.getPosition())) {
             pos.set(vec).add(currentPos);
             result.put(JPSDirection.fromVector(vec), getJumpPoint(pos));
         }
@@ -359,37 +393,41 @@ public class JPSImpl implements JPS {
     Adapted for N dimensions, we simply take lines 8-12, and compress them into:
     8: for all c component permutation vectors of d, ordered by manhatten(c)
     9:     if jump(n, c, s, g) is not null then
-    10:        return n
-    11: return null
+    10:        if c == d
+    11:            return jump(n, c, s, g)
+    12:        else
+    13:            return n
+    14: return null
      */
     private JPSJumpPoint jump(Vector3i current, JPSDirection dir, JPSJumpPoint start, JPSJumpPoint goal) {
         return jump(current, dir, start, goal, 0);
     }
+
     private JPSJumpPoint jump(Vector3i current, JPSDirection dir, JPSJumpPoint start, JPSJumpPoint goal, int level) {
-        if(level >= config.maxDepth) {
+        if (level >= config.maxDepth) {
             return null;
         }
 
         Vector3i neighbor = dir.getVector().add(current);
 
-        if(neighbor.distanceSquared(goal.getPosition()) == 0) {
+        if (neighbor.distanceSquared(goal.getPosition()) == 0) {
             return getJumpPoint(neighbor);
         }
 
-        if(!isReachable(neighbor, current)) {
+        if (!isReachable(neighbor, current)) {
             return null;
         }
 
         List<Vector3i> forcedNeighbors = findForcedNeighbors(current, neighbor);
-        if(forcedNeighbors.size() > 0) {
+        if (forcedNeighbors.size() > 0) {
             return getJumpPoint(neighbor);
         }
 
-        // the method provides the components sorted by manhatten length
-        for(Vector3i vec : dir.getComponentPermutations()) {
+        // this method provides the components sorted by manhatten length
+        for (Vector3i vec : dir.getComponentPermutations()) {
             JPSJumpPoint result = jump(neighbor, JPSDirection.fromVector(vec), start, goal, level + 1);
-            if(result != null) {
-                if(vec.distanceSquared(dir.getVector()) == 0) {
+            if (result != null) {
+                if (vec.distanceSquared(dir.getVector()) == 0) {
                     return result;
                 } else {
                     return getJumpPoint(neighbor);
@@ -400,74 +438,8 @@ public class JPSImpl implements JPS {
         return null;
     }
 
-//    @Override
-//    public String toString() {
-//
-//    }
-
     public List<Vector3i> getPath() {
         return path;
-    }
-
-    public void getPath(List<Vector3i> list) {
-    }
-
-    protected void expand(int current) {
-    }
-
-    public void debug(JPSJumpPoint start, JPSJumpPoint goal) {
-        Map<Vector3i, String> result = Maps.newHashMap();
-        result.put(start.getPosition(), "S");
-        result.put(goal.getPosition(), "G");
-
-        Vector3i min = goal.getPosition();
-        min.min(start.getPosition());
-
-        Vector3i max = goal.getPosition();
-        max.max(start.getPosition());
-
-        mark(result, start, min, max);
-
-//        for(Vector3i v : checkedNodes) {
-//            result.put(v, ".");
-//            min.min(v);
-//            max.max(v);
-//        }
-
-        int i = 0;
-        for(Vector3i v : path) {
-            if(i == 0) {
-                result.put(v, "?");
-            } else {
-                result.put(v, "" + (char) ((int) '0' + i));
-            }
-            i++;
-        }
-
-        for(int y = min.y; y<= max.y; y++) {
-            String out = "y level: " + y + "\n";
-            for(int z = min.z; z <= max.z; z++) {
-                for(int x = min.x; x <= max.x; x++) {
-                    out += result.getOrDefault(new Vector3i(x,y,z)," ");
-                }
-                out += "\n";
-
-            }
-            out += "\n";
-            logger.info(out);
-        }
-    }
-
-    public void mark(Map<Vector3i, String> result, JPSJumpPoint point, Vector3i min, Vector3i max) {
-        result.put(point.getPosition(), "J");
-        min.min(point.getPosition());
-        max.max(point.getPosition());
-        for(JPSDirection dir : JPSDirection.values()) {
-            JPSJumpPoint successor = point.getSuccessor(dir);
-            if(successor != null) {
-                mark(result, successor, min, max);
-            }
-        }
     }
 
     private boolean isReachable(Vector3i a, Vector3i b) {
@@ -477,9 +449,24 @@ public class JPSImpl implements JPS {
             logger.warn(e.toString());
         }
         return false;
-//        return config.plugin.isReachable(a,b);
     }
 
+    private void recordMetrics() {
+        if (!statsEnabled) {
+            return;
+        }
+
+        PathMetricsRecorder.PathMetric metric = new PathMetricsRecorder.PathMetric();
+        metric.success = path.size() > 0;
+        metric.cost = goal.getCost();
+        metric.size = path.size();
+        metric.time = System.currentTimeMillis() - startMillis;
+        PathMetricsRecorder.recordMetrics(metric);
+    }
+
+    /**
+     * Used as a cache key for `reachabilityCache`
+     */
     private class VectorPair {
         Vector3i a;
         Vector3i b;
@@ -502,25 +489,5 @@ public class JPSImpl implements JPS {
             return result;
         }
     }
-
-    //    protected float c(int from, int to) {
-//        return graph.exactDistance(from, to);
-//    }
-//
-//    protected float h(int current) {
-//        return graph.fastDistance(current, end);
-//    }
-//
-//    public float getG(int id) {
-//        return gMap[id];
-//    }
-//
-//    public float getF(int id) {
-//        return fMap[id];
-//    }
-//
-//    public int getP(int id) {
-//        return pMap[id];
-//    }
 }
 

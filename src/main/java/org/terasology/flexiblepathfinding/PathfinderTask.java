@@ -50,7 +50,6 @@ public class PathfinderTask implements Task, Comparable<PathfinderTask> {
     @Override
     public void run() {
         JPSImpl jps = new JPSImpl(config);
-        jps.start();
         List<Vector3i> path = Lists.newArrayList();
         try {
             if(jps.run()) {

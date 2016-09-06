@@ -31,7 +31,6 @@ public class JPSFeatureTest {
         config.plugin = new FreeMovementPlugin();
         config.maxTime = 0.0f;
         JPSImpl jps = new JPSImpl(config);
-        jps.start();
 
         Assert.assertFalse(jps.run());
     }
@@ -50,7 +49,6 @@ public class JPSFeatureTest {
         config.plugin = new FreeMovementPlugin();
         config.maxDepth = 0;
         JPSImpl jps = new JPSImpl(config);
-        jps.start();
         Assert.assertFalse(jps.run());
     }
 
@@ -70,7 +68,6 @@ public class JPSFeatureTest {
         JPSConfig config = new JPSConfig(Vector3i.zero(), Vector3i.zero());
         config.plugin = new FreeMovementPlugin();
         JPSImpl jps = new JPSImpl(config);
-        jps.start();
         Assert.assertTrue(jps.run());
     }
 
@@ -79,7 +76,6 @@ public class JPSFeatureTest {
         JPSConfig config = new JPSConfig(Vector3i.zero(), new Vector3i(1,1,1));
         config.plugin = new FreeMovementPlugin();
         JPSImpl jps = new JPSImpl(config);
-        jps.start();
         Assert.assertTrue(jps.run());
     }
 }
