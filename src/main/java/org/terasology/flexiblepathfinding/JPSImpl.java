@@ -15,26 +15,21 @@
  */
 package org.terasology.flexiblepathfinding;
 
-import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.google.common.collect.Queues;
 import com.google.common.collect.Sets;
 import com.google.common.util.concurrent.SimpleTimeLimiter;
 import com.google.common.util.concurrent.TimeLimiter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.terasology.math.AABB;
 import org.terasology.math.geom.Vector3i;
 import org.terasology.world.WorldProvider;
 
 import java.util.*;
 import java.util.concurrent.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 /**
  * @author kaen
@@ -57,7 +52,6 @@ public class JPSImpl implements JPS {
     private TimeLimiter timeLimiter;
 
     private static boolean statsEnabled = false;
-    private static ArrayBlockingQueue<PathStats> stats = Queues.newArrayBlockingQueue(1000);
     private double startMillis;
     private JPSJumpPoint start;
     private JPSJumpPoint goal;
@@ -101,75 +95,16 @@ public class JPSImpl implements JPS {
     }
 
     private void recordStats() {
-        if(!statsEnabled) {
+        if (!statsEnabled) {
             return;
         }
 
-        if(stats.remainingCapacity() < 10) {
-            stats.remove();
-        }
-
-        PathStats stat = new PathStats();
-        stat.success = path.size() > 0;
-        stat.cost = goal.getCost();
-        stat.size = path.size();
-        stat.time = System.currentTimeMillis() - startMillis;
-        stats.add(stat);
-    }
-
-    public static String getStats() {
-        String result = "";
-
-        Histogram successTime = new Histogram();
-        Histogram failTime = new Histogram();
-        Histogram size = new Histogram();
-        Histogram cost = new Histogram();
-
-        Collection<PathStats> successes = stats.stream().filter(stat -> stat.success).collect(Collectors.toList());
-        Collection<PathStats> failures = stats.stream().filter(stat -> !stat.success).collect(Collectors.toList());
-
-        successTime.build(successes, pathStats -> pathStats.time);
-        failTime.build(failures, pathStats -> pathStats.time);
-        size.build(stats, pathStats -> pathStats.size);
-        cost.build(stats, pathStats -> pathStats.cost);
-
-        result = String.format("total: %d\nsuccess: %d\nfail: %d\n", stats.size(), successes.size(), failures.size());
-        return result + successTime.toString() + failTime.toString() + size.toString() + cost.toString();
-    }
-
-    private static class Histogram {
-        int data[] = new int[10];
-        double min = 0;
-        double max = 0;
-        double bucketMax = 0;
-        double bucketSize = 0;
-        public <T> void build(Collection<T> source, Function<T,Double> fn) {
-            min = source.stream().map(fn).min((o1, o2) -> Double.compare(o1, o2)).get();
-            max = source.stream().map(fn).max((o1, o2) -> Double.compare(o1, o2)).get();
-            bucketSize = (max - min) / (data.length - 1);
-            for(T el : source) {
-                double val = fn.apply(el);
-                int bucket = (int) Math.floor((val - min) / bucketSize);
-                data[bucket]++;
-                bucketMax = Math.max(bucketMax, data[bucket]);
-            }
-        }
-
-        @Override
-        public String toString() {
-            String result = "";
-
-            double scale = 20.0 / bucketMax;
-            for(int i = 0; i < data.length; i++) {
-                String line = String.format("% 7.1f (% 4d) |", min + bucketSize*(i+1), data[i]);
-                for(int j = 0; j < data[i]*scale; j++) {
-                    line += "#";
-                }
-                result += line + "\n";
-            }
-            result += "\n";
-            return result;
-        }
+        PathMetricsRecorder.PathMetric metric = new PathMetricsRecorder.PathMetric();
+        metric.success = path.size() > 0;
+        metric.cost = goal.getCost();
+        metric.size = path.size();
+        metric.time = System.currentTimeMillis() - startMillis;
+        PathMetricsRecorder.recordMetrics(metric);
     }
 
     @Override
@@ -568,14 +503,7 @@ public class JPSImpl implements JPS {
         }
     }
 
-    private static class PathStats {
-        double time;
-        double cost;
-        double size;
-        boolean success;
-    }
-
-//    protected float c(int from, int to) {
+    //    protected float c(int from, int to) {
 //        return graph.exactDistance(from, to);
 //    }
 //

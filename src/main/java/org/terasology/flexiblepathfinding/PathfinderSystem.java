@@ -17,8 +17,6 @@ package org.terasology.flexiblepathfinding;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import com.google.common.util.concurrent.SimpleTimeLimiter;
-import com.google.common.util.concurrent.TimeLimiter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.terasology.entitySystem.entity.EntityRef;
@@ -132,6 +130,6 @@ public class PathfinderSystem extends BaseComponentSystem {
 
     @Command
     public void printPathStats() {
-        logger.info(JPSImpl.getStats());
+        logger.info(PathMetricsRecorder.getStats());
     }
 }
