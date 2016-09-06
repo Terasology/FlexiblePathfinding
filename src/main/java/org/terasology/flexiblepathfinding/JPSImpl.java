@@ -325,9 +325,6 @@ public class JPSImpl implements JPS {
         for(Vector3i keyNode : keyNodes) {
             neighborPos.set(current).add(keyNode);
 
-//            potentialForcedNeighbors.removeAll(prunedNeighbors);
-//            prunedNeighbors.clear();
-
             boolean parentToKey = isReachable(keyPos, parent);
             if(!parentToKey) {
                 continue;
@@ -372,6 +369,7 @@ public class JPSImpl implements JPS {
                 }
             }
         }
+        potentialForcedNeighbors.removeAll(prunedNeighbors);
         return potentialForcedNeighbors;
     }
 
