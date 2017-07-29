@@ -54,7 +54,7 @@ public class LineOfSightTest {
 
     @Test
     public void simple3d() throws InterruptedException {
-        WorldProvidingHeadlessEnvironment env = runLineOfSight(true, new String[]{
+        WorldProvider worldProvider = runLineOfSight(true, new String[]{
                 "XXX|XXX|XXX",
                 "XXX|XXX|XXX",
                 "XXX|XXX|XXX",
@@ -66,7 +66,7 @@ public class LineOfSightTest {
 
         JPSConfig config = new JPSConfig(Vector3i.zero(), new Vector3i(2,2,1));
         config.useLineOfSight = true;
-        config.plugin = new FlyingPlugin(env.getContext().get(WorldProvider.class));
+        config.plugin = new FlyingPlugin(worldProvider);
         JPSImpl jps = new JPSImpl(config);
         Assert.assertTrue(jps.run());
         Assert.assertEquals(2, jps.getPath().size());
@@ -86,42 +86,11 @@ public class LineOfSightTest {
         });
     }
 
-    static WorldProvidingHeadlessEnvironment runLineOfSight(boolean expected, String[] ground, String[] pathData) {
-        class TestDataPojo {
-            Vector3i start;
-            Vector3i end;
-        }
-
+    static WorldProvider runLineOfSight(boolean expected, String[] ground, String[] pathData) {
         TestDataPojo testData = new TestDataPojo();
-
-        WorldProvidingHeadlessEnvironment env = new WorldProvidingHeadlessEnvironment(new Name("Pathfinding"));
-        env.setupWorldProvider(new AbstractBaseWorldGenerator(new SimpleUri("")) {
-            @Override
-            public void initialize() {
-
-            }
-        });
-        TextWorldBuilder builder = new TextWorldBuilder(env);
-        builder.setGround(ground);
-        builder.parse(new TextWorldBuilder.Runner() {
-            @Override
-            public char run(int x, int y, int z, char value) {
-                Vector3i vec = new Vector3i(x, y, z);
-
-                switch (value) {
-                    case '?':
-                        testData.start = vec;
-                        break;
-                    case '!':
-                        testData.end = vec;
-                        break;
-                    default:
-                        break;
-                }
-                return 0;
-            }
-        }, pathData);
-        Assert.assertEquals(expected, new LineOfSight3d(env.getContext().get(WorldProvider.class)).inSight(testData.start, testData.end));
-        return env;
+        MapWorldProvider worldProvider = new MapWorldProvider(ground);
+        worldProvider.parseExpectedPath(pathData, testData);
+        Assert.assertEquals(expected, new LineOfSight3d(worldProvider).inSight(testData.start, testData.end));
+        return worldProvider;
     }
 }

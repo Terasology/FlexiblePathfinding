@@ -16,6 +16,7 @@
 package org.terasology.flexiblepathfinding;
 
 import org.junit.Test;
+import org.terasology.flexiblepathfinding.plugins.WalkingPlugin;
 import org.terasology.math.geom.Vector3i;
 
 /**
@@ -151,7 +152,7 @@ public class JPSTest {
                 " XXX",
                 " XXX"
         }, new String[]{
-                " 1 !",
+                " 12!",
                 "?   ",
                 "    "
         });
@@ -171,7 +172,20 @@ public class JPSTest {
         });
     }
 
+    @Test
+    public void simpleGoalDistance() throws InterruptedException {
+        JPSTestHelper.runTestWithGoalDistance(15, WalkingPlugin.class, new String[]{
+                "X       ",
+                "X       ",
+                "XXXXXXXX",
+        }, new String[]{
+                "?       ",
+                "1       ",
+                " 234567!"
+        });
+    }
+
     private void executeExample(String[] ground, String[] pathData) throws InterruptedException {
-        JPSTestHelper.runTest(null, ground, pathData);
+        JPSTestHelper.runTest(WalkingPlugin.class, ground, pathData);
     }
 }

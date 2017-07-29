@@ -149,7 +149,7 @@ public class FlyingJPSTest {
                 " XXX",
                 " XXX"
         }, new String[]{
-                " 1 !",
+                " 12!",
                 "?   ",
                 "    "
         });

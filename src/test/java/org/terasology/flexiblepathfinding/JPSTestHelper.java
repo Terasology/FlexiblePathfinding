@@ -15,7 +15,10 @@
  */
 package org.terasology.flexiblepathfinding;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import org.junit.Assert;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.terasology.core.world.generator.AbstractBaseWorldGenerator;
 import org.terasology.engine.SimpleUri;
@@ -25,65 +28,65 @@ import org.terasology.flexiblepathfinding.plugins.StandardPlugin;
 import org.terasology.registry.CoreRegistry;
 import org.terasology.world.WorldProvider;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class JPSTestHelper {
-    static public <T extends StandardPlugin> void runTest(Class<T> pluginClass, String[] ground, String[] pathData) throws InterruptedException  {
-        class TestDataPojo {
-            Vector3i start;
-            Vector3i end;
-        }
+    private static final char NEW_LEVEL = '|';
+    private static Logger logger = LoggerFactory.getLogger(JPSTestHelper.class);
 
+    static public <T extends StandardPlugin> void runTest(Class<T> pluginClass, String[] ground, String[] pathData) throws InterruptedException {
         TestDataPojo testData = new TestDataPojo();
+        MapWorldProvider worldProvider = new MapWorldProvider(ground);
+        final Map<Integer, Vector3i> expected = worldProvider.parseExpectedPath(pathData, testData);
+        List<Vector3i> path = runJps(20, pluginClass, testData, worldProvider);
+        assertPathsEqual(expected, path);
+    }
 
-        WorldProvidingHeadlessEnvironment env = new WorldProvidingHeadlessEnvironment(new Name("Pathfinding"));
-        env.setupWorldProvider(new AbstractBaseWorldGenerator(new SimpleUri("")) {
-            @Override
-            public void initialize() {
+    private static void assertPathsWithinGoalDistance(float goalDistance, Map<Integer, Vector3i> expected, List<Vector3i> path) {
+        System.out.print(path);
+        System.out.print(expected);
 
+        Assert.assertEquals(expected.size(), path.size());
+        int i = 0;
+        for (Vector3i pos : path) {
+            if(i == expected.size() - 1) {
+                break;
             }
-        });
-        TextWorldBuilder builder = new TextWorldBuilder(env);
-        builder.setGround(ground);
-
-        final Map<Integer, Vector3i> expected = new HashMap<Integer, Vector3i>();
-        builder.parse(new TextWorldBuilder.Runner() {
-            @Override
-            public char run(int x, int y, int z, char value) {
-                Vector3i vec = new Vector3i(x, y, z);
-
-                switch (value) {
-                    case '?':
-                        testData.start = vec;
-                        break;
-                    case '!':
-                        testData.end = vec;
-                        break;
-                    default:
-                        if (value == '0') {
-                            expected.put(10, vec);
-                        } else if (value > '0' && value <= '9') {
-                            expected.put(value - '0', vec);
-                        } else if (value >= 'a' && value <= 'z') {
-                            expected.put(value - 'a' + 11, vec);
-                        } else if (value >= 'A' && value <= 'Z') {
-                            expected.put(value - 'A' + 11 + 27, vec);
-                        }
-                        break;
-                }
-                return 0;
-            }
-        }, pathData);
-        if (expected.size() > 0) {
-            expected.put(0, testData.start);
-            expected.put(expected.size(), testData.end);
+            Assert.assertEquals(expected.get(i), pos);
+            i++;
         }
 
+        Assert.assertTrue(path.get(path.size()-1).distanceSquared(expected.get(expected.size()-1)) <= goalDistance*goalDistance);
+    }
+
+    static public <T extends StandardPlugin> List<Vector3i> runTestWithGoalDistance(float goalDistance, Class<T> pluginClass, String[] ground, String[] pathData) throws InterruptedException  {
+        TestDataPojo testData = new TestDataPojo();
+        MapWorldProvider worldProvider = new MapWorldProvider(ground);
+        final Map<Integer, Vector3i> expected = worldProvider.parseExpectedPath(pathData, testData);
+        List<Vector3i> path = runJps(goalDistance, pluginClass, testData, worldProvider);
+        assertPathsWithinGoalDistance(goalDistance, expected, path);
+        return path;
+    }
+
+    private static void assertPathsEqual(Map<Integer, Vector3i> expected, List<Vector3i> path) {
+        int i = 0;
+        for (Vector3i pos : path) {
+            logger.warn("{}: e {}", i, expected.get(i));
+            logger.warn("{}: a {}", i, pos);
+            Assert.assertEquals(expected.get(i).toString(), pos.toString());
+            i++;
+        }
+        Assert.assertEquals(expected.size(), path.size());
+    }
+
+    private static <T extends StandardPlugin> List<Vector3i> runJps(float goalDistance, Class<T> pluginClass,
+                                                                    TestDataPojo testData, WorldProvider world) throws
+            InterruptedException {
         JPSConfig config = new JPSConfig(testData.start, testData.end);
+        config.goalDistance = goalDistance;
+        config.useLineOfSight = false;
         if(pluginClass != null) {
-            WorldProvider world = CoreRegistry.get(WorldProvider.class);
             try {
                 config.plugin = pluginClass.getConstructor(WorldProvider.class).newInstance(world);
             } catch (Exception e) {
@@ -91,15 +94,11 @@ public class JPSTestHelper {
                 Assert.assertTrue(false);
             }
         }
+
+        logger.warn("{}", config);
         JPSImpl jps = new JPSImpl(config);
         jps.run();
 
-        List<Vector3i> path = jps.getPath();
-        Assert.assertEquals(expected.size(), path.size());
-        int i = 0;
-        for (Vector3i pos : path) {
-            Assert.assertEquals(expected.get(i).toString(), pos.toString());
-            i++;
-        }
+        return jps.getPath();
     }
 }
