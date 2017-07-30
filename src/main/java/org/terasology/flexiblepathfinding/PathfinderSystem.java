@@ -20,9 +20,13 @@ import com.google.common.collect.Sets;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.terasology.entitySystem.entity.EntityRef;
+import org.terasology.entitySystem.event.Event;
+import org.terasology.entitySystem.event.ReceiveEvent;
 import org.terasology.entitySystem.systems.BaseComponentSystem;
 import org.terasology.entitySystem.systems.RegisterMode;
 import org.terasology.entitySystem.systems.RegisterSystem;
+import org.terasology.flexiblepathfinding.debug.PathMetricsRequestEvent;
+import org.terasology.flexiblepathfinding.debug.PathMetricsResponseEvent;
 import org.terasology.logic.console.commandSystem.annotations.Command;
 import org.terasology.math.geom.Vector3i;
 import org.terasology.registry.In;
@@ -30,10 +34,12 @@ import org.terasology.registry.Share;
 import org.terasology.utilities.concurrency.TaskMaster;
 import org.terasology.world.WorldProvider;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.stream.Collectors;
 
 /**
  * This systems helps finding a paths through the game world.
@@ -65,9 +71,9 @@ public class PathfinderSystem extends BaseComponentSystem {
 
     private Set<EntityRef> entitiesWithPendingTasks = Sets.newHashSet();
 
-    private static final ExecutorService executor = Executors.newFixedThreadPool(4);
+    private static final ExecutorService executor = Executors.newFixedThreadPool(1);
     // These threads simply create TimeLimiters and wait in a loop, the real work is done on the executor above
-    private TaskMaster<PathfinderTask> taskMaster = TaskMaster.createPriorityTaskMaster("Pathfinder", 4, 1024);
+    private TaskMaster<PathfinderTask> taskMaster = TaskMaster.createPriorityTaskMaster("Pathfinder", 1, 1024);
 
     @In
     private WorldProvider world;
@@ -131,5 +137,30 @@ public class PathfinderSystem extends BaseComponentSystem {
     @Command
     public void printPathStats() {
         logger.info(PathMetricsRecorder.getStats());
+    }
+
+    @ReceiveEvent
+    public void onPathMetricsRequest(PathMetricsRequestEvent event, EntityRef entity) {
+        PathMetricsResponseEvent response = new PathMetricsResponseEvent();
+        Collection<PathMetricsRecorder.PathMetric> metrics = PathMetricsRecorder.getPathMetrics();
+
+        if(metrics.size() == 0) {
+            return;
+        }
+
+        PathMetricsRecorder.Histogram successTime = new PathMetricsRecorder.Histogram();
+        PathMetricsRecorder.Histogram failTime = new PathMetricsRecorder.Histogram();
+        PathMetricsRecorder.Histogram size = new PathMetricsRecorder.Histogram();
+        PathMetricsRecorder.Histogram cost = new PathMetricsRecorder.Histogram();
+
+        Collection<PathMetricsRecorder.PathMetric> successes = metrics.stream().filter(stat -> stat.success).collect(Collectors.toList());
+        Collection<PathMetricsRecorder.PathMetric> failures = metrics.stream().filter(stat -> !stat.success).collect(Collectors.toList());
+
+        response.successTimes = successTime.analyze(successes, pathMetric -> pathMetric.time, 10);
+        response.failureTimes = failTime.analyze(failures, pathMetric -> pathMetric.time, 10);
+        response.sizes = size.analyze(successes, pathMetric -> pathMetric.size, 10);
+        response.costs = cost.analyze(failures, pathMetric -> pathMetric.cost, 10);
+
+        world.getWorldEntity().send(response);
     }
 }

@@ -48,7 +48,6 @@ public class JPSImpl implements JPS {
 
     private Logger logger = LoggerFactory.getLogger(JPSImpl.class);
     private JPSConfig config;
-    private WorldProvider world;
     private Map<Vector3i, JPSJumpPoint> points = Maps.newHashMap();
     private List<Vector3i> path = Lists.newArrayList();
     private List<JPSJumpPoint> open = Lists.newArrayList();
@@ -78,14 +77,13 @@ public class JPSImpl implements JPS {
      */
     public boolean run() throws InterruptedException {
         startMillis = System.currentTimeMillis();
-        if (config.maxTime == 0) {
-            return false;
-        }
+
         Callable<Boolean> callable = () -> performSearch();
         boolean result = false;
 
         if (this.timeLimiter != null) {
             try {
+//                Thread.currentThread().setPriority(Thread.MIN_PRIORITY+1);
                 result = timeLimiter.callWithTimeout(callable, (long) (config.maxTime * 1000.0f), TimeUnit.MILLISECONDS, true);
             } catch (Exception e) {
                 LoggerFactory.getLogger(this.getClass()).warn(e.toString());
@@ -101,6 +99,7 @@ public class JPSImpl implements JPS {
 
     @Override
     public boolean performSearch() throws InterruptedException {
+        Thread.currentThread().setPriority(Thread.MIN_PRIORITY);
         reachabilityCache = CacheBuilder.newBuilder()
                 .maximumSize(100000)
                 .build(new CacheLoader<VectorPair, Boolean>() {
@@ -113,9 +112,9 @@ public class JPSImpl implements JPS {
         start = getJumpPoint(config.start);
         goal = getJumpPoint(config.stop);
 
-        if (!config.plugin.isWalkable(goal.getPosition())) {
-            return false;
-        }
+//        if (!config.plugin.isWalkable(goal.getPosition())) {
+//            return false;
+//        }
 
         // let's not waste time ...
         if (start == goal || (config.useLineOfSight && config.plugin.inSight(start.getPosition(), goal.getPosition()))) {
@@ -129,9 +128,6 @@ public class JPSImpl implements JPS {
         while (open.size() > 0) {
             JPSJumpPoint point = open.remove(open.size() - 1);
             open.addAll(identifySuccessors(point, start, goal));
-            if (Thread.interrupted()) {
-                throw new InterruptedException();
-            }
 
             if (goal.getParent() != null) {
                 break;
@@ -189,6 +185,10 @@ public class JPSImpl implements JPS {
 
             // updates parent if this is optimal path so far
             current.setSuccessor(neighbor.getKey(), jumpedNeighbor);
+
+            if(jumpedNeighbor == goal) {
+                return Lists.newArrayList(jumpedNeighbor);
+            }
 
             // not parent means not optimal path, and we don't have to explore
             if (jumpedNeighbor != null) { // && jumpedNeighbor.getParent() == current) {
@@ -399,19 +399,25 @@ public class JPSImpl implements JPS {
     13:            return n
     14: return null
      */
-    private JPSJumpPoint jump(Vector3i current, JPSDirection dir, JPSJumpPoint start, JPSJumpPoint goal) {
+    private JPSJumpPoint jump(Vector3i current, JPSDirection dir, JPSJumpPoint start, JPSJumpPoint goal) throws InterruptedException {
         return jump(current, dir, start, goal, 0);
     }
 
-    private JPSJumpPoint jump(Vector3i current, JPSDirection dir, JPSJumpPoint start, JPSJumpPoint goal, int level) {
+    private JPSJumpPoint jump(Vector3i current, JPSDirection dir, JPSJumpPoint start, JPSJumpPoint goal, int level) throws InterruptedException {
         if (level >= config.maxDepth) {
             return null;
         }
 
+        if (Thread.interrupted()) {
+            throw new InterruptedException();
+        }
+
         Vector3i neighbor = dir.getVector().add(current);
 
-        if (neighbor.distanceSquared(goal.getPosition()) == 0) {
-            return getJumpPoint(neighbor);
+        // this is the goal (or close enough to it)
+        if (neighbor.distanceSquared(goal.getPosition()) <= config.goalDistance * config.goalDistance) {
+            goal = getJumpPoint(neighbor);
+            return goal;
         }
 
         if (!isReachable(neighbor, current)) {
@@ -485,7 +491,7 @@ public class JPSImpl implements JPS {
         @Override
         public int hashCode() {
             int result = a.hashCode();
-            result = 31 * result + b.hashCode();
+            result = (result << 16) + b.hashCode();
             return result;
         }
     }

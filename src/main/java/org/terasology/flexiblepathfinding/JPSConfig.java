@@ -39,8 +39,13 @@ public class JPSConfig {
         this.start = start;
         this.stop = stop;
 
-        this.maxDepth = (int) stop.distance(start) * 2;
+        this.maxDepth = (int) stop.distance(start) * 10;
         this.maxTime = 3.0f;
         this.plugin = new WalkingPlugin(CoreRegistry.get(WorldProvider.class));
+    }
+
+    @Override
+    public String toString() {
+        return "start: " + start.toString() + " stop: " + stop.toString() + " " + maxDepth + " " + maxTime;
     }
 }
