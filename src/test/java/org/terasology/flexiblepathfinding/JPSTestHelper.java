@@ -44,19 +44,7 @@ public class JPSTestHelper {
     }
 
     private static void assertPathsWithinGoalDistance(float goalDistance, Map<Integer, Vector3i> expected, List<Vector3i> path) {
-        System.out.print(path);
-        System.out.print(expected);
-
-        Assert.assertEquals(expected.size(), path.size());
-        int i = 0;
-        for (Vector3i pos : path) {
-            if(i == expected.size() - 1) {
-                break;
-            }
-            Assert.assertEquals(expected.get(i), pos);
-            i++;
-        }
-
+        assertPathsEqual(expected, path);
         Assert.assertTrue(path.get(path.size()-1).distanceSquared(expected.get(expected.size()-1)) <= goalDistance*goalDistance);
     }
 

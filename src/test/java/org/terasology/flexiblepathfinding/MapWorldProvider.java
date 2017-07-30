@@ -147,7 +147,7 @@ public class MapWorldProvider implements WorldProvider {
                 } else if (value > '0' && value <= '9') {
                     i = value - '0';
                 } else if (value >= 'a' && value <= 'z') {
-                    i = value - 'a';
+                    i = value - 'a' + 10;
                 } else if (value >= 'A' && value <= 'Z') {
                     i = value - 'A' + 11 + 27;
                 } else {
@@ -166,7 +166,6 @@ public class MapWorldProvider implements WorldProvider {
         if (null == result) {
             result = groundBlock;
         }
-        logger.warn("{}: {}", vec, result);
         return result;
     }
 
