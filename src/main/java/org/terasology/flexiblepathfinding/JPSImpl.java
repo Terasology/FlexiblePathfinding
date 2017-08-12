@@ -127,7 +127,7 @@ public class JPSImpl implements JPS {
         open.add(start);
         while (open.size() > 0) {
             JPSJumpPoint point = open.remove(open.size() - 1);
-            open.addAll(identifySuccessors(point, start, goal));
+            open.addAll(identifySuccessors(point));
 
             if (goal.getParent() != null) {
                 break;
@@ -170,7 +170,7 @@ public class JPSImpl implements JPS {
     // 4:     n ← jump(x, direction(x, n), s, g)
     // 5:     add n to successors(x)
     // 6: return successors(x)
-    private List<JPSJumpPoint> identifySuccessors(JPSJumpPoint current, JPSJumpPoint start, JPSJumpPoint goal) throws InterruptedException {
+    private List<JPSJumpPoint> identifySuccessors(JPSJumpPoint current) throws InterruptedException {
         List<JPSJumpPoint> result = Lists.newArrayList();
         Map<JPSDirection, JPSJumpPoint> prunedNeighbors = prune(current.getParentDirection(), current);
 
@@ -186,7 +186,10 @@ public class JPSImpl implements JPS {
             // updates parent if this is optimal path so far
             current.setSuccessor(neighbor.getKey(), jumpedNeighbor);
 
-            if(jumpedNeighbor == goal) {
+            if(null != jumpedNeighbor &&
+                    jumpedNeighbor.getPosition().distanceSquared(goal.getPosition()) <= config.goalDistance * config.goalDistance
+                    ) {
+                goal = jumpedNeighbor;
                 return Lists.newArrayList(jumpedNeighbor);
             }
 

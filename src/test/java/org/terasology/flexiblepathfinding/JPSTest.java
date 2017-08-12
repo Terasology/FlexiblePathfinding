@@ -174,14 +174,14 @@ public class JPSTest {
 
     @Test
     public void simpleGoalDistance() throws InterruptedException {
-        JPSTestHelper.runTestWithGoalDistance(15, WalkingPlugin.class, new String[]{
+        JPSTestHelper.runTestWithGoalDistance(3, WalkingPlugin.class, new String[]{
                 "X       ",
                 "X       ",
                 "XXXXXXXX",
         }, new String[]{
                 "?       ",
                 "1       ",
-                " 234567!"
+                " 2  3  !"
         });
     }
 

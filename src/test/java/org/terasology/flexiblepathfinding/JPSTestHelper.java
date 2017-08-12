@@ -39,7 +39,7 @@ public class JPSTestHelper {
         TestDataPojo testData = new TestDataPojo();
         MapWorldProvider worldProvider = new MapWorldProvider(ground);
         final Map<Integer, Vector3i> expected = worldProvider.parseExpectedPath(pathData, testData);
-        List<Vector3i> path = runJps(20, pluginClass, testData, worldProvider);
+        List<Vector3i> path = runJps(0, pluginClass, testData, worldProvider);
         assertPathsEqual(expected, path);
     }
 
@@ -52,6 +52,7 @@ public class JPSTestHelper {
         TestDataPojo testData = new TestDataPojo();
         MapWorldProvider worldProvider = new MapWorldProvider(ground);
         final Map<Integer, Vector3i> expected = worldProvider.parseExpectedPath(pathData, testData);
+        expected.remove(expected.size()-1);
         List<Vector3i> path = runJps(goalDistance, pluginClass, testData, worldProvider);
         assertPathsWithinGoalDistance(goalDistance, expected, path);
         return path;
@@ -62,7 +63,7 @@ public class JPSTestHelper {
         for (Vector3i pos : path) {
             logger.warn("{}: e {}", i, expected.get(i));
             logger.warn("{}: a {}", i, pos);
-//            Assert.assertEquals(expected.get(i).toString(), pos.toString());
+            Assert.assertEquals(expected.get(i).toString(), pos.toString());
             i++;
         }
         Assert.assertEquals(expected.size(), path.size());
