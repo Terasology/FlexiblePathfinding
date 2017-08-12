@@ -111,25 +111,32 @@ public class JPSImpl implements JPS {
         points.clear();
         start = getJumpPoint(config.start);
         goal = getJumpPoint(config.stop);
+        logger.debug("Starting JPS search: {} -> {}", start.getPosition(), goal.getPosition());
 
-//        if (!config.plugin.isWalkable(goal.getPosition())) {
-//            return false;
-//        }
+        if (start.getPosition().distanceSquared(goal.getPosition()) <= config.goalDistance * config.goalDistance) {
+            path.clear();
+            path.add(start.getPosition());
+            path.add(start.getPosition());
+            logger.debug("Start position is within goal distance");
+            return true;
+        }
 
-        // let's not waste time ...
         if (start == goal || (config.useLineOfSight && config.plugin.inSight(start.getPosition(), goal.getPosition()))) {
             path.clear();
             path.add(start.getPosition());
             path.add(goal.getPosition());
+            logger.debug("Start and goal are within line of sight");
             return true;
         }
 
         open.add(start);
         while (open.size() > 0) {
+            logger.debug("Starting open list loop, open list size: {}", open.size());
             JPSJumpPoint point = open.remove(open.size() - 1);
             open.addAll(identifySuccessors(point));
 
             if (goal.getParent() != null) {
+                logger.debug("Goal position has a parent, breaking open loop");
                 break;
             }
 
@@ -149,6 +156,7 @@ public class JPSImpl implements JPS {
         }
 
         if (goal.getParent() == null) {
+            logger.debug("Goal position has no parent after open list loop. Failure.");
             return false;
         }
 
@@ -159,6 +167,7 @@ public class JPSImpl implements JPS {
             path.add(0, parent.getPosition());
             parent = parent.getParent();
         }
+        logger.debug("Found path: {}", path);
         return true;
     }
 

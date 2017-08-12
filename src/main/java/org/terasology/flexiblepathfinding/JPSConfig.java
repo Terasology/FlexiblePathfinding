@@ -31,7 +31,7 @@ public class JPSConfig {
     public Vector3i stop;
     public EntityRef requestor;
     public JPSPlugin plugin;
-    public float goalDistance;
+    public double goalDistance;
     public boolean useLineOfSight;
     public ExecutorService executor;
 
