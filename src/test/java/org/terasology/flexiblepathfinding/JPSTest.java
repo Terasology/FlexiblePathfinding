@@ -19,33 +19,27 @@ import org.junit.Test;
 import org.terasology.flexiblepathfinding.plugins.WalkingPlugin;
 import org.terasology.math.geom.Vector3i;
 
-/**
- * @author synopia
- */
 public class JPSTest {
-    private Vector3i start;
-    private Vector3i end;
-
     @Test
     public void stairs2() throws InterruptedException {
         executeExample(new String[]{
                 "XXXXXXXXX|         |         |XXXXXXXXX|         |         |XXXXXXXXX",
                 "XXXXXXXXX|         |         |XXXXXXXXX|         |         |XXXXXXXXX",
                 "XXXXXXXXX|         |         |XXXXXXXXX|         |         |XXXXXXXXX",
-                "XXXXXXXXX|         |         |XXX XXXXX|         |         |XXXXX XXX",
-                "XXX XXXXX|   X     |         |XXX XXXXX|   X     |         |XXXXX XXX",
-                "XXX XXXXX|         |   X     |XXX XXXXX|         |   X     |XXXXX XXX",
+                "XXXXXXXXX|         |         |XXX XXXXX|         |         |XXXXXXXXX",
+                "XXX XXXXX|  XX     |   X     |XXX XXXXX|  XX     |   X     |XXX XXXXX",
+                "XXX XXXXX|         |   X     |XXXXXXXXX|         |   X     |XXXXXXXXX",
                 "XXXXXXXXX|         |         |XXXXXXXXX|         |         |XXXXXXXXX",
                 "XXXXXXXXX|         |         |XXXXXXXXX|         |         |XXXXXXXXX",
         }, new String[]{
                 "?        |         |         |         |         |         |         ",
                 " 1       |         |         |         |         |         |         ",
                 "  2      |         |         |         |         |         |         ",
-                "   3     |         |         |         |         |         |         ",
-                "         |   4     |         |         |   7     |         |         ",
-                "         |         |   5     |    6    |         |   8     |         ",
-                "         |         |         |         |         |         |    9    ",
-                "         |         |         |         |         |         |    0abc!",
+                "  3      |         |         |         |         |         |         ",
+                "  4      |   5     |         |  !      |         |         |         ",
+                "         |         |   6     |  7      |         |         |         ",
+                "         |         |         |         |         |         |         ",
+                "         |         |         |         |         |         |         ",
         });
     }
 
@@ -106,14 +100,12 @@ public class JPSTest {
                 "XXXXXXXXXXXXXXX",
                 "XXX            ",
                 "XXXXXXXXXXXXXXX",
-                "              X",
         }, new String[]{
-                "?           1  ",
-                "             2 ",
-                "   4        3  ",
-                "  5            ",
-                "   6         7 ",
-                "              !",
+                "?123456789abcd ",
+                "             e ",
+                "  qponmlkjihgf ",
+                "  r            ",
+                "  stuvwxyz!    ",
         });
 
     }
@@ -194,7 +186,7 @@ public class JPSTest {
         }, new String[]{
                 "?       ",
                 "1       ",
-                " 2  3  !"
+                "23456  !"
         });
     }
 
