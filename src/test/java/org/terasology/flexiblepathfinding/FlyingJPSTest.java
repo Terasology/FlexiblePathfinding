@@ -118,7 +118,7 @@ public class FlyingJPSTest {
 
     @Test
     public void startInBox() throws InterruptedException {
-        executeExample(new String[]{
+        executeFailingExample(new String[]{
                 "   X|   X",
                 " X X|   X",
                 "   X|   X"
@@ -131,7 +131,7 @@ public class FlyingJPSTest {
 
     @Test
     public void endInBox() throws InterruptedException {
-        executeExample(new String[]{
+        executeFailingExample(new String[]{
                 "   X|   X",
                 " X X|   X",
                 "   X|   X"
@@ -144,12 +144,12 @@ public class FlyingJPSTest {
 
     @Test
     public void startUnwalkable() throws InterruptedException {
-        executeExample(new String[]{
+        executeFailingExample(new String[]{
                 " XXX",
                 " XXX",
                 " XXX"
         }, new String[]{
-                " 12!",
+                "   !",
                 "?   ",
                 "    "
         });
@@ -158,7 +158,7 @@ public class FlyingJPSTest {
 
     @Test
     public void endUnwalkable() throws InterruptedException {
-        executeExample(new String[]{
+        executeFailingExample(new String[]{
                 " XXX",
                 " XXX",
                 " XXX"
@@ -171,5 +171,9 @@ public class FlyingJPSTest {
 
     private void executeExample(String[] ground, String[] pathData) throws InterruptedException {
         JPSTestHelper.runTest(FlyingPlugin.class, ground, pathData);
+    }
+
+    private void executeFailingExample(String[] ground, String[] pathData) throws InterruptedException {
+        JPSTestHelper.runFailingTest(FlyingPlugin.class, ground, pathData);
     }
 }
