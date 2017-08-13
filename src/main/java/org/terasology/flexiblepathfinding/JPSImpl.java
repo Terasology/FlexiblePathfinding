@@ -113,14 +113,6 @@ public class JPSImpl implements JPS {
         goal = getJumpPoint(config.stop);
         logger.debug("Starting JPS search: {} -> {}", start.getPosition(), goal.getPosition());
 
-        if (start.getPosition().distanceSquared(goal.getPosition()) <= config.goalDistance * config.goalDistance) {
-            path.clear();
-            path.add(start.getPosition());
-            path.add(start.getPosition());
-            logger.debug("Start position is within goal distance");
-            return true;
-        }
-
         if (start == goal || (config.useLineOfSight && config.plugin.inSight(start.getPosition(), goal.getPosition()))) {
             path.clear();
             path.add(start.getPosition());
