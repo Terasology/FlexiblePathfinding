@@ -46,7 +46,7 @@ public class FlexiblePathfindingDebugClientSystem extends BaseComponentSystem im
 
     @Override
     public void initialise() {
-        nuiManager.getHUD().addHUDElement("debug");
+        nuiManager.getHUD().addHUDElement("FlexiblePathfinding:debug");
     }
 
     public PathMetricsResponseEvent getLastResponse() {

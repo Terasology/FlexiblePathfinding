@@ -25,8 +25,9 @@ import com.google.common.util.concurrent.SimpleTimeLimiter;
 import com.google.common.util.concurrent.TimeLimiter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.terasology.flexiblepathfinding.metrics.PathMetric;
+import org.terasology.flexiblepathfinding.metrics.PathMetricsRecorder;
 import org.terasology.math.geom.Vector3i;
-import org.terasology.world.WorldProvider;
 
 import java.util.Comparator;
 import java.util.List;
@@ -54,6 +55,10 @@ public class JPSImpl implements JPS {
     private JPSJumpPoint start;
     private JPSJumpPoint goal;
     private double startMillis;
+
+    // for metrics
+    private double maxDepth;
+    private double nodesExplored;
 
     // some helper classes from Guava
     private LoadingCache<VectorPair, Boolean> reachabilityCache;
@@ -406,6 +411,9 @@ public class JPSImpl implements JPS {
     }
 
     private JPSJumpPoint jump(Vector3i current, JPSDirection dir, JPSJumpPoint start, JPSJumpPoint goal, int level) throws InterruptedException {
+        maxDepth = Math.max(maxDepth, level);
+        nodesExplored += 1;
+
         if (level >= config.maxDepth) {
             return null;
         }
@@ -464,7 +472,9 @@ public class JPSImpl implements JPS {
             return;
         }
 
-        PathMetricsRecorder.PathMetric metric = new PathMetricsRecorder.PathMetric();
+        PathMetric metric = new PathMetric();
+        metric.maxDepth = maxDepth;
+        metric.nodesExplored = nodesExplored;
         metric.success = path.size() > 0;
         metric.cost = goal.getCost();
         metric.size = path.size();

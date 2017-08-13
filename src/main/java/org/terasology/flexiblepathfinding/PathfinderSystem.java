@@ -26,6 +26,9 @@ import org.terasology.entitySystem.systems.RegisterMode;
 import org.terasology.entitySystem.systems.RegisterSystem;
 import org.terasology.flexiblepathfinding.debug.PathMetricsRequestEvent;
 import org.terasology.flexiblepathfinding.debug.PathMetricsResponseEvent;
+import org.terasology.flexiblepathfinding.metrics.Histogram;
+import org.terasology.flexiblepathfinding.metrics.PathMetric;
+import org.terasology.flexiblepathfinding.metrics.PathMetricsRecorder;
 import org.terasology.logic.console.commandSystem.annotations.Command;
 import org.terasology.math.geom.Vector3i;
 import org.terasology.registry.In;
@@ -135,19 +138,19 @@ public class PathfinderSystem extends BaseComponentSystem {
     @ReceiveEvent
     public void onPathMetricsRequest(PathMetricsRequestEvent event, EntityRef entity) {
         PathMetricsResponseEvent response = new PathMetricsResponseEvent();
-        Collection<PathMetricsRecorder.PathMetric> metrics = PathMetricsRecorder.getPathMetrics();
+        Collection<PathMetric> metrics = PathMetricsRecorder.getPathMetrics();
 
         if(metrics.size() == 0) {
             return;
         }
 
-        PathMetricsRecorder.Histogram successTime = new PathMetricsRecorder.Histogram();
-        PathMetricsRecorder.Histogram failTime = new PathMetricsRecorder.Histogram();
-        PathMetricsRecorder.Histogram size = new PathMetricsRecorder.Histogram();
-        PathMetricsRecorder.Histogram cost = new PathMetricsRecorder.Histogram();
+        Histogram successTime = new Histogram();
+        Histogram failTime = new Histogram();
+        Histogram size = new Histogram();
+        Histogram cost = new Histogram();
 
-        Collection<PathMetricsRecorder.PathMetric> successes = metrics.stream().filter(stat -> stat.success).collect(Collectors.toList());
-        Collection<PathMetricsRecorder.PathMetric> failures = metrics.stream().filter(stat -> !stat.success).collect(Collectors.toList());
+        Collection<PathMetric> successes = metrics.stream().filter(stat -> stat.success).collect(Collectors.toList());
+        Collection<PathMetric> failures = metrics.stream().filter(stat -> !stat.success).collect(Collectors.toList());
 
         response.successTimes = successTime.analyze(successes, pathMetric -> pathMetric.time, 10);
         response.failureTimes = failTime.analyze(failures, pathMetric -> pathMetric.time, 10);

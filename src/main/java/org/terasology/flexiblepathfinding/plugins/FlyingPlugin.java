@@ -15,12 +15,30 @@
  */
 package org.terasology.flexiblepathfinding.plugins;
 
+import org.terasology.math.Region3i;
 import org.terasology.math.geom.Vector3i;
 import org.terasology.world.WorldProvider;
 
 public class FlyingPlugin extends WalkingPlugin {
     public FlyingPlugin(WorldProvider world) {
         super(world);
+    }
+
+    @Override
+    public boolean isReachable(Vector3i a, Vector3i b) {
+        // only allowed to move 1 unit in each axis
+        if(Math.max(Math.abs(a.x - b.x), Math.max(Math.abs(a.y - b.y), Math.abs(a.z - b.z))) > 1) {
+            return false;
+        }
+
+        // check that all blocks passed through by this movement are penetrable
+        Region3i movementBounds = Region3i.createBounded(a, b);
+        for (Vector3i pos : movementBounds) {
+            if (!world.getBlock(pos).isPenetrable()) {
+                return false;
+            }
+        }
+        return true;
     }
 
     @Override
