@@ -25,20 +25,20 @@ public class FlyingJPSTest {
                 "XXXXXXXXX|         |         |XXXXXXXXX|         |         |XXXXXXXXX",
                 "XXXXXXXXX|         |         |XXXXXXXXX|         |         |XXXXXXXXX",
                 "XXXXXXXXX|         |         |XXXXXXXXX|         |         |XXXXXXXXX",
-                "XXXXXXXXX|         |         |XXX XXXXX|         |         |XXXXX XXX",
-                "XXX XXXXX|   X     |         |XXX XXXXX|   X     |         |XXXXX XXX",
-                "XXX XXXXX|         |   X     |XXX XXXXX|         |   X     |XXXXX XXX",
+                "XXXXXXXXX|         |         |XXX XXXXX|         |         |XXXXXXXXX",
+                "XXX XXXXX|  XX     |   X     |XXX XXXXX|  XX     |   X     |XXX XXXXX",
+                "XXX XXXXX|         |   X     |XXXXXXXXX|         |   X     |XXXXXXXXX",
                 "XXXXXXXXX|         |         |XXXXXXXXX|         |         |XXXXXXXXX",
                 "XXXXXXXXX|         |         |XXXXXXXXX|         |         |XXXXXXXXX",
         }, new String[]{
                 "?        |         |         |         |         |         |         ",
                 " 1       |         |         |         |         |         |         ",
                 "  2      |         |         |         |         |         |         ",
-                "   3     |         |         |         |         |         |         ",
-                "         |   4     |         |         |         |         |         ",
-                "         |         |   5     |         |         |         |         ",
-                "         |         |         |    6    |         |         |         ",
-                "         |         |         |         |     7   |      8  |       9!",
+                "  3      |         |         |         |         |         |         ",
+                "  4      |   5     |         |  !      |         |         |         ",
+                "         |         |   6     |  7      |         |         |         ",
+                "         |         |         |         |         |         |         ",
+                "         |         |         |         |         |         |         ",
         });
     }
 
@@ -76,9 +76,9 @@ public class FlyingJPSTest {
                 "X X|X X|X X|   ",
                 "X X|X X|X X|   ",
         }, new String[]{
-                "?  |1  |2  | 3 ",
-                "   |   |  4|   ",
-                "  !|  5|   |   ",
+                "?  |1  |2 4| 3 ",
+                "   |  5|   |   ",
+                "  !|   |   |   ",
         });
     }
 
@@ -90,28 +90,25 @@ public class FlyingJPSTest {
                 "XXXXXXXXXXXXXXX",
                 "XXX            ",
                 "XXXXXXXXXXXXXXX",
-                "              X",
         }, new String[]{
-                "?           1  ",
-                "             2 ",
-                "   4        3  ",
-                "  5            ",
-                "   6         7 ",
-                "              !",
+                "?123456789abcd ",
+                "             e ",
+                "  qponmlkjihgf ",
+                "  r            ",
+                "  stuvwxyz!    ",
         });
-
     }
 
     @Test
     public void threeDimensionalMoves() throws InterruptedException {
         executeExample(new String[]{
-                "XXX|   |   |   ",
-                "X X| X |X  | X ",
-                "XXX|   |X  |   "
+                "XXX|XX |   |   ",
+                "X X|XX | X | XX",
+                "XXX|   |   |   "
         }, new String[]{
                 "?  |   |   |   ",
-                "1  | 3 |4  | ! ",
-                "   | 2 |   |   "
+                "   | 1 | 2 |  !",
+                "   |   |   |   "
         });
     }
 
