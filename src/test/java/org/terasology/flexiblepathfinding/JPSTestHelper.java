@@ -34,6 +34,14 @@ import java.util.Map;
 public class JPSTestHelper {
     private static final char NEW_LEVEL = '|';
     private static Logger logger = LoggerFactory.getLogger(JPSTestHelper.class);
+    static public <T extends StandardPlugin> void runFailingTest(Class<T> pluginClass, String[] ground, String[]
+            pathData) throws InterruptedException {
+        TestDataPojo testData = new TestDataPojo();
+        MapWorldProvider worldProvider = new MapWorldProvider(ground);
+        final Map<Integer, Vector3i> expected = worldProvider.parseExpectedPath(pathData, testData);
+        List<Vector3i> path = runJps(0, pluginClass, testData, worldProvider);
+        Assert.assertEquals(0, path.size());
+    }
 
     static public <T extends StandardPlugin> void runTest(Class<T> pluginClass, String[] ground, String[] pathData) throws InterruptedException {
         TestDataPojo testData = new TestDataPojo();

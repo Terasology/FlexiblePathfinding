@@ -45,7 +45,7 @@ public class JPSTest {
 
     @Test
     public void stairsClosed2() throws InterruptedException {
-        executeExample(new String[]{
+        executeFailingExample(new String[]{
                 "XXXXXXXXX|         |         |XXXXXXXXX|         |         |XXXXXXXXX",
                 "XXXXXXXXX|         |         |XXXXXXXXX|         |         |XXXXXXXXX",
                 "XXXXXXXXX|         |         |XXXXXXXXX|         |         |XXXXXXXXX",
@@ -126,7 +126,7 @@ public class JPSTest {
 
     @Test
     public void startInBox() throws InterruptedException {
-        executeExample(new String[]{
+        executeFailingExample(new String[]{
                 "   X|   X",
                 " X X|   X",
                 "   X|   X"
@@ -139,7 +139,7 @@ public class JPSTest {
 
     @Test
     public void endInBox() throws InterruptedException {
-        executeExample(new String[]{
+        executeFailingExample(new String[]{
                 "   X|   X",
                 " X X|   X",
                 "   X|   X"
@@ -152,12 +152,12 @@ public class JPSTest {
 
     @Test
     public void startUnwalkable() throws InterruptedException {
-        executeExample(new String[]{
+        executeFailingExample(new String[]{
                 " XXX",
                 " XXX",
                 " XXX"
         }, new String[]{
-                " 12!",
+                "   !",
                 "?   ",
                 "    "
         });
@@ -166,7 +166,7 @@ public class JPSTest {
 
     @Test
     public void endUnwalkable() throws InterruptedException {
-        executeExample(new String[]{
+        executeFailingExample(new String[]{
                 " XXX",
                 " XXX",
                 " XXX"
@@ -192,5 +192,9 @@ public class JPSTest {
 
     private void executeExample(String[] ground, String[] pathData) throws InterruptedException {
         JPSTestHelper.runTest(WalkingPlugin.class, ground, pathData);
+    }
+
+    private void executeFailingExample(String[] ground, String[] pathData) throws InterruptedException {
+        JPSTestHelper.runFailingTest(WalkingPlugin.class, ground, pathData);
     }
 }
