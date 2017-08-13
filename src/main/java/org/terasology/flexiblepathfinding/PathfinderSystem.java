@@ -20,7 +20,6 @@ import com.google.common.collect.Sets;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.terasology.entitySystem.entity.EntityRef;
-import org.terasology.entitySystem.event.Event;
 import org.terasology.entitySystem.event.ReceiveEvent;
 import org.terasology.entitySystem.systems.BaseComponentSystem;
 import org.terasology.entitySystem.systems.RegisterMode;
@@ -37,9 +36,6 @@ import org.terasology.world.WorldProvider;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadPoolExecutor;
 import java.util.stream.Collectors;
 
 /**
@@ -65,15 +61,10 @@ public class PathfinderSystem extends BaseComponentSystem {
     private int nextId;
     private Set<EntityRef> entitiesWithPendingTasks = Sets.newHashSet();
 
-    private TaskMaster<PathfinderTask> workerTaskMaster = TaskMaster.createFIFOTaskMaster(
-            "PathfinderWorker",
-            2
-    );
+    private TaskMaster<PathfinderTask> workerTaskMaster = TaskMaster.createFIFOTaskMaster("PathfinderWorker", 2);
 
     private TaskMaster<PathfinderTask> taskMaster = TaskMaster.createPriorityTaskMaster(
-            "PathfinderQueue",
-            1,
-            1024
+            "PathfinderQueue", 1, 1024
     );
 
     @In
@@ -93,22 +84,22 @@ public class PathfinderSystem extends BaseComponentSystem {
         workerTaskMaster.shutdown(new ShutdownTask(null, null, null), false);
     }
 
-    public int requestPath(EntityRef requestor, Vector3i target, List<Vector3i> start) {
-        return requestPath(requestor, target, start, null);
+    public int requestPath(EntityRef requester, Vector3i target, List<Vector3i> start) {
+        return requestPath(requester, target, start, null);
     }
 
-    public int requestPath(EntityRef requestor, Vector3i target, List<Vector3i> start, PathfinderCallback callback) {
+    public int requestPath(EntityRef requester, Vector3i target, List<Vector3i> start, PathfinderCallback callback) {
         JPSConfig config = new JPSConfig(start.get(0), target);
-        config.requestor = requestor;
+        config.requester = requester;
         return requestPath(config, callback);
     }
 
     public int requestPath(JPSConfig config, PathfinderCallback callback) {
-        if(config.requestor != null && config.requestor.exists()) {
-            if(entitiesWithPendingTasks.contains(config.requestor)) {
+        if(config.requester != null && config.requester.exists()) {
+            if(entitiesWithPendingTasks.contains(config.requester)) {
                 return -1;
             }
-            entitiesWithPendingTasks.add(config.requestor);
+            entitiesWithPendingTasks.add(config.requester);
         }
 
         if(config.executor == null) {

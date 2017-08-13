@@ -29,7 +29,7 @@ public class JPSConfig {
     public float maxTime;
     public Vector3i start;
     public Vector3i stop;
-    public EntityRef requestor;
+    public EntityRef requester;
     public JPSPlugin plugin;
     public double goalDistance;
     public boolean useLineOfSight;

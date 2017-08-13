@@ -30,7 +30,7 @@ public class PathfinderSystemTest {
         EntityRef entity = entityManager.create();
 
         JPSConfig config = new JPSConfig(Vector3i.zero(), Vector3i.north());
-        config.requestor = entity;
+        config.requester = entity;
 
         Assert.assertEquals(pathfinderSystem.requestPath(config, null), 0);
         Assert.assertEquals(pathfinderSystem.requestPath(config, null), -1);

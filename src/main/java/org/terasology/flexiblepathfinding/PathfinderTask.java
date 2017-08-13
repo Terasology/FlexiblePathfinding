@@ -58,7 +58,7 @@ public class PathfinderTask implements Task, Comparable<PathfinderTask> {
         } catch (InterruptedException e) {
             // do nothing
         }
-        CoreRegistry.get(PathfinderSystem.class).completePathFor(config.requestor);
+        CoreRegistry.get(PathfinderSystem.class).completePathFor(config.requester);
         callback.pathReady(path, this.stop);
     }
 
