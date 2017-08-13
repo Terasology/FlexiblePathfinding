@@ -173,7 +173,7 @@ public enum JPSDirection {
         if(potentialForcedNeighborsCache[ordinal()] == null) {
             Vector3i parentDelta = getVector().mul(-1);
             List<Vector3i> potentialForcedNeighbors = JPSDirection.valuesAsVectors();
-            potentialForcedNeighbors.removeAll(getComponentPermutations());
+//            potentialForcedNeighbors.removeAll(getComponentPermutations());
             potentialForcedNeighbors.removeAll(JPSDirection.vectorsAdjacentTo(parentDelta));
             potentialForcedNeighborsCache[ordinal()] = potentialForcedNeighbors;
         }

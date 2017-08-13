@@ -15,6 +15,9 @@
  */
 package org.terasology.flexiblepathfinding.plugins;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.terasology.math.Region3i;
 import org.terasology.math.geom.Vector3i;
 import org.terasology.world.WorldProvider;
 
@@ -22,14 +25,30 @@ public class WalkingPlugin extends StandardPlugin {
     public WalkingPlugin(WorldProvider world) {
         super(world);
     }
+    private static final Logger logger = LoggerFactory.getLogger(WalkingPlugin.class);
 
     @Override
     public boolean isReachable(Vector3i a, Vector3i b) {
+        // only allowed to move 1 unit in each axis
         if(Math.max(Math.abs(a.x - b.x), Math.max(Math.abs(a.y - b.y), Math.abs(a.z - b.z))) > 1) {
             return false;
         }
 
-        return isWalkable(a); // && isWalkable(b);
+        // check that all blocks passed through by this movement are penetrable
+        Region3i movementBounds = Region3i.createBounded(a, b);
+        Vector3i aBelow = new Vector3i(a).add(Vector3i.down());
+        Vector3i bBelow = new Vector3i(b).add(Vector3i.down());
+        for (Vector3i pos : movementBounds) {
+            // don't check the blocks below a or b, since those should be solid anyway
+            if (pos.distanceSquared(aBelow) == 0 || pos.distanceSquared(bBelow) == 0) {
+                continue;
+            }
+
+            if (!world.getBlock(pos).isPenetrable()) {
+                return false;
+            }
+        }
+        return isWalkable(a);
     }
 
     @Override

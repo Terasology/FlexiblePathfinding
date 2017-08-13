@@ -293,7 +293,7 @@ public class JPSImpl implements JPS {
         }
 
         for (Vector3i keyNode : keyNodes) {
-            neighborPos.set(current).add(keyNode);
+            keyPos.set(current).add(keyNode);
 
             // not reachable means not optimal
             boolean parentToKey = isReachable(keyPos, parent);
@@ -331,8 +331,8 @@ public class JPSImpl implements JPS {
                         continue;
                     }
 
-                    // if the paths are equal in length, we compare the distance (and thereforce the number of axes traveled)
-                    // for each step. The first path with a high distance step is deemed the optimal path, and if this
+                    // if the paths are equal in length, we compare the distance (and therefore the number of axes traveled)
+                    // for each step. The first path with a higher distance step is deemed the optimal path, and if this
                     // is the current node then the neighbor is forced
                     if (nearlyEqual) {
                         if (Math.abs(parentToKeyDistance - parentToCurrentDistance) < epsilon) {
@@ -349,7 +349,7 @@ public class JPSImpl implements JPS {
                 }
             }
         }
-        potentialForcedNeighbors.removeAll(prunedNeighbors);
+//        potentialForcedNeighbors.removeAll(prunedNeighbors);
         return potentialForcedNeighbors;
     }
 
@@ -366,7 +366,8 @@ public class JPSImpl implements JPS {
      */
     private Map<JPSDirection, JPSJumpPoint> prune(JPSDirection dir, JPSJumpPoint current) {
         Map<JPSDirection, JPSJumpPoint> result = Maps.newHashMap();
-        if (dir == null) {
+        // TODO: why does this work?
+        if (true || dir == null) {
             return getNeighbors(current);
         }
 

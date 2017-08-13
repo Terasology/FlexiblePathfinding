@@ -81,7 +81,20 @@ public class JPSTest {
         }, new String[]{
                 "?  ",
                 "1  ",
-                " 2!"
+                "23!"
+        });
+    }
+
+    @Test
+    public void simpleDiagonal() throws InterruptedException {
+        executeExample(new String[]{
+                "X  |   ",
+                "X  | X ",
+                "XXX|   ",
+        }, new String[]{
+                "?  |   ",
+                "1  |   ",
+                "23!|   "
         });
     }
 
@@ -108,13 +121,13 @@ public class JPSTest {
     @Test
     public void threeDimensionalMoves() throws InterruptedException {
         executeExample(new String[]{
-                "XXX|   |   |   ",
-                "X X| X |X  | X ",
-                "XXX|   |X  |   "
+                "XXX|XX |   ",
+                "X X|XXX| XX",
+                "XXX| X | XX"
         }, new String[]{
-                "?  |   |   |   ",
-                "   | 1 |2  | ! ",
-                "   |   |   |   "
+                "?  |   |   ",
+                "   | 1 |   ",
+                "   |   |  !"
         });
     }
 
