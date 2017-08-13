@@ -80,19 +80,16 @@ public class JPSImpl implements JPS {
 
         Callable<Boolean> callable = () -> performSearch();
         boolean result = false;
-
         if (this.timeLimiter != null) {
             try {
-//                Thread.currentThread().setPriority(Thread.MIN_PRIORITY+1);
                 result = timeLimiter.callWithTimeout(callable, (long) (config.maxTime * 1000.0f), TimeUnit.MILLISECONDS, true);
             } catch (Exception e) {
-                LoggerFactory.getLogger(this.getClass()).warn(e.toString());
+                logger.warn("Timeout of {} exceeded: {}", config.maxTime, e.toString());
             }
-            recordMetrics();
-            return result;
+        } else {
+            result = performSearch();
         }
 
-        result = performSearch();
         recordMetrics();
         return result;
     }

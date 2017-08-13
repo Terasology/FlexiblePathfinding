@@ -39,6 +39,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.stream.Collectors;
 
 /**
@@ -62,18 +63,18 @@ public class PathfinderSystem extends BaseComponentSystem {
     private static final Logger logger = LoggerFactory.getLogger(PathfinderSystem.class);
 
     private int nextId;
-    private int pathsSearched;
-
-    public static ExecutorService getExecutor() {
-        return executor;
-    }
-
-
     private Set<EntityRef> entitiesWithPendingTasks = Sets.newHashSet();
 
-    private static final ExecutorService executor = Executors.newFixedThreadPool(1);
-    // These threads simply create TimeLimiters and wait in a loop, the real work is done on the executor above
-    private TaskMaster<PathfinderTask> taskMaster = TaskMaster.createPriorityTaskMaster("Pathfinder", 1, 1024);
+    private TaskMaster<PathfinderTask> workerTaskMaster = TaskMaster.createFIFOTaskMaster(
+            "PathfinderWorker",
+            2
+    );
+
+    private TaskMaster<PathfinderTask> taskMaster = TaskMaster.createPriorityTaskMaster(
+            "PathfinderQueue",
+            1,
+            1024
+    );
 
     @In
     private WorldProvider world;
@@ -81,11 +82,15 @@ public class PathfinderSystem extends BaseComponentSystem {
     @Override
     public void initialise() {
         logger.info("PathfinderSystem started");
+
+        // TODO: HACK: We offer this taskmaster a shutdown task just to use its raw executor service directly
+        workerTaskMaster.offer(new ShutdownTask(null, null, null));
     }
 
     @Override
     public void shutdown() {
         taskMaster.shutdown(new ShutdownTask(null, null, null), false);
+        workerTaskMaster.shutdown(new ShutdownTask(null, null, null), false);
     }
 
     public int requestPath(EntityRef requestor, Vector3i target, List<Vector3i> start) {
@@ -107,19 +112,16 @@ public class PathfinderSystem extends BaseComponentSystem {
         }
 
         if(config.executor == null) {
-            config.executor = executor;
+            config.executor = workerTaskMaster.getExecutorService();
         }
 
         PathfinderTask task = new PathfinderTask(world, config, callback);
         taskMaster.offer(task);
-        return nextId++;    }
+        return nextId++;
+    }
 
     public int requestPath(Vector3i start, Vector3i target, PathfinderCallback callback) {
         return requestPath(null, target, Lists.newArrayList(start), callback);
-    }
-
-    public int getPathsSearched() {
-        return pathsSearched;
     }
 
     public void completePathFor(EntityRef requestor) {

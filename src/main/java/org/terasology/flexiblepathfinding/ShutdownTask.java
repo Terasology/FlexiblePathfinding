@@ -30,9 +30,7 @@ public class ShutdownTask extends PathfinderTask {
     }
 
     @Override
-    public void run() {
-        PathfinderSystem.getExecutor().shutdownNow();
-    }
+    public void run() { }
 
     @Override
     public boolean isTerminateSignal() {
