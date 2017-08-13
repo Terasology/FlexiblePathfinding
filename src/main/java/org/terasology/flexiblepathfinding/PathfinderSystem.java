@@ -148,14 +148,20 @@ public class PathfinderSystem extends BaseComponentSystem {
         Histogram failTime = new Histogram();
         Histogram size = new Histogram();
         Histogram cost = new Histogram();
+        Histogram depth = new Histogram();
+        Histogram explored = new Histogram();
 
         Collection<PathMetric> successes = metrics.stream().filter(stat -> stat.success).collect(Collectors.toList());
         Collection<PathMetric> failures = metrics.stream().filter(stat -> !stat.success).collect(Collectors.toList());
 
-        response.successTimes = successTime.analyze(successes, pathMetric -> pathMetric.time, 10);
-        response.failureTimes = failTime.analyze(failures, pathMetric -> pathMetric.time, 10);
-        response.sizes = size.analyze(successes, pathMetric -> pathMetric.size, 10);
-        response.costs = cost.analyze(failures, pathMetric -> pathMetric.cost, 10);
+        int buckets = 5;
+        response.sizes = size.analyze(successes, pathMetric -> pathMetric.size, buckets);
+        response.costs = cost.analyze(successes, pathMetric -> pathMetric.cost, buckets);
+        response.depths = depth.analyze(successes, pathMetric -> pathMetric.maxDepth, buckets);
+        response.explored = explored.analyze(successes, pathMetric -> pathMetric.nodesExplored, buckets);
+        response.successTimes = successTime.analyze(successes, pathMetric -> pathMetric.time, buckets);
+        response.failureTimes = failTime.analyze(failures, pathMetric -> pathMetric.time, buckets);
+
 
         world.getWorldEntity().send(response);
     }

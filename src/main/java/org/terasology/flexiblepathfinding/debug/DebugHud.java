@@ -31,6 +31,8 @@ public class DebugHud extends CoreHudWidget {
         UIHistogram failureTimes = find("failureTimes", UIHistogram.class);
         UIHistogram sizes = find("sizes", UIHistogram.class);
         UIHistogram costs = find("costs", UIHistogram.class);
+        UIHistogram depths = find("depths", UIHistogram.class);
+        UIHistogram explored = find("explored", UIHistogram.class);
 
         successTimes.bindValue(new DefaultBinding<Map<? extends Comparable, Integer>>() {
             @Override
@@ -57,6 +59,20 @@ public class DebugHud extends CoreHudWidget {
             @Override
             public Map<? extends Comparable, Integer> get() {
                 return system.getLastResponse().costs;
+            }
+        });
+
+        depths.bindValue(new DefaultBinding<Map<? extends Comparable, Integer>>() {
+            @Override
+            public Map<? extends Comparable, Integer> get() {
+                return system.getLastResponse().depths;
+            }
+        });
+
+        explored.bindValue(new DefaultBinding<Map<? extends Comparable, Integer>>() {
+            @Override
+            public Map<? extends Comparable, Integer> get() {
+                return system.getLastResponse().explored;
             }
         });
     }

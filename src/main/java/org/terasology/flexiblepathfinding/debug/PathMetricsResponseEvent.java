@@ -25,6 +25,8 @@ public class PathMetricsResponseEvent extends NetworkEvent {
     public Map<Float, Integer> failureTimes;
     public Map<Float, Integer> costs;
     public Map<Float, Integer> sizes;
+    public Map<Float, Integer> depths;
+    public Map<Float, Integer> explored;
 
     public int total;
     public int success;

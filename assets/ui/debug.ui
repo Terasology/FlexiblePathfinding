@@ -102,6 +102,48 @@
                 "id": "sizes"
               }
             ]
+          },
+          {
+            "type" : "ColumnLayout",
+            "columns" : 1,
+            "id": "depthsColumn",
+            "verticalSpacing" : 8,
+            "layoutInfo" : {
+              "use-content-width" : true,
+              "use-content-height" : true
+            },
+            "contents" : [
+              {
+                "type" : "UILabel",
+                "text" : "depths",
+                "family" : "title"
+              },
+              {
+                "type": "UIHistogram",
+                "id": "depths"
+              }
+            ]
+          },
+          {
+            "type" : "ColumnLayout",
+            "columns" : 1,
+            "id": "exploredColumn",
+            "verticalSpacing" : 8,
+            "layoutInfo" : {
+              "use-content-width" : true,
+              "use-content-height" : true
+            },
+            "contents" : [
+              {
+                "type" : "UILabel",
+                "text" : "explored",
+                "family" : "title"
+              },
+              {
+                "type": "UIHistogram",
+                "id": "explored"
+              }
+            ]
           }
         ]
       }
