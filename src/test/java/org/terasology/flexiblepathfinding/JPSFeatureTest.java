@@ -26,17 +26,6 @@ import org.terasology.world.time.WorldTime;
 
 public class JPSFeatureTest {
     @Test
-    public void timeout() throws InterruptedException {
-        JPSConfig config = new JPSConfig(Vector3i.zero(), Vector3i.north());
-        config.plugin = new FreeMovementPlugin();
-        config.maxTime = 0.0f;
-        JPSImpl jps = new JPSImpl(config);
-
-        Assert.assertFalse(jps.run());
-    }
-
-
-    @Test
     public void maxDepth() throws InterruptedException {
         WorldTime time = Mockito.mock(WorldTime.class);
         Mockito.when(time.getTimeRate()).thenReturn(2.0f);
@@ -51,17 +40,6 @@ public class JPSFeatureTest {
         JPSImpl jps = new JPSImpl(config);
         Assert.assertFalse(jps.run());
     }
-
-//    @Test
-//    public void pathWithinDistance() {
-//        JPSConfig config = new JPSConfig(Vector3i.zero(), new Vector3i(3,0,1));
-//        config.plugin = new FreeMovementPlugin();
-//        config.goalDistance = 5.0f;
-//        JPS jps = new JPS(config);
-//        jps.start();
-//        Assert.assertTrue(jps.run());
-//        Assert.assertEquals(2, jps.getPath().size());
-//    }
 
     @Test
     public void pathToSelf() throws InterruptedException {
