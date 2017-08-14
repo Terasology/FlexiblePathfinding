@@ -16,6 +16,7 @@
 package org.terasology.flexiblepathfinding.plugins;
 
 import org.terasology.flexiblepathfinding.JPSJumpPoint;
+import org.terasology.math.Region3i;
 import org.terasology.math.geom.Vector3i;
 
 public interface JPSPlugin {
@@ -23,4 +24,9 @@ public interface JPSPlugin {
     boolean isReachable(Vector3i to, Vector3i from);
     boolean isWalkable(Vector3i v);
     float getTime();
+
+    void setXzPadding(int i);
+    void setUpwardPadding(int i);
+    Region3i getOccupiedRegion();
+
 }

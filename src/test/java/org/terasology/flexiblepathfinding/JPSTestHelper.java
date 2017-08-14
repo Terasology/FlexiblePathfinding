@@ -15,17 +15,11 @@
  */
 package org.terasology.flexiblepathfinding;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import org.junit.Assert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.terasology.core.world.generator.AbstractBaseWorldGenerator;
-import org.terasology.engine.SimpleUri;
 import org.terasology.math.geom.Vector3i;
-import org.terasology.naming.Name;
 import org.terasology.flexiblepathfinding.plugins.StandardPlugin;
-import org.terasology.registry.CoreRegistry;
 import org.terasology.world.WorldProvider;
 
 import java.util.List;
@@ -50,6 +44,29 @@ public class JPSTestHelper {
         List<Vector3i> path = runJps(0, pluginClass, testData, worldProvider);
         assertPathsEqual(expected, path);
     }
+
+    static public <T extends StandardPlugin> void runTest(
+            JPSConfig config,
+            String[] pathData,
+            MapWorldProvider worldProvider
+    ) throws InterruptedException {
+        TestDataPojo testData = new TestDataPojo();
+        final Map<Integer, Vector3i> expected = worldProvider.parseExpectedPath(pathData, testData);
+        List<Vector3i> path = runJps(testData, worldProvider, config);
+        assertPathsEqual(expected, path);
+    }
+
+    static public <T extends StandardPlugin> void runFailingTest(
+            JPSConfig config,
+            String[] pathData,
+            MapWorldProvider worldProvider
+    ) throws InterruptedException {
+        TestDataPojo testData = new TestDataPojo();
+        final Map<Integer, Vector3i> expected = worldProvider.parseExpectedPath(pathData, testData);
+        List<Vector3i> path = runJps(testData, worldProvider, config);
+        Assert.assertEquals(0, path.size());
+    }
+
 
     private static void assertPathsWithinGoalDistance(float goalDistance, Map<Integer, Vector3i> expected, List<Vector3i> path) {
         assertPathsEqual(expected, path);
@@ -77,10 +94,13 @@ public class JPSTestHelper {
         Assert.assertEquals(expected.size(), path.size());
     }
 
-    private static <T extends StandardPlugin> List<Vector3i> runJps(float goalDistance, Class<T> pluginClass,
-                                                                    TestDataPojo testData, WorldProvider world) throws
-            InterruptedException {
-        JPSConfig config = new JPSConfig(testData.start, testData.end);
+    private static <T extends StandardPlugin> List<Vector3i> runJps(
+            float goalDistance,
+            Class<T> pluginClass,
+            TestDataPojo testData,
+            WorldProvider world
+    ) throws InterruptedException {
+        JPSConfig config = new JPSConfig(testData.start, testData.stop);
         config.goalDistance = goalDistance;
         config.useLineOfSight = false;
         if(pluginClass != null) {
@@ -92,10 +112,14 @@ public class JPSTestHelper {
             }
         }
 
-        logger.warn("{}", config);
+        return runJps(testData, world, config);
+    }
+
+    private static <T extends StandardPlugin> List<Vector3i> runJps(TestDataPojo testData, WorldProvider world, JPSConfig config) throws InterruptedException {
+        config.start = testData.start;
+        config.stop = testData.stop;
         JPSImpl jps = new JPSImpl(config);
         jps.run();
-
         return jps.getPath();
     }
 }

@@ -16,8 +16,13 @@
 package org.terasology.flexiblepathfinding.plugins;
 
 import org.terasology.math.geom.Vector3i;
+import org.terasology.world.WorldProvider;
 
-public class FreeMovementPlugin implements JPSPlugin {
+public class FreeMovementPlugin extends StandardPlugin {
+    public FreeMovementPlugin(WorldProvider world) {
+        super(world);
+    }
+
     @Override
     public boolean isReachable(Vector3i to, Vector3i from) {
         return true;

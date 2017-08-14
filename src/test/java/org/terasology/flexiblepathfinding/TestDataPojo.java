@@ -20,6 +20,6 @@ import org.terasology.math.geom.Vector3i;
 public class TestDataPojo {
     int expectedSize = 1;
     Vector3i start;
-    Vector3i end;
+    Vector3i stop;
 }
 

@@ -20,31 +20,20 @@ import com.google.common.collect.Maps;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.terasology.entitySystem.entity.EntityRef;
-import org.terasology.math.ChunkMath;
 import org.terasology.math.Region3i;
 import org.terasology.math.geom.Vector3f;
 import org.terasology.math.geom.Vector3i;
 import org.terasology.world.WorldChangeListener;
 import org.terasology.world.WorldProvider;
 import org.terasology.world.biomes.Biome;
-import org.terasology.world.biomes.BiomeManager;
 import org.terasology.world.block.Block;
-import org.terasology.world.block.BlockManager;
 import org.terasology.world.block.BlockUri;
-import org.terasology.world.chunks.Chunk;
-import org.terasology.world.chunks.internal.ChunkImpl;
-import org.terasology.world.generation.EntityBuffer;
-import org.terasology.world.generation.impl.EntityBufferImpl;
-import org.terasology.world.generator.WorldGenerator;
 import org.terasology.world.internal.ChunkViewCore;
 import org.terasology.world.internal.WorldInfo;
-import org.terasology.world.internal.WorldProviderCore;
 import org.terasology.world.liquid.LiquidData;
 import org.terasology.world.time.WorldTime;
-import org.terasology.world.time.WorldTimeImpl;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Map;
 
 public class MapWorldProvider implements WorldProvider {
@@ -120,7 +109,7 @@ public class MapWorldProvider implements WorldProvider {
         };
 
         expected.put(0, testData.start);
-        expected.put(testData.expectedSize, testData.end);
+        expected.put(testData.expectedSize, testData.stop);
         for (int i : expected.keySet()) {
             logger.warn("{}: e {}", i, expected.get(i));
         }
@@ -137,7 +126,7 @@ public class MapWorldProvider implements WorldProvider {
                 logger.warn("Start: {}", vec);
                 break;
             case '!':
-                testData.end = vec;
+                testData.stop = vec;
                 logger.warn("End: {}", vec);
                 break;
             default:

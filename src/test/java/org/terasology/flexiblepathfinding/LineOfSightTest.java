@@ -17,11 +17,8 @@ package org.terasology.flexiblepathfinding;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.terasology.core.world.generator.AbstractBaseWorldGenerator;
-import org.terasology.engine.SimpleUri;
 import org.terasology.flexiblepathfinding.plugins.FlyingPlugin;
 import org.terasology.math.geom.Vector3i;
-import org.terasology.naming.Name;
 import org.terasology.world.WorldProvider;
 
 public class LineOfSightTest {
@@ -90,7 +87,7 @@ public class LineOfSightTest {
         TestDataPojo testData = new TestDataPojo();
         MapWorldProvider worldProvider = new MapWorldProvider(ground);
         worldProvider.parseExpectedPath(pathData, testData);
-        Assert.assertEquals(expected, new LineOfSight3d(worldProvider).inSight(testData.start, testData.end));
+        Assert.assertEquals(expected, new LineOfSight3d(worldProvider).inSight(testData.start, testData.stop));
         return worldProvider;
     }
 }

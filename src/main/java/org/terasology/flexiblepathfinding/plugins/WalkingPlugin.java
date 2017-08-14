@@ -35,19 +35,27 @@ public class WalkingPlugin extends StandardPlugin {
         }
 
         // check that all blocks passed through by this movement are penetrable
-        Region3i movementBounds = Region3i.createBounded(a, b);
-        Vector3i aBelow = new Vector3i(a).add(Vector3i.down());
-        Vector3i bBelow = new Vector3i(b).add(Vector3i.down());
-        for (Vector3i pos : movementBounds) {
-            // don't check the blocks below a or b, since those should be solid anyway
-            if (pos.distanceSquared(aBelow) == 0 || pos.distanceSquared(bBelow) == 0) {
-                continue;
-            }
+        for (Vector3i occupiedBlock : getOccupiedRegion()) {
 
-            if (!world.getBlock(pos).isPenetrable()) {
-                return false;
+            // the start/stop for this block in the occupied region
+            Vector3i blockA = new Vector3i(a).add(occupiedBlock);
+            Vector3i blockB = new Vector3i(b).add(occupiedBlock);
+
+            Region3i movementBounds = Region3i.createBounded(blockA, blockB);
+            Vector3i aBelow = new Vector3i(blockA).add(Vector3i.down());
+            Vector3i bBelow = new Vector3i(blockB).add(Vector3i.down());
+            for (Vector3i pos : movementBounds) {
+                // don't check the blocks below a or b, since those should be solid anyway
+                if (pos.distanceSquared(aBelow) == 0 || pos.distanceSquared(bBelow) == 0) {
+                    continue;
+                }
+
+                if (!world.getBlock(pos).isPenetrable()) {
+                    return false;
+                }
             }
         }
+
         return isWalkable(a);
     }
 

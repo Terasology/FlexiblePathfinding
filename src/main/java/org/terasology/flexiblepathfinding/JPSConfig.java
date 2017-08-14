@@ -25,10 +25,10 @@ import org.terasology.world.WorldProvider;
 import java.util.concurrent.ExecutorService;
 
 public class JPSConfig {
-    public int maxDepth;
-    public float maxTime;
-    public Vector3i start;
-    public Vector3i stop;
+    public int maxDepth = 100;
+    public float maxTime = 3.0f;
+    public Vector3i start = Vector3i.zero();
+    public Vector3i stop = Vector3i.zero();
     public EntityRef requester;
     public JPSPlugin plugin;
     public double goalDistance;
@@ -38,9 +38,11 @@ public class JPSConfig {
     public JPSConfig(Vector3i start, Vector3i stop) {
         this.start = start;
         this.stop = stop;
-
         this.maxDepth = (int) stop.distance(start) * 10;
-        this.maxTime = 3.0f;
+        this.plugin = new WalkingPlugin(CoreRegistry.get(WorldProvider.class));
+    }
+
+    public JPSConfig() {
         this.plugin = new WalkingPlugin(CoreRegistry.get(WorldProvider.class));
     }
 

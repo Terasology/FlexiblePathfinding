@@ -31,11 +31,19 @@ public class FlyingPlugin extends WalkingPlugin {
             return false;
         }
 
+
         // check that all blocks passed through by this movement are penetrable
-        Region3i movementBounds = Region3i.createBounded(a, b);
-        for (Vector3i pos : movementBounds) {
-            if (!world.getBlock(pos).isPenetrable()) {
-                return false;
+        for (Vector3i occupiedBlock : getOccupiedRegion()) {
+
+            // the start/stop for this block in the occupied region
+            Vector3i blockA = new Vector3i(a).add(occupiedBlock);
+            Vector3i blockB = new Vector3i(b).add(occupiedBlock);
+
+            Region3i movementBounds = Region3i.createBounded(blockA, blockB);
+            for (Vector3i pos : movementBounds) {
+                if (!world.getBlock(pos).isPenetrable()) {
+                    return false;
+                }
             }
         }
         return true;

@@ -16,11 +16,16 @@
 package org.terasology.flexiblepathfinding.plugins;
 
 import org.terasology.flexiblepathfinding.LineOfSight3d;
+import org.terasology.math.Region3i;
 import org.terasology.math.geom.Vector3i;
 import org.terasology.world.WorldProvider;
 
 public abstract class StandardPlugin implements JPSPlugin {
     final WorldProvider world;
+
+    private int xzPadding;
+    private int upwardPadding;
+
     StandardPlugin(WorldProvider world) {
         this.world = world;
     }
@@ -28,5 +33,22 @@ public abstract class StandardPlugin implements JPSPlugin {
     @Override
     public boolean inSight(Vector3i start, Vector3i stop) {
         return new LineOfSight3d(world).inSight(start, stop);
+    }
+
+    @Override
+    public void setXzPadding(int xzPadding) {
+        this.xzPadding = xzPadding;
+    }
+
+    @Override
+    public void setUpwardPadding(int upwardPadding) {
+        this.upwardPadding = upwardPadding;
+    }
+
+    @Override
+    public Region3i getOccupiedRegion() {
+        Vector3i min = new Vector3i(-xzPadding, 0, -xzPadding);
+        Vector3i max = new Vector3i(xzPadding, upwardPadding, xzPadding);
+        return Region3i.createBounded(min, max);
     }
 }

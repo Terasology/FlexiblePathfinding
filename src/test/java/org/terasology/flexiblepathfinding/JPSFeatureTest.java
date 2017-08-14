@@ -35,7 +35,7 @@ public class JPSFeatureTest {
         Mockito.when(world.getTime()).thenReturn(time);
 
         JPSConfig config = new JPSConfig(Vector3i.zero(), Vector3i.north().mul(10));
-        config.plugin = new FreeMovementPlugin();
+        config.plugin = new FreeMovementPlugin(null);
         config.maxDepth = 0;
         JPSImpl jps = new JPSImpl(config);
         Assert.assertFalse(jps.run());
@@ -44,7 +44,7 @@ public class JPSFeatureTest {
     @Test
     public void pathToSelf() throws InterruptedException {
         JPSConfig config = new JPSConfig(Vector3i.zero(), Vector3i.zero());
-        config.plugin = new FreeMovementPlugin();
+        config.plugin = new FreeMovementPlugin(null);
         JPSImpl jps = new JPSImpl(config);
         Assert.assertTrue(jps.run());
     }
@@ -52,7 +52,7 @@ public class JPSFeatureTest {
     @Test
     public void pathAdjacent() throws InterruptedException {
         JPSConfig config = new JPSConfig(Vector3i.zero(), new Vector3i(1,1,1));
-        config.plugin = new FreeMovementPlugin();
+        config.plugin = new FreeMovementPlugin(null);
         JPSImpl jps = new JPSImpl(config);
         Assert.assertTrue(jps.run());
     }
