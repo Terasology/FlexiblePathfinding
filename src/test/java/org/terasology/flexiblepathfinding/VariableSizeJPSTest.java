@@ -22,7 +22,7 @@ import org.terasology.flexiblepathfinding.plugins.WalkingPlugin;
 
 public class VariableSizeJPSTest {
     @Test
-    public void stairs2() throws InterruptedException {
+    public void stairsUp() throws InterruptedException {
         executeExample(new String[]{
                 "XXX      |XXXXX    |XXXXXXX  |XXXXXXXXX",
                 "XXX      |XXXXX    |XXXXXXX  |XXXXXXXXX",
@@ -31,29 +31,6 @@ public class VariableSizeJPSTest {
                 "         |         |         |         ",
                 " ?       |  12     |    3!   |         ",
                 "         |         |         |         ",
-        });
-    }
-
-    @Test
-    public void stairsClosed2() throws InterruptedException {
-        executeFailingExample(new String[]{
-                "XXXXXXXXX|         |         |XXXXXXXXX|         |         |XXXXXXXXX",
-                "XXXXXXXXX|         |         |XXXXXXXXX|         |         |XXXXXXXXX",
-                "XXXXXXXXX|         |         |XXXXXXXXX|         |         |XXXXXXXXX",
-                "XXXXXXXXX|         |         |XXX XXXXX|         |         |XXXXX XXX",
-                "XXX XXXXX|   X     |         |XXX XXXXX|     X   |         |XXXXX XXX",
-                "XXX XXXXX|         |   X     |XXXXXXXXX|         |     X   |XXXXX XXX",
-                "XXXXXXXXX|         |         |XXXXXXXXX|         |         |XXXXXXXXX",
-                "XXXXXXXXX|         |         |XXXXXXXXX|         |         |XXXXXXXXX",
-        }, new String[]{
-                "?        |         |         |         |         |         |         ",
-                "         |         |         |         |         |         |         ",
-                "         |         |         |         |         |         |         ",
-                "         |         |         |         |         |         |         ",
-                "         |         |         |         |         |         |         ",
-                "         |         |         |         |         |         |         ",
-                "         |         |         |         |         |         |         ",
-                "         |         |         |         |         |         |        !",
         });
     }
 
@@ -97,117 +74,6 @@ public class VariableSizeJPSTest {
                 " 3     |       ",
                 " 45678!|       ",
                 "       |       ",
-        });
-    }
-
-    @Test
-    public void simpleDiagonal() throws InterruptedException {
-        executeExample(new String[]{
-                "X  |   ",
-                "X  | X ",
-                "XXX|   ",
-        }, new String[]{
-                "?  |   ",
-                "1  |   ",
-                "23!|   "
-        });
-    }
-
-    @Test
-    public void nonTrivial() throws InterruptedException {
-        executeExample(new String[]{
-                "XXXXXXXXXXXXXXX",
-                "             XX",
-                "XXXXXXXXXXXXXXX",
-                "XXX            ",
-                "XXXXXXXXXXXXXXX",
-        }, new String[]{
-                "?123456789abcd ",
-                "             e ",
-                "  qponmlkjihgf ",
-                "  r            ",
-                "  stuvwxyz!    ",
-        });
-
-    }
-
-    @Test
-    public void threeDimensionalMoves() throws InterruptedException {
-        executeExample(new String[]{
-                "XXX|XX |   ",
-                "X X|XXX| XX",
-                "XXX| X | XX"
-        }, new String[]{
-                "?  |   |   ",
-                "   | 1 |   ",
-                "   |   |  !"
-        });
-    }
-
-
-    @Test
-    public void startInBox() throws InterruptedException {
-        executeFailingExample(new String[]{
-                "   X|   X",
-                " X X|   X",
-                "   X|   X"
-        }, new String[]{
-                "    |    ",
-                " ? !|    ",
-                "    |    "
-        });
-    }
-
-    @Test
-    public void endInBox() throws InterruptedException {
-        executeFailingExample(new String[]{
-                "   X|   X",
-                " X X|   X",
-                "   X|   X"
-        }, new String[]{
-                "    |    ",
-                " ! ?|    ",
-                "    |    "
-        });
-    }
-
-    @Test
-    public void startUnwalkable() throws InterruptedException {
-        executeFailingExample(new String[]{
-                " XXX",
-                " XXX",
-                " XXX"
-        }, new String[]{
-                "   !",
-                "?   ",
-                "    "
-        });
-    }
-
-
-    @Test
-    public void endUnwalkable() throws InterruptedException {
-        executeFailingExample(new String[]{
-                " XXX",
-                " XXX",
-                " XXX"
-        }, new String[]{
-                "    ",
-                "!  ?",
-                "    "
-        });
-    }
-
-    @Test
-    public void simpleGoalDistance() throws InterruptedException {
-        JPSTestHelper.runTestWithGoalDistance(3, WalkingPlugin.class, new String[]{
-                "X       ",
-                "X       ",
-                "XXXXXXXX",
-        }, new String[]{
-                "?       ",
-                "1       ",
-                "23456  !"
         });
     }
 
