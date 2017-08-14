@@ -125,7 +125,6 @@ public class JPSImpl implements JPS {
 
         open.add(start);
         while (open.size() > 0) {
-            logger.debug("Starting open list loop, open list size: {}", open.size());
             JPSJumpPoint point = open.remove(open.size() - 1);
             open.addAll(identifySuccessors(point));
 

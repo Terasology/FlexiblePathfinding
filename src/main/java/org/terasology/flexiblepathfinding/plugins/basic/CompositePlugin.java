@@ -36,6 +36,10 @@ public class CompositePlugin implements JPSPlugin {
         plugins.add(plugin);
     }
 
+    public List<JPSPlugin> getPlugins() {
+        return plugins;
+    }
+
     @Override
     public boolean inSight(Vector3i start, Vector3i goal) {
         return false;
