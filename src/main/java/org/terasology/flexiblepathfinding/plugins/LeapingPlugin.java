@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 MovingBlocks
+ * Copyright 2017 MovingBlocks
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,16 +21,16 @@ import org.terasology.math.Region3i;
 import org.terasology.math.geom.Vector3i;
 import org.terasology.world.WorldProvider;
 
-public class WalkingPlugin extends StandardPlugin {
-    public WalkingPlugin(WorldProvider world) {
+public class LeapingPlugin extends StandardPlugin {
+    public LeapingPlugin(WorldProvider world) {
         super(world);
     }
-    private static final Logger logger = LoggerFactory.getLogger(WalkingPlugin.class);
+    private static final Logger logger = LoggerFactory.getLogger(LeapingPlugin.class);
 
     @Override
-    public boolean isReachable(Vector3i a, Vector3i b) {
+    public boolean isReachable(Vector3i to, Vector3i from) {
         // only allowed to move 1 unit in each axis
-        if(Math.max(Math.abs(a.x - b.x), Math.max(Math.abs(a.y - b.y), Math.abs(a.z - b.z))) > 1) {
+        if(Math.max(Math.abs(to.x - from.x), Math.max(Math.abs(to.y - from.y), Math.abs(to.z - from.z))) > 1) {
             return false;
         }
 
@@ -38,25 +38,25 @@ public class WalkingPlugin extends StandardPlugin {
         for (Vector3i occupiedBlock : getOccupiedRegion()) {
 
             // the start/stop for this block in the occupied region
-            Vector3i blockA = new Vector3i(a).add(occupiedBlock);
-            Vector3i blockB = new Vector3i(b).add(occupiedBlock);
+            Vector3i occupiedBlockTo = new Vector3i(to).add(occupiedBlock);
+            Vector3i occupiedBlockFrom = new Vector3i(from).add(occupiedBlock);
 
-            Region3i movementBounds = Region3i.createBounded(blockA, blockB);
-            Vector3i aBelow = new Vector3i(blockA).add(Vector3i.down());
-            Vector3i bBelow = new Vector3i(blockB).add(Vector3i.down());
-            for (Vector3i pos : movementBounds) {
+            Vector3i toBelow = new Vector3i(occupiedBlockTo).add(Vector3i.down());
+            Vector3i fromBelow = new Vector3i(occupiedBlockFrom).add(Vector3i.down());
+            Region3i movementBounds = Region3i.createBounded(occupiedBlockTo, occupiedBlockFrom);
+            for (Vector3i block : movementBounds) {
                 // don't check the blocks below a or b, since those should be solid anyway
-                if (pos.distanceSquared(aBelow) == 0 || pos.distanceSquared(bBelow) == 0) {
+                if (block.distanceSquared(toBelow) == 0 || block.distanceSquared(fromBelow) == 0) {
                     continue;
                 }
 
-                if (!world.getBlock(pos).isPenetrable()) {
+                if (!world.getBlock(block).isPenetrable()) {
                     return false;
                 }
             }
         }
 
-        return isWalkable(a);
+        return isWalkable(from);
     }
 
     @Override

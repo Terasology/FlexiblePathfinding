@@ -16,6 +16,8 @@
 package org.terasology.flexiblepathfinding;
 
 import org.junit.Test;
+import org.terasology.flexiblepathfinding.plugins.CompositePlugin;
+import org.terasology.flexiblepathfinding.plugins.LeapingPlugin;
 import org.terasology.flexiblepathfinding.plugins.WalkingPlugin;
 
 public class VariableSizeJPSTest {
@@ -26,9 +28,9 @@ public class VariableSizeJPSTest {
                 "XXX      |XXXXX    |XXXXXXX  |XXXXXXXXX",
                 "XXX      |XXXXX    |XXXXXXX  |XXXXXXXXX",
         }, new String[]{
-                "XXX      |XXXXX    |XXXXXXX  |XXXXXXXXX",
-                "X?X      |XX123    |XXXXXXX  |XXXXXXXXX",
-                "XXX      |XXXXX    |XXXXXXX  |XXXXXXXXX",
+                "         |         |         |         ",
+                " ?       |  12     |    3!   |         ",
+                "         |         |         |         ",
         });
     }
 
@@ -212,9 +214,14 @@ public class VariableSizeJPSTest {
     private void executeExample(String[] ground, String[] pathData) throws InterruptedException {
         JPSConfig config = new JPSConfig();
         config.useLineOfSight = false;
-
+        
         MapWorldProvider worldProvider = new MapWorldProvider(ground);
-        config.plugin = new WalkingPlugin(worldProvider);
+        CompositePlugin plugin = new CompositePlugin(
+                new WalkingPlugin(worldProvider),
+                new LeapingPlugin(worldProvider)
+        );
+
+        config.plugin = plugin;
         config.plugin.setXzPadding(1);
         config.plugin.setUpwardPadding(1);
 
@@ -226,7 +233,12 @@ public class VariableSizeJPSTest {
         config.useLineOfSight = false;
 
         MapWorldProvider worldProvider = new MapWorldProvider(ground);
-        config.plugin = new WalkingPlugin(worldProvider);
+        CompositePlugin plugin = new CompositePlugin(
+                new WalkingPlugin(worldProvider),
+                new LeapingPlugin(worldProvider)
+        );
+
+        config.plugin = plugin;
         config.plugin.setXzPadding(1);
         config.plugin.setUpwardPadding(1);
 

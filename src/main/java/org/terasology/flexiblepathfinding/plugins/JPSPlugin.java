@@ -23,7 +23,6 @@ public interface JPSPlugin {
     boolean inSight(Vector3i start, Vector3i goal);
     boolean isReachable(Vector3i to, Vector3i from);
     boolean isWalkable(Vector3i v);
-    float getTime();
 
     void setXzPadding(int i);
     void setUpwardPadding(int i);

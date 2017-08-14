@@ -34,10 +34,5 @@ public class FreeMovementPlugin extends StandardPlugin {
     }
 
     @Override
-    public float getTime() {
-        return 0;
-    }
-
-    @Override
     public boolean inSight(Vector3i start, Vector3i stop) { return true; }
 }
