@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.terasology.flexiblepathfinding.plugins;
+package org.terasology.flexiblepathfinding.plugins.basic;
 
 import com.google.common.collect.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.terasology.flexiblepathfinding.plugins.JPSPlugin;
 import org.terasology.math.Region3i;
 import org.terasology.math.geom.Vector3i;
-import org.terasology.world.WorldProvider;
 
 import java.util.List;
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 MovingBlocks
+ * Copyright 2017 MovingBlocks
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,17 +16,18 @@
 package org.terasology.flexiblepathfinding.plugins;
 
 import org.terasology.flexiblepathfinding.LineOfSight3d;
+import org.terasology.flexiblepathfinding.plugins.JPSPlugin;
 import org.terasology.math.Region3i;
 import org.terasology.math.geom.Vector3i;
 import org.terasology.world.WorldProvider;
 
 public abstract class StandardPlugin implements JPSPlugin {
-    final WorldProvider world;
+    public final WorldProvider world;
 
     private int xzPadding;
     private int upwardPadding;
 
-    StandardPlugin(WorldProvider world) {
+    public StandardPlugin(WorldProvider world) {
         this.world = world;
     }
 

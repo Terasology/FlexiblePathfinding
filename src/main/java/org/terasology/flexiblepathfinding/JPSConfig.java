@@ -18,7 +18,7 @@ package org.terasology.flexiblepathfinding;
 import org.terasology.entitySystem.entity.EntityRef;
 import org.terasology.math.geom.Vector3i;
 import org.terasology.flexiblepathfinding.plugins.JPSPlugin;
-import org.terasology.flexiblepathfinding.plugins.WalkingPlugin;
+import org.terasology.flexiblepathfinding.plugins.basic.WalkingPlugin;
 import org.terasology.registry.CoreRegistry;
 import org.terasology.world.WorldProvider;
 

@@ -19,7 +19,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.terasology.flexiblepathfinding.helpers.MapWorldProvider;
 import org.terasology.flexiblepathfinding.helpers.TestDataPojo;
-import org.terasology.flexiblepathfinding.plugins.FlyingPlugin;
+import org.terasology.flexiblepathfinding.plugins.basic.FlyingPlugin;
 import org.terasology.math.geom.Vector3i;
 import org.terasology.world.WorldProvider;
 
