@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.terasology.flexiblepathfinding;
+package org.terasology.flexiblepathfinding.helpers;
 
 import org.terasology.math.geom.Vector3i;
 
 public class TestDataPojo {
-    int expectedSize = 1;
-    Vector3i start;
-    Vector3i stop;
+    public int expectedSize = 1;
+    public Vector3i start;
+    public Vector3i stop;
 }
 

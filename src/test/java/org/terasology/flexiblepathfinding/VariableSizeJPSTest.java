@@ -16,6 +16,8 @@
 package org.terasology.flexiblepathfinding;
 
 import org.junit.Test;
+import org.terasology.flexiblepathfinding.helpers.JPSTestHelper;
+import org.terasology.flexiblepathfinding.helpers.MapWorldProvider;
 import org.terasology.flexiblepathfinding.plugins.CompositePlugin;
 import org.terasology.flexiblepathfinding.plugins.LeapingPlugin;
 import org.terasology.flexiblepathfinding.plugins.WalkingPlugin;

@@ -29,8 +29,13 @@ public class WalkingPlugin extends StandardPlugin {
 
     @Override
     public boolean isReachable(Vector3i a, Vector3i b) {
+        // never walk upward (this is covered by "leaping")
+        if (a.y > b.y) {
+            return false;
+        }
+
         // only allowed to move 1 unit in each axis
-        if(Math.max(Math.abs(a.x - b.x), Math.max(Math.abs(a.y - b.y), Math.abs(a.z - b.z))) > 1) {
+        if (Math.max(Math.abs(a.x - b.x), Math.max(Math.abs(a.y - b.y), Math.abs(a.z - b.z))) > 1) {
             return false;
         }
 

@@ -16,10 +16,13 @@
 package org.terasology.flexiblepathfinding;
 
 import org.junit.Test;
+import org.terasology.flexiblepathfinding.helpers.JPSTestHelper;
+import org.terasology.flexiblepathfinding.helpers.MapWorldProvider;
+import org.terasology.flexiblepathfinding.plugins.CompositePlugin;
+import org.terasology.flexiblepathfinding.plugins.LeapingPlugin;
 import org.terasology.flexiblepathfinding.plugins.WalkingPlugin;
-import org.terasology.math.geom.Vector3i;
 
-public class JPSTest {
+public class WalkingLeapingJPSTest {
     @Test
     public void stairs2() throws InterruptedException {
         executeExample(new String[]{
@@ -191,10 +194,30 @@ public class JPSTest {
     }
 
     private void executeExample(String[] ground, String[] pathData) throws InterruptedException {
-        JPSTestHelper.runTest(WalkingPlugin.class, ground, pathData);
+        JPSConfig config = new JPSConfig();
+        config.useLineOfSight = false;
+
+        MapWorldProvider worldProvider = new MapWorldProvider(ground);
+        CompositePlugin plugin = new CompositePlugin(
+                new WalkingPlugin(worldProvider),
+                new LeapingPlugin(worldProvider)
+        );
+
+        config.plugin = plugin;
+        JPSTestHelper.runTest(config, pathData, worldProvider);
     }
 
     private void executeFailingExample(String[] ground, String[] pathData) throws InterruptedException {
-        JPSTestHelper.runFailingTest(WalkingPlugin.class, ground, pathData);
+        JPSConfig config = new JPSConfig();
+        config.useLineOfSight = false;
+
+        MapWorldProvider worldProvider = new MapWorldProvider(ground);
+        CompositePlugin plugin = new CompositePlugin(
+                new WalkingPlugin(worldProvider),
+                new LeapingPlugin(worldProvider)
+        );
+
+        config.plugin = plugin;
+        JPSTestHelper.runFailingTest(config, pathData, worldProvider);
     }
 }

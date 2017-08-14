@@ -16,6 +16,7 @@
 package org.terasology.flexiblepathfinding;
 
 import org.junit.Test;
+import org.terasology.flexiblepathfinding.helpers.JPSTestHelper;
 import org.terasology.flexiblepathfinding.plugins.FlyingPlugin;
 
 public class FlyingJPSTest {

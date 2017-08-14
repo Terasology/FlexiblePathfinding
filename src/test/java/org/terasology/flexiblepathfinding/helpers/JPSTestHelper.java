@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 MovingBlocks
+ * Copyright 2017 MovingBlocks
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,11 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.terasology.flexiblepathfinding;
+package org.terasology.flexiblepathfinding.helpers;
 
 import org.junit.Assert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.terasology.flexiblepathfinding.JPSConfig;
+import org.terasology.flexiblepathfinding.JPSImpl;
 import org.terasology.math.geom.Vector3i;
 import org.terasology.flexiblepathfinding.plugins.StandardPlugin;
 import org.terasology.world.WorldProvider;
