@@ -39,11 +39,13 @@ import java.util.Map;
 public class MapWorldProvider implements WorldProvider {
     static private final char GROUND = ' ';
     static private final char AIR = 'X';
+    static private final char WATER = '~';
     static private final char NEW_LEVEL = '|';
     private static Logger logger = LoggerFactory.getLogger(MapWorldProvider.class);
     private Map<Vector3i, Block> blocks = Maps.newHashMap();
     private Block airBlock = new Block();
     private Block groundBlock = new Block();
+    private Block waterBlock = new Block();
 
     public MapWorldProvider(String[] map) {
         airBlock.setPenetrable(true);
@@ -51,6 +53,12 @@ public class MapWorldProvider implements WorldProvider {
 
         groundBlock.setPenetrable(false);
         groundBlock.setUri(new BlockUri("engine:dirt"));
+
+
+        waterBlock.setPenetrable(true);
+        waterBlock.setUri(new BlockUri("core:water"));
+        waterBlock.setLiquid(true);
+        waterBlock.setWater(true);
 
         parseMap(map);
     }
@@ -66,6 +74,9 @@ public class MapWorldProvider implements WorldProvider {
                         break;
                     case AIR:
                         blocks.put(vec, airBlock);
+                        break;
+                    case WATER:
+                        blocks.put(vec, waterBlock);
                         break;
                     case NEW_LEVEL:
                         pos.x = 0;

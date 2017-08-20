@@ -64,7 +64,7 @@ public class PathfinderSystem extends BaseComponentSystem {
     private int nextId;
     private Set<EntityRef> entitiesWithPendingTasks = Sets.newHashSet();
 
-    private TaskMaster<PathfinderTask> workerTaskMaster = TaskMaster.createFIFOTaskMaster("PathfinderWorker", 2);
+    private TaskMaster<PathfinderTask> workerTaskMaster = TaskMaster.createFIFOTaskMaster("PathfinderWorker", 4);
 
     private TaskMaster<PathfinderTask> taskMaster = TaskMaster.createPriorityTaskMaster(
             "PathfinderQueue", 1, 1024
