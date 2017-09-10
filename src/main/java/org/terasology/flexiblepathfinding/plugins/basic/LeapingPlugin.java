@@ -22,7 +22,7 @@ import org.terasology.math.Region3i;
 import org.terasology.math.geom.Vector3i;
 import org.terasology.world.WorldProvider;
 
-public class LeapingPlugin extends StandardPlugin {
+public class LeapingPlugin extends WalkingPlugin {
     public LeapingPlugin(WorldProvider world) {
         super(world);
     }
@@ -36,7 +36,7 @@ public class LeapingPlugin extends StandardPlugin {
         }
 
         // check that all blocks passed through by this movement are penetrable
-        for (Vector3i occupiedBlock : getOccupiedRegion()) {
+        for (Vector3i occupiedBlock : getOccupiedRegionRelative()) {
 
             // the start/stop for this block in the occupied region
             Vector3i occupiedBlockTo = new Vector3i(to).add(occupiedBlock);
@@ -51,11 +51,5 @@ public class LeapingPlugin extends StandardPlugin {
         }
 
         return isWalkable(from);
-    }
-
-    @Override
-    public boolean isWalkable(Vector3i a) {
-        Vector3i aBelow = new Vector3i(a).sub(0, (int) getVerticalPadding() + 1, 0);
-        return !world.getBlock(aBelow).isPenetrable();
     }
 }

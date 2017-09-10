@@ -33,7 +33,7 @@ public class FlyingPlugin extends WalkingPlugin {
 
 
         // check that all blocks passed through by this movement are penetrable
-        for (Vector3i occupiedBlock : getOccupiedRegion()) {
+        for (Vector3i occupiedBlock : getOccupiedRegionRelative()) {
 
             // the start/stop for this block in the occupied region
             Vector3i blockA = new Vector3i(a).add(occupiedBlock);

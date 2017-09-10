@@ -27,6 +27,6 @@ public interface JPSPlugin {
     void setVerticalPadding(float verticalPadding);
     float getHorizontalPadding();
     float getVerticalPadding();
-    Region3i getOccupiedRegion();
-
+    Region3i getOccupiedRegionRelative();
+    Region3i getSupportingRegionRelative();
 }

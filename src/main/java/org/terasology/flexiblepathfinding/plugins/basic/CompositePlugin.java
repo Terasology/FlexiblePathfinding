@@ -97,7 +97,12 @@ public class CompositePlugin implements JPSPlugin {
     }
 
     @Override
-    public Region3i getOccupiedRegion() {
+    public Region3i getOccupiedRegionRelative() {
+        return null;
+    }
+
+    @Override
+    public Region3i getSupportingRegionRelative() {
         return null;
     }
 }

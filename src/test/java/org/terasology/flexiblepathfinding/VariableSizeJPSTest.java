@@ -31,7 +31,7 @@ public class VariableSizeJPSTest {
                 "XXX      |XXXXX    |XXXXXXX  |XXXXXXXXX",
         }, new String[]{
                 "         |         |         |         ",
-                "         | ?       |  !      |         ",
+                "         | ?       | 1!      |         ",
                 "         |         |         |         ",
         });
     }

@@ -56,12 +56,29 @@ public abstract class StandardPlugin implements JPSPlugin {
         return verticalPadding;
     }
 
+    /**
+     * Get the region occupied by the subject based on padding when located at position
+     * @return
+     */
     @Override
-    public Region3i getOccupiedRegion() {
-        int h = (int) Math.ceil(horizontalPadding);
-        int v = (int) Math.ceil(verticalPadding);
+    public Region3i getOccupiedRegionRelative() {
+        int h = (int) Math.ceil(horizontalPadding - 0.5);
+        int v = (int) Math.ceil(verticalPadding - 0.5);
         Vector3i min = new Vector3i(-h, -v, -h);
         Vector3i max = new Vector3i(h, v, h);
+        return Region3i.createBounded(min, max);
+    }
+
+    /**
+     * Get the region of blocks immediately under the subject based on padding
+     * @return
+     */
+    @Override
+    public Region3i getSupportingRegionRelative() {
+        int h = (int) Math.ceil(horizontalPadding - 0.5);
+        int v = (int) Math.ceil(verticalPadding - 0.5);
+        Vector3i min = new Vector3i(-h, -v-1, -h);
+        Vector3i max = new Vector3i(h, -v-1, h);
         return Region3i.createBounded(min, max);
     }
 }

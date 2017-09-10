@@ -41,15 +41,13 @@ public class WalkingPlugin extends StandardPlugin {
         }
 
         // check that all blocks passed through by this movement are penetrable
-        for (Vector3i occupiedBlock : getOccupiedRegion()) {
+        for (Vector3i occupiedBlock : getOccupiedRegionRelative()) {
 
             // the start/stop for this block in the occupied region
             Vector3i blockA = new Vector3i(a).add(occupiedBlock);
             Vector3i blockB = new Vector3i(b).add(occupiedBlock);
 
             Region3i movementBounds = Region3i.createBounded(blockA, blockB);
-            Vector3i aBelow = new Vector3i(blockA).add(Vector3i.down());
-            Vector3i bBelow = new Vector3i(blockB).add(Vector3i.down());
             for (Vector3i pos : movementBounds) {
                 if (!world.getBlock(pos).isPenetrable()) {
                     return false;
@@ -62,7 +60,12 @@ public class WalkingPlugin extends StandardPlugin {
 
     @Override
     public boolean isWalkable(Vector3i a) {
-        Vector3i aBelow = new Vector3i(a).sub(0, (int) getVerticalPadding() + 1, 0);
-        return !world.getBlock(aBelow).isPenetrable();
+        for (Vector3i supportingBlockPos : getSupportingRegionRelative()) {
+            supportingBlockPos.add(a);
+            if (!world.getBlock(supportingBlockPos).isPenetrable()) {
+                return true;
+            }
+        }
+        return false;
     }
 }
