@@ -31,7 +31,7 @@ public class VariableSizeJPSTest {
                 "XXX      |XXXXX    |XXXXXXX  |XXXXXXXXX",
         }, new String[]{
                 "         |         |         |         ",
-                " ?       |  12     |    3!   |         ",
+                "         | ?       |  !      |         ",
                 "         |         |         |         ",
         });
     }
@@ -39,21 +39,21 @@ public class VariableSizeJPSTest {
     @Test
     public void simple() throws InterruptedException {
         executeExample(new String[]{
-                "XXXXXXX|XXXXXXX",
-                "XXX   X|XXX   X",
-                "XXX   X|XXX   X",
-                "XXX   X|XXX   X",
-                "XXXXXXX|XXXXXXX",
-                "XXXXXXX|XXXXXXX",
-                "XXXXXXX|XXXXXXX",
+                "XXXXXXX|XXXXXXX|XXXXXXX",
+                "XXX   X|XXX   X|XXX   X",
+                "XXX   X|XXX   X|XXX   X",
+                "XXX   X|XXX   X|XXX   X",
+                "XXXXXXX|XXXXXXX|XXXXXXX",
+                "XXXXXXX|XXXXXXX|XXXXXXX",
+                "XXXXXXX|XXXXXXX|XXXXXXX",
         }, new String[]{
-                "       |       ",
-                " ?     |       ",
-                " 1     |       ",
-                " 2     |       ",
-                " 3     |       ",
-                " 4567! |       ",
-                "       |       ",
+                "       |       |       ",
+                "       | ?     |       ",
+                "       | 1     |       ",
+                "       | 2     |       ",
+                "       | 3     |       ",
+                "       | 4567! |       ",
+                "       |       |       ",
         });
     }
 
@@ -90,8 +90,8 @@ public class VariableSizeJPSTest {
         );
 
         config.plugin = plugin;
-        config.plugin.setXzPadding(1);
-        config.plugin.setUpwardPadding(1);
+        config.plugin.setHorizontalPadding(1);
+        config.plugin.setVerticalPadding(1);
 
         JPSTestHelper.runTest(config, pathData, worldProvider);
     }
@@ -107,8 +107,8 @@ public class VariableSizeJPSTest {
         );
 
         config.plugin = plugin;
-        config.plugin.setXzPadding(1);
-        config.plugin.setUpwardPadding(1);
+        config.plugin.setHorizontalPadding(1);
+        config.plugin.setVerticalPadding(1);
 
         JPSTestHelper.runFailingTest(config, pathData, worldProvider);
     }

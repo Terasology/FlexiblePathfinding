@@ -51,11 +51,6 @@ public class WalkingPlugin extends StandardPlugin {
             Vector3i aBelow = new Vector3i(blockA).add(Vector3i.down());
             Vector3i bBelow = new Vector3i(blockB).add(Vector3i.down());
             for (Vector3i pos : movementBounds) {
-                // don't check the blocks below a or b, since those should be solid anyway
-                if (pos.distanceSquared(aBelow) == 0 || pos.distanceSquared(bBelow) == 0) {
-                    continue;
-                }
-
                 if (!world.getBlock(pos).isPenetrable()) {
                     return false;
                 }
@@ -67,7 +62,7 @@ public class WalkingPlugin extends StandardPlugin {
 
     @Override
     public boolean isWalkable(Vector3i a) {
-        Vector3i aBelow = new Vector3i(a).sub(0, 1, 0);
-        return world.getBlock(a).isPenetrable() && !world.getBlock(aBelow).isPenetrable();
+        Vector3i aBelow = new Vector3i(a).sub(0, (int) getVerticalPadding() + 1, 0);
+        return !world.getBlock(aBelow).isPenetrable();
     }
 }

@@ -30,8 +30,8 @@ public class WalkingLeapingJPSTest {
                 "XXXXXXXXX|         |         |XXXXXXXXX|         |         |XXXXXXXXX",
                 "XXXXXXXXX|         |         |XXXXXXXXX|         |         |XXXXXXXXX",
                 "XXXXXXXXX|         |         |XXX XXXXX|         |         |XXXXXXXXX",
-                "XXX XXXXX|  XX     |   X     |XXX XXXXX|  XX     |   X     |XXX XXXXX",
-                "XXX XXXXX|         |   X     |XXXXXXXXX|         |   X     |XXXXXXXXX",
+                "XXX  XXXX|  XX     |   X     |XXX XXXXX|  XX     |   X     |XXX XXXXX",
+                "XXXXXXXXX|         |   X     |XXXXXXXXX|         |   X     |XXXXXXXXX",
                 "XXXXXXXXX|         |         |XXXXXXXXX|         |         |XXXXXXXXX",
                 "XXXXXXXXX|         |         |XXXXXXXXX|         |         |XXXXXXXXX",
         }, new String[]{
@@ -39,9 +39,9 @@ public class WalkingLeapingJPSTest {
                 " 1       |         |         |         |         |         |         ",
                 "  2      |         |         |         |         |         |         ",
                 "  3      |         |         |         |         |         |         ",
-                "  4      |   5     |         |  !      |         |         |         ",
-                "         |         |   6     |  7      |         |         |         ",
-                "         |         |         |         |         |         |         ",
+                "  4      |  56     |   7     |         |         |         |         ",
+                "         |         |   8     |   9     |         |         |         ",
+                "         |         |         |   !     |         |         |         ",
                 "         |         |         |         |         |         |         ",
         });
     }
@@ -52,20 +52,20 @@ public class WalkingLeapingJPSTest {
                 "XXXXXXXXX|         |         |XXXXXXXXX|         |         |XXXXXXXXX",
                 "XXXXXXXXX|         |         |XXXXXXXXX|         |         |XXXXXXXXX",
                 "XXXXXXXXX|         |         |XXXXXXXXX|         |         |XXXXXXXXX",
-                "XXXXXXXXX|         |         |XXX XXXXX|         |         |XXXXX XXX",
-                "XXX XXXXX|   X     |         |XXX XXXXX|     X   |         |XXXXX XXX",
-                "XXX XXXXX|         |   X     |XXXXXXXXX|         |     X   |XXXXX XXX",
+                "XXXXXXXXX|         |         |XXX XXXXX|         |         |XXXXXXXXX",
+                "XXX  XXXX|  X      |   X     |XXX XXXXX|  XX     |   X     |XXX XXXXX",
+                "XXXXXXXXX|         |   X     |XXXXXXXXX|         |   X     |XXXXXXXXX",
                 "XXXXXXXXX|         |         |XXXXXXXXX|         |         |XXXXXXXXX",
                 "XXXXXXXXX|         |         |XXXXXXXXX|         |         |XXXXXXXXX",
         }, new String[]{
                 "?        |         |         |         |         |         |         ",
+                " 1       |         |         |         |         |         |         ",
+                "  2      |         |         |         |         |         |         ",
+                "  3      |         |         |         |         |         |         ",
+                "  4      |  56     |   7     |         |         |         |         ",
+                "         |         |   8     |   9     |         |         |         ",
+                "         |         |         |   !     |         |         |         ",
                 "         |         |         |         |         |         |         ",
-                "         |         |         |         |         |         |         ",
-                "         |         |         |         |         |         |         ",
-                "         |         |         |         |         |         |         ",
-                "         |         |         |         |         |         |         ",
-                "         |         |         |         |         |         |         ",
-                "         |         |         |         |         |         |        !",
         });
     }
 
@@ -79,6 +79,26 @@ public class WalkingLeapingJPSTest {
                 "?  ",
                 "1  ",
                 "23!"
+        });
+    }
+
+
+    @Test
+    public void simpleSteps() throws InterruptedException {
+        executeExample(new String[]{
+                "X  |XX |XXX"
+        }, new String[]{
+                "?  |12 | 3!"
+        });
+    }
+
+
+    @Test
+    public void simpleStepsTooHigh() throws InterruptedException {
+        executeFailingExample(new String[]{
+                "XX |XX |XXX"
+        }, new String[]{
+                "?  |   |  !"
         });
     }
 
@@ -112,20 +132,6 @@ public class WalkingLeapingJPSTest {
         });
 
     }
-
-    @Test
-    public void threeDimensionalMoves() throws InterruptedException {
-        executeExample(new String[]{
-                "XXX|XX |   ",
-                "X X|XXX| XX",
-                "XXX| X | XX"
-        }, new String[]{
-                "?  |   |   ",
-                "   | 1 |   ",
-                "   |   |  !"
-        });
-    }
-
 
     @Test
     public void startInBox() throws InterruptedException {

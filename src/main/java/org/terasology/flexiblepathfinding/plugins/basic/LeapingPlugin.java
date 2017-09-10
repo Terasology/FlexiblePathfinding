@@ -42,15 +42,8 @@ public class LeapingPlugin extends StandardPlugin {
             Vector3i occupiedBlockTo = new Vector3i(to).add(occupiedBlock);
             Vector3i occupiedBlockFrom = new Vector3i(from).add(occupiedBlock);
 
-            Vector3i toBelow = new Vector3i(occupiedBlockTo).add(Vector3i.down());
-            Vector3i fromBelow = new Vector3i(occupiedBlockFrom).add(Vector3i.down());
             Region3i movementBounds = Region3i.createBounded(occupiedBlockTo, occupiedBlockFrom);
             for (Vector3i block : movementBounds) {
-                // don't check the blocks below a or b, since those should be solid anyway
-                if (block.distanceSquared(toBelow) == 0 || block.distanceSquared(fromBelow) == 0) {
-                    continue;
-                }
-
                 if (!world.getBlock(block).isPenetrable()) {
                     return false;
                 }
@@ -62,7 +55,7 @@ public class LeapingPlugin extends StandardPlugin {
 
     @Override
     public boolean isWalkable(Vector3i a) {
-        Vector3i aBelow = new Vector3i(a).sub(0, 1, 0);
-        return world.getBlock(a).isPenetrable() && !world.getBlock(aBelow).isPenetrable();
+        Vector3i aBelow = new Vector3i(a).sub(0, (int) getVerticalPadding() + 1, 0);
+        return !world.getBlock(aBelow).isPenetrable();
     }
 }

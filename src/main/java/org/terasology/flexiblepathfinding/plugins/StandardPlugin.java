@@ -16,17 +16,17 @@
 package org.terasology.flexiblepathfinding.plugins;
 
 import org.terasology.flexiblepathfinding.LineOfSight3d;
-import org.terasology.flexiblepathfinding.plugins.JPSPlugin;
 import org.terasology.math.Region3i;
 import org.terasology.math.geom.Vector3i;
 import org.terasology.world.WorldProvider;
 
+import java.math.RoundingMode;
+
 public abstract class StandardPlugin implements JPSPlugin {
     public final WorldProvider world;
 
-    private int xzPadding;
-    private int upwardPadding;
-
+    private float horizontalPadding;
+    private float verticalPadding;
     public StandardPlugin(WorldProvider world) {
         this.world = world;
     }
@@ -37,19 +37,31 @@ public abstract class StandardPlugin implements JPSPlugin {
     }
 
     @Override
-    public void setXzPadding(int xzPadding) {
-        this.xzPadding = xzPadding;
+    public void setHorizontalPadding(float horizontalPadding) {
+        this.horizontalPadding = horizontalPadding;
     }
 
     @Override
-    public void setUpwardPadding(int upwardPadding) {
-        this.upwardPadding = upwardPadding;
+    public void setVerticalPadding(float verticalPadding) {
+        this.verticalPadding = verticalPadding;
+    }
+
+    @Override
+    public float getHorizontalPadding() {
+        return horizontalPadding;
+    }
+
+    @Override
+    public float getVerticalPadding() {
+        return verticalPadding;
     }
 
     @Override
     public Region3i getOccupiedRegion() {
-        Vector3i min = new Vector3i(-xzPadding, 0, -xzPadding);
-        Vector3i max = new Vector3i(xzPadding, upwardPadding, xzPadding);
+        int h = (int) Math.ceil(horizontalPadding);
+        int v = (int) Math.ceil(verticalPadding);
+        Vector3i min = new Vector3i(-h, -v, -h);
+        Vector3i max = new Vector3i(h, v, h);
         return Region3i.createBounded(min, max);
     }
 }

@@ -66,17 +66,34 @@ public class CompositePlugin implements JPSPlugin {
     }
 
     @Override
-    public void setXzPadding(int xzPadding) {
+    public void setHorizontalPadding(float horizontalPadding) {
         for (JPSPlugin plugin : plugins) {
-            plugin.setXzPadding(xzPadding);
+            plugin.setHorizontalPadding(horizontalPadding);
         }
     }
 
     @Override
-    public void setUpwardPadding(int upwardPadding) {
+    public void setVerticalPadding(float verticalPadding) {
         for (JPSPlugin plugin : plugins) {
-            plugin.setUpwardPadding(upwardPadding);
+            plugin.setVerticalPadding(verticalPadding);
         }
+    }
+
+
+    @Override
+    public float getHorizontalPadding() {
+        for (JPSPlugin plugin : plugins) {
+            return plugin.getHorizontalPadding();
+        }
+        return 0;
+    }
+
+    @Override
+    public float getVerticalPadding() {
+        for (JPSPlugin plugin : plugins) {
+            return plugin.getVerticalPadding();
+        }
+        return 0;
     }
 
     @Override

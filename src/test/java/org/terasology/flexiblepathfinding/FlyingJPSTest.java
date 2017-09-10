@@ -27,18 +27,18 @@ public class FlyingJPSTest {
                 "XXXXXXXXX|         |         |XXXXXXXXX|         |         |XXXXXXXXX",
                 "XXXXXXXXX|         |         |XXXXXXXXX|         |         |XXXXXXXXX",
                 "XXXXXXXXX|         |         |XXX XXXXX|         |         |XXXXXXXXX",
-                "XXX XXXXX|  XX     |   X     |XXX XXXXX|  XX     |   X     |XXX XXXXX",
-                "XXX XXXXX|         |   X     |XXXXXXXXX|         |   X     |XXXXXXXXX",
+                "XXXXXXXXX|  XX     |   X     |XXX XXXXX|  XX     |   X     |XXX XXXXX",
+                "XXXXXXXXX|         |   X     |XXXXXXXXX|         |   X     |XXXXXXXXX",
                 "XXXXXXXXX|         |         |XXXXXXXXX|         |         |XXXXXXXXX",
                 "XXXXXXXXX|         |         |XXXXXXXXX|         |         |XXXXXXXXX",
         }, new String[]{
                 "?        |         |         |         |         |         |         ",
                 " 1       |         |         |         |         |         |         ",
                 "  2      |         |         |         |         |         |         ",
-                "  3      |         |         |         |         |         |         ",
-                "  4      |   5     |         |  !      |         |         |         ",
-                "         |         |   6     |  7      |         |         |         ",
-                "         |         |         |         |         |         |         ",
+                "   3     |         |         |         |         |         |         ",
+                "   4     |   5     |   6     |         |         |         |         ",
+                "         |         |   7     |   8     |         |         |         ",
+                "         |         |         |   !     |         |         |         ",
                 "         |         |         |         |         |         |         ",
         });
     }
@@ -77,8 +77,8 @@ public class FlyingJPSTest {
                 "X X|X X|X X|   ",
                 "X X|X X|X X|   ",
         }, new String[]{
-                "?  |1  |2 4| 3 ",
-                "   |  5|   |   ",
+                "?  |1  |2 6|345",
+                "   |  7|   |   ",
                 "  !|   |   |   ",
         });
     }
@@ -107,8 +107,8 @@ public class FlyingJPSTest {
                 "X X|XX | X | XX",
                 "XXX|   |   |   "
         }, new String[]{
-                "?  |   |   |   ",
-                "   | 1 | 2 |  !",
+                "?  | 1 |   |   ",
+                "   | 2 | 3 | 4!",
                 "   |   |   |   "
         });
     }
