@@ -107,7 +107,8 @@ public class JPSTestHelper {
         config.useLineOfSight = false;
         if(pluginClass != null) {
             try {
-                config.plugin = pluginClass.getConstructor(WorldProvider.class).newInstance(world);
+                config.plugin = pluginClass.getConstructor(WorldProvider.class, Float.TYPE, Float.TYPE).newInstance
+                        (world, 0, 0);
             } catch (Exception e) {
                 LoggerFactory.getLogger(JPSTestHelper.class).warn(e.toString());
                 Assert.assertTrue(false);
