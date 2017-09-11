@@ -27,23 +27,16 @@ public abstract class StandardPlugin implements JPSPlugin {
 
     private float horizontalPadding;
     private float verticalPadding;
-    public StandardPlugin(WorldProvider world) {
+
+    public StandardPlugin(WorldProvider world, float horizontalPadding, float verticalPadding) {
         this.world = world;
+        this.horizontalPadding = horizontalPadding;
+        this.verticalPadding = verticalPadding;
     }
 
     @Override
     public boolean inSight(Vector3i start, Vector3i stop) {
         return new LineOfSight3d(world).inSight(start, stop);
-    }
-
-    @Override
-    public void setHorizontalPadding(float horizontalPadding) {
-        this.horizontalPadding = horizontalPadding;
-    }
-
-    @Override
-    public void setVerticalPadding(float verticalPadding) {
-        this.verticalPadding = verticalPadding;
     }
 
     @Override

@@ -65,7 +65,7 @@ public class LineOfSightTest {
 
         JPSConfig config = new JPSConfig(Vector3i.zero(), new Vector3i(2,2,1));
         config.useLineOfSight = true;
-        config.plugin = new FlyingPlugin(worldProvider);
+        config.plugin = new FlyingPlugin(worldProvider, 0, 0);
         JPSImpl jps = new JPSImpl(config);
         Assert.assertTrue(jps.run());
         Assert.assertEquals(2, jps.getPath().size());

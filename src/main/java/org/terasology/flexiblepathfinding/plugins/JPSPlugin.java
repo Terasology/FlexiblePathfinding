@@ -23,8 +23,6 @@ public interface JPSPlugin {
     boolean isReachable(Vector3i to, Vector3i from);
     boolean isWalkable(Vector3i v);
 
-    void setHorizontalPadding(float horizontalPadding);
-    void setVerticalPadding(float verticalPadding);
     float getHorizontalPadding();
     float getVerticalPadding();
     Region3i getOccupiedRegionRelative();

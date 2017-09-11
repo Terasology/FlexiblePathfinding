@@ -23,15 +23,16 @@ import org.terasology.math.geom.Vector3i;
 import org.terasology.world.WorldProvider;
 
 public class LeapingPlugin extends WalkingPlugin {
-    public LeapingPlugin(WorldProvider world) {
-        super(world);
-    }
     private static final Logger logger = LoggerFactory.getLogger(LeapingPlugin.class);
+
+    public LeapingPlugin(WorldProvider world, float horizontalPadding, float verticalPadding) {
+        super(world, horizontalPadding, verticalPadding);
+    }
 
     @Override
     public boolean isReachable(Vector3i to, Vector3i from) {
-        // only allowed to move 1 unit in each axis
-        if(Math.max(Math.abs(to.x - from.x), Math.max(Math.abs(to.y - from.y), Math.abs(to.z - from.z))) > 1) {
+        // only allowed to move 1 unit in positive y axis
+        if(to.x - from.x != 0 || to.z - from.z != 0 || to.y - from.y != 1) {
             return false;
         }
 

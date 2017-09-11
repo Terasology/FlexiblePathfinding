@@ -85,14 +85,11 @@ public class VariableSizeJPSTest {
         
         MapWorldProvider worldProvider = new MapWorldProvider(ground);
         CompositePlugin plugin = new CompositePlugin(
-                new WalkingPlugin(worldProvider),
-                new LeapingPlugin(worldProvider)
+                new WalkingPlugin(worldProvider, 1, 1),
+                new LeapingPlugin(worldProvider, 1, 1)
         );
 
         config.plugin = plugin;
-        config.plugin.setHorizontalPadding(1);
-        config.plugin.setVerticalPadding(1);
-
         JPSTestHelper.runTest(config, pathData, worldProvider);
     }
 
@@ -102,14 +99,11 @@ public class VariableSizeJPSTest {
 
         MapWorldProvider worldProvider = new MapWorldProvider(ground);
         CompositePlugin plugin = new CompositePlugin(
-                new WalkingPlugin(worldProvider),
-                new LeapingPlugin(worldProvider)
+                new WalkingPlugin(worldProvider, 1, 1),
+                new LeapingPlugin(worldProvider, 1, 1)
         );
 
         config.plugin = plugin;
-        config.plugin.setHorizontalPadding(1);
-        config.plugin.setVerticalPadding(1);
-
         JPSTestHelper.runFailingTest(config, pathData, worldProvider);
     }
 }

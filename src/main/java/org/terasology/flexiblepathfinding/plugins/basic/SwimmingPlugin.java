@@ -23,10 +23,11 @@ import org.terasology.math.geom.Vector3i;
 import org.terasology.world.WorldProvider;
 
 public class SwimmingPlugin extends StandardPlugin {
-    public SwimmingPlugin(WorldProvider world) {
-        super(world);
-    }
     private static final Logger logger = LoggerFactory.getLogger(SwimmingPlugin.class);
+
+    public SwimmingPlugin(WorldProvider world, float horizontalPadding, float verticalPadding) {
+        super(world, horizontalPadding, verticalPadding);
+    }
 
     @Override
     public boolean isReachable(Vector3i a, Vector3i b) {

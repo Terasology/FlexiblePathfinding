@@ -20,8 +20,8 @@ import org.terasology.math.geom.Vector3i;
 import org.terasology.world.WorldProvider;
 
 public class FreeMovementPlugin extends StandardPlugin {
-    public FreeMovementPlugin(WorldProvider world) {
-        super(world);
+    public FreeMovementPlugin(WorldProvider world, float horizontalPadding, float verticalPadding) {
+        super(world, horizontalPadding, verticalPadding);
     }
 
     @Override
