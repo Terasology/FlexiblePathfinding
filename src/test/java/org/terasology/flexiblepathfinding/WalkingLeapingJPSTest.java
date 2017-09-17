@@ -205,8 +205,8 @@ public class WalkingLeapingJPSTest {
 
         MapWorldProvider worldProvider = new MapWorldProvider(ground);
         CompositePlugin plugin = new CompositePlugin(
-                new WalkingPlugin(worldProvider, 0, 0),
-                new LeapingPlugin(worldProvider, 0, 0)
+                new WalkingPlugin(worldProvider, 0.4f, 0.4f),
+                new LeapingPlugin(worldProvider, 0.4f, 0.4f)
         );
 
         config.plugin = plugin;
@@ -219,8 +219,8 @@ public class WalkingLeapingJPSTest {
 
         MapWorldProvider worldProvider = new MapWorldProvider(ground);
         CompositePlugin plugin = new CompositePlugin(
-                new WalkingPlugin(worldProvider, 0, 0),
-                new LeapingPlugin(worldProvider, 0, 0)
+                new WalkingPlugin(worldProvider, 0.4f, 0.4f),
+                new LeapingPlugin(worldProvider, 0.4f, 0.4f)
         );
 
         config.plugin = plugin;

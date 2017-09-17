@@ -25,8 +25,8 @@ import org.terasology.world.WorldProvider;
 public class SwimmingPlugin extends StandardPlugin {
     private static final Logger logger = LoggerFactory.getLogger(SwimmingPlugin.class);
 
-    public SwimmingPlugin(WorldProvider world, float horizontalPadding, float verticalPadding) {
-        super(world, horizontalPadding, verticalPadding);
+    public SwimmingPlugin(WorldProvider world, float width, float height) {
+        super(world, width, height);
     }
 
     @Override
@@ -54,7 +54,6 @@ public class SwimmingPlugin extends StandardPlugin {
         return isWalkable(a);
     }
 
-    @Override
     public boolean isWalkable(Vector3i a) {
         return world.getBlock(a).isLiquid();
     }

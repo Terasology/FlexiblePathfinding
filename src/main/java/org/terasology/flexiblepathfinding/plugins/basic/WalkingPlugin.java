@@ -25,8 +25,8 @@ import org.terasology.world.WorldProvider;
 public class WalkingPlugin extends StandardPlugin {
     private static final Logger logger = LoggerFactory.getLogger(WalkingPlugin.class);
 
-    public WalkingPlugin(WorldProvider world, float horizontalPadding, float verticalPadding) {
-        super(world, horizontalPadding, verticalPadding);
+    public WalkingPlugin(WorldProvider world, float width, float height) {
+        super(world, width, height);
     }
 
     @Override
@@ -59,7 +59,6 @@ public class WalkingPlugin extends StandardPlugin {
         return isWalkable(a);
     }
 
-    @Override
     public boolean isWalkable(Vector3i a) {
         for (Vector3i supportingBlockPos : getSupportingRegionRelative()) {
             supportingBlockPos.add(a);

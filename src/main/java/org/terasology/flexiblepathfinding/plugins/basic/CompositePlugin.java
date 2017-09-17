@@ -54,40 +54,4 @@ public class CompositePlugin implements JPSPlugin {
         }
         return false;
     }
-
-    @Override
-    public boolean isWalkable(Vector3i a) {
-        for (JPSPlugin plugin : plugins) {
-            if (plugin.isWalkable(a)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    @Override
-    public float getHorizontalPadding() {
-        for (JPSPlugin plugin : plugins) {
-            return plugin.getHorizontalPadding();
-        }
-        return 0;
-    }
-
-    @Override
-    public float getVerticalPadding() {
-        for (JPSPlugin plugin : plugins) {
-            return plugin.getVerticalPadding();
-        }
-        return 0;
-    }
-
-    @Override
-    public Region3i getOccupiedRegionRelative() {
-        return null;
-    }
-
-    @Override
-    public Region3i getSupportingRegionRelative() {
-        return null;
-    }
 }

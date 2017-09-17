@@ -39,11 +39,11 @@ public class JPSConfig {
         this.start = start;
         this.stop = stop;
         this.maxDepth = (int) stop.distance(start) * 10;
-        this.plugin = new WalkingPlugin(CoreRegistry.get(WorldProvider.class), 0.0f, 0.0f);
+        this.plugin = new WalkingPlugin(CoreRegistry.get(WorldProvider.class), 0.4f, 0.4f);
     }
 
     public JPSConfig() {
-        this.plugin = new WalkingPlugin(CoreRegistry.get(WorldProvider.class), 0.0f, 0.0f);
+        this.plugin = new WalkingPlugin(CoreRegistry.get(WorldProvider.class), 0.4f, 0.4f);
     }
 
     @Override

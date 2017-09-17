@@ -25,8 +25,8 @@ import org.terasology.world.WorldProvider;
 public class LeapingPlugin extends WalkingPlugin {
     private static final Logger logger = LoggerFactory.getLogger(LeapingPlugin.class);
 
-    public LeapingPlugin(WorldProvider world, float horizontalPadding, float verticalPadding) {
-        super(world, horizontalPadding, verticalPadding);
+    public LeapingPlugin(WorldProvider world, float width, float height) {
+        super(world, width, height);
     }
 
     @Override

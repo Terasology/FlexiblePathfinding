@@ -20,8 +20,8 @@ import org.terasology.math.geom.Vector3i;
 import org.terasology.world.WorldProvider;
 
 public class FlyingPlugin extends WalkingPlugin {
-    public FlyingPlugin(WorldProvider world, float horizontalPadding, float verticalPadding) {
-        super(world, horizontalPadding, verticalPadding);
+    public FlyingPlugin(WorldProvider world, float width, float height) {
+        super(world, width, height);
     }
 
     @Override

@@ -20,17 +20,12 @@ import org.terasology.math.geom.Vector3i;
 import org.terasology.world.WorldProvider;
 
 public class FreeMovementPlugin extends StandardPlugin {
-    public FreeMovementPlugin(WorldProvider world, float horizontalPadding, float verticalPadding) {
-        super(world, horizontalPadding, verticalPadding);
+    public FreeMovementPlugin(WorldProvider world, float width, float height) {
+        super(world, width, height);
     }
 
     @Override
     public boolean isReachable(Vector3i to, Vector3i from) {
-        return true;
-    }
-
-    @Override
-    public boolean isWalkable(Vector3i v) {
         return true;
     }
 

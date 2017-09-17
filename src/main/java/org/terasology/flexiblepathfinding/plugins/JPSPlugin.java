@@ -21,10 +21,4 @@ import org.terasology.math.geom.Vector3i;
 public interface JPSPlugin {
     boolean inSight(Vector3i start, Vector3i goal);
     boolean isReachable(Vector3i to, Vector3i from);
-    boolean isWalkable(Vector3i v);
-
-    float getHorizontalPadding();
-    float getVerticalPadding();
-    Region3i getOccupiedRegionRelative();
-    Region3i getSupportingRegionRelative();
 }
