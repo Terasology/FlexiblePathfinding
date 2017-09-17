@@ -30,14 +30,8 @@ public class WalkingPlugin extends StandardPlugin {
     }
 
     @Override
-    public boolean isReachable(Vector3i a, Vector3i b) {
-        // never walk upward (this is covered by "leaping")
-        if (a.y > b.y) {
-            return false;
-        }
-
-        // only allowed to move 1 unit in each axis
-        if (Math.max(Math.abs(a.x - b.x), Math.max(Math.abs(a.y - b.y), Math.abs(a.z - b.z))) > 1) {
+    public boolean isReachable(Vector3i to, Vector3i from) {
+        if (to.y > from.y) {
             return false;
         }
 
@@ -45,18 +39,18 @@ public class WalkingPlugin extends StandardPlugin {
         for (Vector3i occupiedBlock : getOccupiedRegionRelative()) {
 
             // the start/stop for this block in the occupied region
-            Vector3i blockA = new Vector3i(a).add(occupiedBlock);
-            Vector3i blockB = new Vector3i(b).add(occupiedBlock);
+            Vector3i occupiedBlockTo = new Vector3i(to).add(occupiedBlock);
+            Vector3i occupiedBlockFrom = new Vector3i(from).add(occupiedBlock);
 
-            Region3i movementBounds = Region3i.createBounded(blockA, blockB);
-            for (Vector3i pos : movementBounds) {
-                if (!world.getBlock(pos).isPenetrable()) {
+            Region3i movementBounds = Region3i.createBounded(occupiedBlockTo, occupiedBlockFrom);
+            for (Vector3i block : movementBounds) {
+                if (!world.getBlock(block).isPenetrable()) {
                     return false;
                 }
             }
         }
 
-        return isWalkable(a);
+        return isWalkable(to) || isWalkable(from);
     }
 
     public boolean isWalkable(Vector3i a) {

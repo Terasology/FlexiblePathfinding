@@ -84,6 +84,16 @@ public class WalkingLeapingJPSTest {
 
 
     @Test
+    public void simpleJumpOver() throws InterruptedException {
+        executeExample(new String[]{
+                "X X|XXX"
+        }, new String[]{
+                "? !|123"
+        });
+    }
+
+
+    @Test
     public void simpleSteps() throws InterruptedException {
         executeExample(new String[]{
                 "X  |XX |XXX"
