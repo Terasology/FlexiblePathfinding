@@ -4,11 +4,6 @@
     "author" : "",
     "displayName" : "FlexiblePathfinding",
     "description" : "",
-    "dependencies" : [
-        {
-            "id" : "Core",
-            "minVersion" : "1.0.0"
-        }
-    ],
+    "dependencies" : [],
     "serverSideOnly" : false
 }

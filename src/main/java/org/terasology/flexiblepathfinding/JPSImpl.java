@@ -68,7 +68,7 @@ public class JPSImpl implements JPS {
         this.config = config;
 
         if (config.executor != null) {
-            this.timeLimiter = new SimpleTimeLimiter(config.executor);
+            this.timeLimiter = SimpleTimeLimiter.create(config.executor);
         }
     }
 
@@ -87,7 +87,7 @@ public class JPSImpl implements JPS {
         boolean result = false;
         if (this.timeLimiter != null) {
             try {
-                result = timeLimiter.callWithTimeout(callable, (long) (config.maxTime * 1000.0f), TimeUnit.MILLISECONDS, true);
+                result = timeLimiter.callWithTimeout(callable, (long) (config.maxTime * 1000.0f), TimeUnit.MILLISECONDS);
             } catch (Exception e) {
                 logger.warn("Timeout of {} exceeded: {}", config.maxTime, e.toString());
             }
