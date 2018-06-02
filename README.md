@@ -2,6 +2,8 @@
 
 A plugin-based JPS pathfinder for Terasology.
 
+This is a clone of the [original repository by Kaen](https://github.com/kaen/FlexiblePathfinding).
+
 See also [FlexibleMovement](https://github.com/kaen/FlexibleMovement)
 
 # Usage
