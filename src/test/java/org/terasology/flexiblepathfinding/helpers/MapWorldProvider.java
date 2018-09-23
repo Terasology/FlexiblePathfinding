@@ -16,7 +16,6 @@
 package org.terasology.flexiblepathfinding.helpers;
 
 import com.google.common.collect.Maps;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.terasology.entitySystem.entity.EntityRef;
@@ -37,10 +36,10 @@ import java.util.Collection;
 import java.util.Map;
 
 public class MapWorldProvider implements WorldProvider {
-    static private final char GROUND = ' ';
-    static private final char AIR = 'X';
-    static private final char WATER = '~';
-    static private final char NEW_LEVEL = '|';
+    private static final char GROUND = ' ';
+    private static final char AIR = 'X';
+    private static final char WATER = '~';
+    private static final char NEW_LEVEL = '|';
     private static Logger logger = LoggerFactory.getLogger(MapWorldProvider.class);
     private Map<Vector3i, Block> blocks = Maps.newHashMap();
     private Block airBlock = new Block();
@@ -63,40 +62,6 @@ public class MapWorldProvider implements WorldProvider {
         parseMap(map);
     }
 
-    private void parseMap(String[] map) {
-        Vector3i pos = Vector3i.zero();
-        for (String line : map) {
-            for (char c : line.toCharArray()) {
-                Vector3i vec = new Vector3i(pos);
-                switch(c) {
-                    case GROUND:
-                        blocks.put(vec, groundBlock);
-                        break;
-                    case AIR:
-                        blocks.put(vec, airBlock);
-                        break;
-                    case WATER:
-                        blocks.put(vec, waterBlock);
-                        break;
-                    case NEW_LEVEL:
-                        pos.x = 0;
-                        pos.y += 1;
-                        break;
-                    default:
-                        break;
-                }
-
-                if (c != NEW_LEVEL) {
-                    pos.x += 1;
-                }
-            }
-
-            pos.z += 1;
-            pos.x = 0;
-            pos.y = 0;
-        }
-    }
-
     public static Map<Integer, Vector3i> parseExpectedPath(String[] pathData, final TestDataPojo testData) {
         Vector3i pos = Vector3i.zero();
         Map<Integer, Vector3i> expected = Maps.newHashMap();
@@ -117,7 +82,7 @@ public class MapWorldProvider implements WorldProvider {
             pos.z += 1;
             pos.x = 0;
             pos.y = 0;
-        };
+        }
 
         expected.put(0, testData.start);
         expected.put(testData.expectedSize, testData.stop);
@@ -156,6 +121,40 @@ public class MapWorldProvider implements WorldProvider {
                 expected.put(i, vec);
                 testData.expectedSize = i + 1;
                 break;
+        }
+    }
+
+    private void parseMap(String[] map) {
+        Vector3i pos = Vector3i.zero();
+        for (String line : map) {
+            for (char c : line.toCharArray()) {
+                Vector3i vec = new Vector3i(pos);
+                switch (c) {
+                    case GROUND:
+                        blocks.put(vec, groundBlock);
+                        break;
+                    case AIR:
+                        blocks.put(vec, airBlock);
+                        break;
+                    case WATER:
+                        blocks.put(vec, waterBlock);
+                        break;
+                    case NEW_LEVEL:
+                        pos.x = 0;
+                        pos.y += 1;
+                        break;
+                    default:
+                        break;
+                }
+
+                if (c != NEW_LEVEL) {
+                    pos.x += 1;
+                }
+            }
+
+            pos.z += 1;
+            pos.x = 0;
+            pos.y = 0;
         }
     }
 
@@ -337,5 +336,45 @@ public class MapWorldProvider implements WorldProvider {
     @Override
     public Collection<Region3i> getRelevantRegions() {
         return null;
+    }
+
+    @Override
+    public int getExtraData(int index, Vector3i pos) {
+        return 0;
+    }
+
+    @Override
+    public int setExtraData(int index, int x, int y, int z, int value) {
+        return 0;
+    }
+
+    @Override
+    public int getExtraData(String fieldName, int x, int y, int z) {
+        return 0;
+    }
+
+    @Override
+    public int getExtraData(String fieldName, Vector3i pos) {
+        return 0;
+    }
+
+    @Override
+    public int setExtraData(String fieldName, int x, int y, int z, int value) {
+        return 0;
+    }
+
+    @Override
+    public int setExtraData(String fieldName, Vector3i pos, int value) {
+        return 0;
+    }
+
+    @Override
+    public int getExtraData(int index, int x, int y, int z) {
+        return 0;
+    }
+
+    @Override
+    public int setExtraData(int index, Vector3i pos, int value) {
+        return 0;
     }
 }
