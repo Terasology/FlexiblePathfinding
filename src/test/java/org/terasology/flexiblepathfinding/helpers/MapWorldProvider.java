@@ -29,7 +29,6 @@ import org.terasology.world.block.Block;
 import org.terasology.world.block.BlockUri;
 import org.terasology.world.internal.ChunkViewCore;
 import org.terasology.world.internal.WorldInfo;
-import org.terasology.world.liquid.LiquidData;
 import org.terasology.world.time.WorldTime;
 
 import java.util.Collection;
@@ -179,16 +178,6 @@ public class MapWorldProvider implements WorldProvider {
     }
 
     @Override
-    public boolean setLiquid(Vector3i pos, LiquidData state, LiquidData oldState) {
-        return false;
-    }
-
-    @Override
-    public LiquidData getLiquid(Vector3i blockPos) {
-        return null;
-    }
-
-    @Override
     public Block getBlock(Vector3f pos) {
         return getBlock((int) pos.x, (int) pos.y, (int) pos.z);
     }
@@ -295,16 +284,6 @@ public class MapWorldProvider implements WorldProvider {
 
     @Override
     public Biome getBiome(Vector3i pos) {
-        return null;
-    }
-
-    @Override
-    public boolean setLiquid(int x, int y, int z, LiquidData newData, LiquidData oldData) {
-        return false;
-    }
-
-    @Override
-    public LiquidData getLiquid(int x, int y, int z) {
         return null;
     }
 
