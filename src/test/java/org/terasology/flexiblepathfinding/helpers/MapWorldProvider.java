@@ -24,7 +24,6 @@ import org.terasology.math.geom.Vector3f;
 import org.terasology.math.geom.Vector3i;
 import org.terasology.world.WorldChangeListener;
 import org.terasology.world.WorldProvider;
-import org.terasology.world.biomes.Biome;
 import org.terasology.world.block.Block;
 import org.terasology.world.block.BlockUri;
 import org.terasology.world.internal.ChunkViewCore;
@@ -274,16 +273,6 @@ public class MapWorldProvider implements WorldProvider {
 
     @Override
     public Block setBlock(Vector3i pos, Block type) {
-        return null;
-    }
-
-    @Override
-    public Biome setBiome(Vector3i pos, Biome biome) {
-        return null;
-    }
-
-    @Override
-    public Biome getBiome(Vector3i pos) {
         return null;
     }
 
