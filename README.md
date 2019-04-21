@@ -13,7 +13,7 @@ You probably want to use the nodes in `FlexibleMovement` directly.
 However, if you're not actually moving anything then you can try the `PathfinderSystem#requestPath` method.
 
 You can see the basic usage example in the
-[unit test helper](https://github.com/kaen/FlexiblePathfinding/blob/master/src/test/java/org/terasology/flexiblepathfinding/JPSTestHelper.java#L83-L99)
+[unit test helper](https://github.com/kaen/FlexiblePathfinding/blob/master/src/test/java/org/terasology/flexiblepathfinding/helpers/JPSTestHelper.java#L83-L99)
 
 # Hacking
 
