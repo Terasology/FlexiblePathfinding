@@ -16,6 +16,8 @@
 package org.terasology.flexiblepathfinding.helpers;
 
 import com.google.common.collect.Maps;
+import org.joml.Vector3fc;
+import org.joml.Vector3ic;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.terasology.entitySystem.entity.EntityRef;
@@ -172,7 +174,17 @@ public class MapWorldProvider implements WorldProvider {
     }
 
     @Override
+    public boolean isBlockRelevant(Vector3ic pos) {
+        return false;
+    }
+
+    @Override
     public boolean isBlockRelevant(Vector3f pos) {
+        return false;
+    }
+
+    @Override
+    public boolean isBlockRelevant(Vector3fc pos) {
         return false;
     }
 
@@ -182,8 +194,18 @@ public class MapWorldProvider implements WorldProvider {
     }
 
     @Override
+    public Block getBlock(Vector3fc pos) {
+        return getBlock((int)pos.x(),(int)pos.y(),(int)pos.z());
+    }
+
+    @Override
     public Block getBlock(Vector3i pos) {
         return getBlock(pos.x, pos.y, pos.z);
+    }
+
+    @Override
+    public Block getBlock(Vector3ic pos) {
+        return getBlock(pos.x(), pos.y(), pos.z());
     }
 
     @Override
@@ -273,6 +295,11 @@ public class MapWorldProvider implements WorldProvider {
 
     @Override
     public Block setBlock(Vector3i pos, Block type) {
+        return null;
+    }
+
+    @Override
+    public Block setBlock(Vector3ic pos, Block type) {
         return null;
     }
 
