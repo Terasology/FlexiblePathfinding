@@ -51,11 +51,11 @@ public class MapWorldProvider implements WorldProvider {
         airBlock.setUri(new BlockUri("engine:air"));
 
         groundBlock.setPenetrable(false);
-        groundBlock.setUri(new BlockUri("CoreBlocks:Dirt"));
+        groundBlock.setUri(new BlockUri("CoreAssets:Dirt"));
 
 
         waterBlock.setPenetrable(true);
-        waterBlock.setUri(new BlockUri("CoreBlocks:Water"));
+        waterBlock.setUri(new BlockUri("CoreAssets:Water"));
         waterBlock.setLiquid(true);
         waterBlock.setWater(true);
 
