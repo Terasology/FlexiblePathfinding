@@ -4,7 +4,9 @@
     "author": "The Terasology Foundation",
     "displayName": "Flexible Pathfinding",
     "description": "This library module allows for flexible ways of pathfinding.",
-    "dependencies": [],
+    "dependencies": [
+        { "id": "CoreAssets", "minVersion": "2.0.1" }
+    ],
     "serverSideOnly": false,
     "isLibrary": true
 }
