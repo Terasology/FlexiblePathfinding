@@ -25,6 +25,7 @@ import org.terasology.entitySystem.systems.UpdateSubscriberSystem;
 import org.terasology.flexiblepathfinding.debug.ui.DebugHud;
 import org.terasology.flexiblepathfinding.metrics.Histogram;
 import org.terasology.flexiblepathfinding.metrics.PathMetric;
+import org.terasology.flexiblepathfinding.metrics.TimeSeries;
 import org.terasology.logic.console.commandSystem.annotations.Command;
 import org.terasology.registry.In;
 import org.terasology.registry.Share;
@@ -33,9 +34,7 @@ import org.terasology.world.WorldProvider;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Share(DebugClientSystem.class)
 @RegisterSystem(RegisterMode.CLIENT)
@@ -48,6 +47,10 @@ public class DebugClientSystem extends BaseComponentSystem implements UpdateSubs
     public Histogram costs;
     public Histogram depths;
     public Histogram explored;
+
+    public TimeSeries running = new TimeSeries();
+    public TimeSeries pending = new TimeSeries();
+    public TimeSeries busy = new TimeSeries();
 
     @In
     private Time time;
@@ -72,15 +75,25 @@ public class DebugClientSystem extends BaseComponentSystem implements UpdateSubs
 
     @ReceiveEvent
     public void onPathMetricsResponse(PathMetricsResponseEvent event, EntityRef entity) {
-        List<PathMetric> successes = event.metrics.stream().filter((x) -> x.success).collect(Collectors.toList());
-        List<PathMetric> failures = event.metrics.stream().filter((x) -> !x.success).collect(Collectors.toList());
+        List<PathMetric> successes = event.pathMetrics.stream().filter((x) -> x.success).collect(Collectors.toList());
+        List<PathMetric> failures = event.pathMetrics.stream().filter((x) -> !x.success).collect(Collectors.toList());
 
         successTimes = new Histogram(successes, 30, (PathMetric x) -> x.time);
         failureTimes = new Histogram(failures, 30, (PathMetric x) -> x.time);
         sizes = new Histogram(successes, 30, (PathMetric x) -> x.size);
         costs = new Histogram(successes, 30, (PathMetric x) -> x.cost);
-        depths = new Histogram(event.metrics, 30, (PathMetric x) -> x.maxDepth);
-        explored = new Histogram(event.metrics, 30, (PathMetric x) -> x.nodesExplored);
+        depths = new Histogram(event.pathMetrics, 30, (PathMetric x) -> x.maxDepth);
+        explored = new Histogram(event.pathMetrics, 30, (PathMetric x) -> x.nodesExplored);
+
+        if (event.pathfinderMetrics.size() > 0) {
+            running.add(event.pathfinderMetrics.get(event.pathfinderMetrics.size() - 1).runningTasks);
+            pending.add(event.pathfinderMetrics.get(event.pathfinderMetrics.size() - 1).pendingTasks);
+
+            // percentage of samples where tasks were running
+            long busySamples = event.pathfinderMetrics.stream().filter((x) -> x.runningTasks > 0).count();
+            double busyProportion =  (double) busySamples / (double) event.pathfinderMetrics.size();
+            busy.add(busyProportion);
+        }
     }
 
     @Command

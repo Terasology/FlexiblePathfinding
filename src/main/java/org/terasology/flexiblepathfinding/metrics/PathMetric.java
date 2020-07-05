@@ -15,6 +15,9 @@
  */
 package org.terasology.flexiblepathfinding.metrics;
 
+/**
+ * POJO for metrics on a single path finding request
+ */
 public class PathMetric {
     public double time;
     public double cost;

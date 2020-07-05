@@ -4,6 +4,7 @@ package org.terasology.flexiblepathfinding.debug.ui;
 
 import org.terasology.flexiblepathfinding.debug.DebugClientSystem;
 import org.terasology.flexiblepathfinding.metrics.Histogram;
+import org.terasology.flexiblepathfinding.metrics.TimeSeries;
 import org.terasology.registry.In;
 import org.terasology.rendering.nui.CoreScreenLayer;
 import org.terasology.rendering.nui.databinding.DefaultBinding;
@@ -23,6 +24,10 @@ public class DebugHud extends CoreHudWidget {
         UIHistogram costs = find("costs", UIHistogram.class);
         UIHistogram depths = find("depths", UIHistogram.class);
         UIHistogram explored = find("explored", UIHistogram.class);
+
+        UITimeSeries running = find("running", UITimeSeries.class);
+        UITimeSeries pending = find("pending", UITimeSeries.class);
+        UITimeSeries busy = find("busy", UITimeSeries.class);
 
         successTimes.bindValue(new DefaultBinding<Histogram>() {
             @Override
@@ -63,6 +68,27 @@ public class DebugHud extends CoreHudWidget {
             @Override
             public Histogram get() {
                 return system.explored;
+            }
+        });
+
+        running.bindValue(new DefaultBinding<TimeSeries>() {
+            @Override
+            public TimeSeries get() {
+                return system.running;
+            }
+        });
+
+        pending.bindValue(new DefaultBinding<TimeSeries>() {
+            @Override
+            public TimeSeries get() {
+                return system.pending;
+            }
+        });
+
+        busy.bindValue(new DefaultBinding<TimeSeries>() {
+            @Override
+            public TimeSeries get() {
+                return system.busy;
             }
         });
     }

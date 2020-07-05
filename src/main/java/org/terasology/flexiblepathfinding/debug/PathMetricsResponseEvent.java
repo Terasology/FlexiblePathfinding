@@ -18,6 +18,7 @@ package org.terasology.flexiblepathfinding.debug;
 import com.google.common.collect.Lists;
 import org.terasology.entitySystem.event.Event;
 import org.terasology.flexiblepathfinding.metrics.PathMetric;
+import org.terasology.flexiblepathfinding.metrics.PathfinderMetric;
 import org.terasology.network.NetworkEvent;
 
 import java.util.ArrayList;
@@ -25,5 +26,6 @@ import java.util.List;
 import java.util.Map;
 
 public class PathMetricsResponseEvent extends NetworkEvent {
-    public List<PathMetric> metrics = Lists.newArrayList();
+    public List<PathMetric> pathMetrics = Lists.newArrayList();
+    public List<PathfinderMetric> pathfinderMetrics = Lists.newArrayList();
 }
