@@ -34,6 +34,7 @@ public class Histogram {
     public double max;
     public double median;
     public double mean;
+    public int n;
 
     double bucketMax;
     double bucketSize;
@@ -104,7 +105,7 @@ public class Histogram {
         }
 
         sortable.sort(null);
-
+        n = source.size();
         if (source.size() > 0) {
             median = sortable.get(source.size() / 2);
             mean = sum / source.size();

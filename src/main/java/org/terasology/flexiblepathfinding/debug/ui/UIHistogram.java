@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 public class UIHistogram extends CoreWidget {
-    public Color color = Color.BLUE;
+    public Color color = Color.WHITE;
 
     private Binding<Histogram> value = new DefaultBinding(new Histogram());
 
@@ -69,11 +69,7 @@ public class UIHistogram extends CoreWidget {
         }
 
         Rect2i statsRegion = Rect2i.createFromMinAndMax(0, offsetY, canvas.size().x, canvas.size().y);
-        String stats = "";
-        stats +=  "min: " + histogram.min + " ";
-        stats +=  "max: " + histogram.max + " ";
-        stats +=  "mean: " + histogram.mean + " ";
-        stats +=  "med: " + histogram.median + " ";
+        String stats = String.format("n: %d min: %.6g max: %.6g\nmean: %.6g med: %.6g", histogram.n, histogram.min, histogram.max, histogram.mean, histogram.median);
         canvas.drawText(stats, statsRegion);
     }
 

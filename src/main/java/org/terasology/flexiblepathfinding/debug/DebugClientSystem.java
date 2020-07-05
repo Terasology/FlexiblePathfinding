@@ -40,7 +40,7 @@ import java.util.stream.Stream;
 @Share(DebugClientSystem.class)
 @RegisterSystem(RegisterMode.CLIENT)
 public class DebugClientSystem extends BaseComponentSystem implements UpdateSubscriberSystem {
-    private static final float UPDATE_MILLIS = 1000;
+    private static final float UPDATE_MILLIS = 1000.0f / 12.0f;
 
     public Histogram successTimes;
     public Histogram failureTimes;
