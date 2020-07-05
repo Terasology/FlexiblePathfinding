@@ -36,7 +36,12 @@ public class UIHistogram extends CoreWidget {
 
     @Override
     public void onDraw(Canvas canvas) {
-        Map<? extends Comparable, Integer> data = value.get().getBucketData();
+        Histogram histogram = value.get();
+        if (histogram == null) {
+            return;
+        }
+
+        Map<? extends Comparable, Integer> data = histogram.getBucketData();
         if(data == null || data.size() == 0) {
             return;
         }
@@ -62,6 +67,14 @@ public class UIHistogram extends CoreWidget {
             canvas.drawFilledRectangle(rect, color);
             offsetX += columnSize;
         }
+
+        Rect2i statsRegion = Rect2i.createFromMinAndMax(0, offsetY, canvas.size().x, canvas.size().y);
+        String stats = "";
+        stats +=  "min: " + histogram.min + " ";
+        stats +=  "max: " + histogram.max + " ";
+        stats +=  "mean: " + histogram.mean + " ";
+        stats +=  "med: " + histogram.median + " ";
+        canvas.drawText(stats, statsRegion);
     }
 
     @Override

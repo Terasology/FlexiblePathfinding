@@ -17,19 +17,27 @@
 package org.terasology.flexiblepathfinding.metrics;
 
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class Histogram {
     int data[] = new int[0];
     int buckets = 25;
-    double min = 0;
-    double max = 0;
-    double bucketMax = 0;
-    double bucketSize = 0;
+    public double min;
+    public double max;
+    public double median;
+    public double mean;
+
+    double bucketMax;
+    double bucketSize;
+
     private Map<Float, Integer> bucketData = Maps.newHashMap();
 
     public Histogram() {
@@ -38,24 +46,6 @@ public class Histogram {
 
     public <T> Histogram(Collection<T> source, int numBuckets, Function<T, Double> fn) {
         analyze(source, numBuckets, fn);
-    }
-
-    public <T> void build(Collection<T> source, Function<T, Double> fn) {
-        data = new int[buckets];
-        try {
-            min = source.stream().map(fn).min(Double::compare).get();
-            max = source.stream().map(fn).max(Double::compare).get();
-        } catch (NoSuchElementException e) {
-            min = 0;
-            max = 1000;
-        }
-        bucketSize = (max - min) / (data.length - 1);
-        for (T el : source) {
-            double val = fn.apply(el);
-            int bucket = (int) Math.floor((val - min) / bucketSize);
-            data[bucket]++;
-            bucketMax = Math.max(bucketMax, data[bucket]);
-        }
     }
 
     public <T> Map<Float, Integer> analyze(Collection<T> source, int numBuckets, Function<T, Double> fn) {
@@ -89,5 +79,38 @@ public class Histogram {
 
     public Map<Float, Integer> getBucketData() {
         return bucketData;
+    }
+
+    private <T> void build(Collection<T> source, Function<T, Double> fn) {
+        data = new int[buckets];
+        try {
+            min = source.stream().map(fn).min(Double::compare).get();
+            max = source.stream().map(fn).max(Double::compare).get();
+        } catch (NoSuchElementException e) {
+            min = 0;
+            max = 1000;
+        }
+        bucketSize = (max - min) / (data.length - 1);
+
+        List<Double> sortable = Lists.newArrayList();
+        double sum = 0;
+        for (T el : source) {
+            double val = fn.apply(el);
+            sortable.add(val);
+            sum += val;
+            int bucket = (int) Math.floor((val - min) / bucketSize);
+            data[bucket]++;
+            bucketMax = Math.max(bucketMax, data[bucket]);
+        }
+
+        sortable.sort(null);
+
+        if (source.size() > 0) {
+            median = sortable.get(source.size() / 2);
+            mean = sum / source.size();
+        } else {
+            median = 0;
+            mean = 0;
+        }
     }
 }

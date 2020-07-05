@@ -39,24 +39,4 @@ public class PathMetricsRecorder {
     public static Collection<PathMetric> getPathMetrics() {
         return stats;
     }
-
-    public static String getStats() {
-        String result = "";
-
-        Histogram successTime = new Histogram();
-        Histogram failTime = new Histogram();
-        Histogram size = new Histogram();
-        Histogram cost = new Histogram();
-
-        Collection<PathMetric> successes = stats.stream().filter(stat -> stat.success).collect(Collectors.toList());
-        Collection<PathMetric> failures = stats.stream().filter(stat -> !stat.success).collect(Collectors.toList());
-
-        successTime.build(successes, pathMetric -> pathMetric.time);
-        failTime.build(failures, pathMetric -> pathMetric.time);
-        size.build(stats, pathMetric -> pathMetric.size);
-        cost.build(stats, pathMetric -> pathMetric.cost);
-
-        result = String.format("total: %d\nsuccess: %d\nfail: %d\n", stats.size(), successes.size(), failures.size());
-        return result + successTime.toString() + failTime.toString() + size.toString() + cost.toString();
-    }
 }
