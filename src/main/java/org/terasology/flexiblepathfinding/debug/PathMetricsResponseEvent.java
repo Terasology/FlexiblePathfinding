@@ -15,21 +15,15 @@
  */
 package org.terasology.flexiblepathfinding.debug;
 
+import com.google.common.collect.Lists;
 import org.terasology.entitySystem.event.Event;
+import org.terasology.flexiblepathfinding.metrics.PathMetric;
 import org.terasology.network.NetworkEvent;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class PathMetricsResponseEvent extends NetworkEvent {
-    public Map<Float, Integer> successTimes;
-    public Map<Float, Integer> failureTimes;
-    public Map<Float, Integer> costs;
-    public Map<Float, Integer> sizes;
-    public Map<Float, Integer> depths;
-    public Map<Float, Integer> explored;
-
-    public int total;
-    public int success;
-    public int failure;
-    public int lineOfSight;
+    public List<PathMetric> metrics = Lists.newArrayList();
 }

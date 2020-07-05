@@ -23,18 +23,32 @@ import org.terasology.entitySystem.systems.RegisterMode;
 import org.terasology.entitySystem.systems.RegisterSystem;
 import org.terasology.entitySystem.systems.UpdateSubscriberSystem;
 import org.terasology.flexiblepathfinding.debug.ui.DebugHud;
+import org.terasology.flexiblepathfinding.metrics.Histogram;
+import org.terasology.flexiblepathfinding.metrics.PathMetric;
 import org.terasology.logic.console.commandSystem.annotations.Command;
 import org.terasology.registry.In;
 import org.terasology.registry.Share;
-import org.terasology.rendering.nui.ControlWidget;
 import org.terasology.rendering.nui.NUIManager;
 import org.terasology.world.WorldProvider;
 
 import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Share(DebugClientSystem.class)
 @RegisterSystem(RegisterMode.CLIENT)
 public class DebugClientSystem extends BaseComponentSystem implements UpdateSubscriberSystem {
+    private static final float UPDATE_MILLIS = 1000;
+
+    public Histogram successTimes;
+    public Histogram failureTimes;
+    public Histogram sizes;
+    public Histogram costs;
+    public Histogram depths;
+    public Histogram explored;
+
     @In
     private Time time;
 
@@ -44,18 +58,11 @@ public class DebugClientSystem extends BaseComponentSystem implements UpdateSubs
     @In
     private WorldProvider world;
 
-    private boolean showPathDebugger;
     private float lastUpdate;
-    private static final float UPDATE_MILLIS = 1000;
-    PathMetricsResponseEvent lastResponse = new PathMetricsResponseEvent();
-
-    public PathMetricsResponseEvent getLastResponse() {
-        return lastResponse;
-    }
 
     @Override
     public void update(float delta) {
-        if(time.getGameTimeInMs() < lastUpdate + UPDATE_MILLIS) {
+        if (time.getGameTimeInMs() < lastUpdate + UPDATE_MILLIS) {
             return;
         }
 
@@ -65,7 +72,15 @@ public class DebugClientSystem extends BaseComponentSystem implements UpdateSubs
 
     @ReceiveEvent
     public void onPathMetricsResponse(PathMetricsResponseEvent event, EntityRef entity) {
-        lastResponse = event;
+        List<PathMetric> successes = event.metrics.stream().filter((x) -> x.success).collect(Collectors.toList());
+        List<PathMetric> failures = event.metrics.stream().filter((x) -> !x.success).collect(Collectors.toList());
+
+        successTimes = new Histogram(successes, 30, (PathMetric x) -> x.time);
+        failureTimes = new Histogram(failures, 30, (PathMetric x) -> x.time);
+        sizes = new Histogram(successes, 30, (PathMetric x) -> x.size);
+        costs = new Histogram(successes, 30, (PathMetric x) -> x.cost);
+        depths = new Histogram(event.metrics, 30, (PathMetric x) -> x.maxDepth);
+        explored = new Histogram(event.metrics, 30, (PathMetric x) -> x.nodesExplored);
     }
 
     @Command

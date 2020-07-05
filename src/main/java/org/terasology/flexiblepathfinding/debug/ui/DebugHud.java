@@ -3,6 +3,7 @@
 package org.terasology.flexiblepathfinding.debug.ui;
 
 import org.terasology.flexiblepathfinding.debug.DebugClientSystem;
+import org.terasology.flexiblepathfinding.metrics.Histogram;
 import org.terasology.registry.In;
 import org.terasology.rendering.nui.CoreScreenLayer;
 import org.terasology.rendering.nui.databinding.DefaultBinding;
@@ -23,45 +24,45 @@ public class DebugHud extends CoreHudWidget {
         UIHistogram depths = find("depths", UIHistogram.class);
         UIHistogram explored = find("explored", UIHistogram.class);
 
-        successTimes.bindValue(new DefaultBinding<Map<? extends Comparable, Integer>>() {
+        successTimes.bindValue(new DefaultBinding<Histogram>() {
             @Override
-            public Map<? extends Comparable, Integer> get() {
-                return system.getLastResponse().successTimes;
+            public Histogram get() {
+                return system.successTimes;
             }
         });
 
-        failureTimes.bindValue(new DefaultBinding<Map<? extends Comparable, Integer>>() {
+        failureTimes.bindValue(new DefaultBinding<Histogram>() {
             @Override
-            public Map<? extends Comparable, Integer> get() {
-                return system.getLastResponse().failureTimes;
+            public Histogram get() {
+                return system.failureTimes;
             }
         });
 
-        sizes.bindValue(new DefaultBinding<Map<? extends Comparable, Integer>>() {
+        sizes.bindValue(new DefaultBinding<Histogram>() {
             @Override
-            public Map<? extends Comparable, Integer> get() {
-                return system.getLastResponse().sizes;
+            public Histogram get() {
+                return system.sizes;
             }
         });
 
-        costs.bindValue(new DefaultBinding<Map<? extends Comparable, Integer>>() {
+        costs.bindValue(new DefaultBinding<Histogram>() {
             @Override
-            public Map<? extends Comparable, Integer> get() {
-                return system.getLastResponse().costs;
+            public Histogram get() {
+                return system.costs;
             }
         });
 
-        depths.bindValue(new DefaultBinding<Map<? extends Comparable, Integer>>() {
+        depths.bindValue(new DefaultBinding<Histogram>() {
             @Override
-            public Map<? extends Comparable, Integer> get() {
-                return system.getLastResponse().depths;
+            public Histogram get() {
+                return system.depths;
             }
         });
 
-        explored.bindValue(new DefaultBinding<Map<? extends Comparable, Integer>>() {
+        explored.bindValue(new DefaultBinding<Histogram>() {
             @Override
-            public Map<? extends Comparable, Integer> get() {
-                return system.getLastResponse().explored;
+            public Histogram get() {
+                return system.explored;
             }
         });
     }

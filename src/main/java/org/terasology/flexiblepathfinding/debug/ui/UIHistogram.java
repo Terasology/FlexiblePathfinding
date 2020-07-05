@@ -6,6 +6,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.terasology.engine.Time;
 import org.terasology.entitySystem.Component;
+import org.terasology.flexiblepathfinding.metrics.Histogram;
 import org.terasology.math.geom.Rect2i;
 import org.terasology.math.TeraMath;
 import org.terasology.math.geom.Vector2i;
@@ -26,7 +27,8 @@ import java.util.Map;
 public class UIHistogram extends CoreWidget {
     public Color color = Color.BLUE;
 
-    private Binding<Map<? extends Comparable, Integer>> value = new DefaultBinding<Map<? extends Comparable, Integer>>(Maps.newHashMap());
+    private Binding<Histogram> value = new DefaultBinding(new Histogram());
+
     @In
     private Time time;
     private int defaultHeight = 100;
@@ -34,7 +36,7 @@ public class UIHistogram extends CoreWidget {
 
     @Override
     public void onDraw(Canvas canvas) {
-        Map<? extends Comparable, Integer> data = value.get();
+        Map<? extends Comparable, Integer> data = value.get().getBucketData();
         if(data == null || data.size() == 0) {
             return;
         }
@@ -72,7 +74,7 @@ public class UIHistogram extends CoreWidget {
         super.update(delta);
     }
 
-    public void bindValue( Binding<Map<? extends Comparable, Integer>> binding) {
+    public void bindValue( Binding<Histogram> binding) {
         value = binding;
     }
 }

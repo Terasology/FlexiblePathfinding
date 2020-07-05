@@ -130,38 +130,11 @@ public class PathfinderSystem extends BaseComponentSystem {
         JPSImpl.setStatsEnabled(true);
     }
 
-    @Command
-    public void printPathStats() {
-        logger.info(PathMetricsRecorder.getStats());
-    }
-
     @ReceiveEvent
     public void onPathMetricsRequest(PathMetricsRequestEvent event, EntityRef entity) {
         PathMetricsResponseEvent response = new PathMetricsResponseEvent();
         Collection<PathMetric> metrics = PathMetricsRecorder.getPathMetrics();
-
-        if(metrics.size() == 0) {
-            return;
-        }
-
-        Histogram successTime = new Histogram();
-        Histogram failTime = new Histogram();
-        Histogram size = new Histogram();
-        Histogram cost = new Histogram();
-        Histogram depth = new Histogram();
-        Histogram explored = new Histogram();
-
-        Collection<PathMetric> successes = metrics.stream().filter(stat -> stat.success).collect(Collectors.toList());
-        Collection<PathMetric> failures = metrics.stream().filter(stat -> !stat.success).collect(Collectors.toList());
-
-        int buckets = 5;
-        response.sizes = size.analyze(successes, pathMetric -> pathMetric.size, buckets);
-        response.costs = cost.analyze(successes, pathMetric -> pathMetric.cost, buckets);
-        response.depths = depth.analyze(successes, pathMetric -> pathMetric.maxDepth, buckets);
-        response.explored = explored.analyze(successes, pathMetric -> pathMetric.nodesExplored, buckets);
-        response.successTimes = successTime.analyze(successes, pathMetric -> pathMetric.time, buckets);
-        response.failureTimes = failTime.analyze(failures, pathMetric -> pathMetric.time, buckets);
-
+        response.metrics.addAll(metrics);
 
         world.getWorldEntity().send(response);
     }
