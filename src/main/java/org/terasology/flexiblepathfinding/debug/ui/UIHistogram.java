@@ -10,6 +10,7 @@ import org.terasology.math.geom.Rect2i;
 import org.terasology.math.TeraMath;
 import org.terasology.math.geom.Vector2i;
 import org.terasology.registry.CoreRegistry;
+import org.terasology.registry.In;
 import org.terasology.rendering.assets.texture.TextureRegion;
 import org.terasology.rendering.nui.*;
 import org.terasology.rendering.nui.databinding.Binding;
@@ -23,8 +24,11 @@ import java.util.List;
 import java.util.Map;
 
 public class UIHistogram extends CoreWidget {
+    public Color color = Color.BLUE;
+
     private Binding<Map<? extends Comparable, Integer>> value = new DefaultBinding<Map<? extends Comparable, Integer>>(Maps.newHashMap());
-    private Time time = CoreRegistry.get(Time.class);
+    @In
+    private Time time;
     private int defaultHeight = 100;
     private int defaultWidth = 100;
 
@@ -35,31 +39,26 @@ public class UIHistogram extends CoreWidget {
             return;
         }
 
-        int rowSize = canvas.size().y / data.size();
-        int width = (int) (canvas.size().x / 1.618f);
+        final int statsHeight = 50;
+
+        int columnSize = canvas.size().x / data.size();
+        int graphHeight = Math.min((int) (canvas.size().x / 1.618f), canvas.size().y - statsHeight);
         int minY = 0; // data.values().stream().min(Integer::compareTo).get();
-        int maxY = data.values().stream().max(Integer::compareTo).get();
+        int maxY = Math.max(1, data.values().stream().max(Integer::compareTo).get());
 
-        if(maxY - minY == 0) {
-            maxY = minY + 1;
-        }
-
-        int offsetX = canvas.size().x - width;
-        int offsetY = 0;
-
+        int offsetX = 0;
+        int offsetY = canvas.size().y - statsHeight;
         List<Comparable> keys = Lists.newArrayList(data.keySet());
         Collections.sort(keys);
-        for(Comparable key : keys) {
-            Integer value = data.get(key);
-            float t = (float) (value - minY) / (float) (maxY - minY);
-            int barWidth = (int) (t * width);
-            Rect2i rect = Rect2i.createFromMinAndMax(offsetX, offsetY, offsetX + barWidth, offsetY + rowSize - 2);
-            Color color = Color.WHITE;
-            canvas.drawFilledRectangle(rect, color);
+        for (Comparable key : keys) {
+            Integer n = data.get(key);
 
-            Rect2i textRect = Rect2i.createFromMinAndMax(0, offsetY, offsetX, offsetY + rowSize - 2);
-            canvas.drawText(key.toString().substring(0,Math.min(key.toString().length() - 1, 4)), textRect);
-            offsetY += rowSize;
+            float t = (float) (n - minY) / (float) (maxY - minY);
+            int barHeight = (int) (t * graphHeight);
+
+            Rect2i rect = Rect2i.createFromMinAndMax(offsetX, offsetY - barHeight, offsetX + columnSize - 2, offsetY);
+            canvas.drawFilledRectangle(rect, color);
+            offsetX += columnSize;
         }
     }
 
