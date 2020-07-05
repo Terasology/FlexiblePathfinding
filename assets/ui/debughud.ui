@@ -157,7 +157,7 @@
               {
                 "type": "ColumnLayout",
                 "columns": 1,
-                "id": "busyColumn",
+                "id": "successRateColumn",
                 "verticalSpacing": 8,
                 "layoutInfo": {
                   "use-content-width": true,
@@ -166,19 +166,19 @@
                 "contents": [
                   {
                     "type": "UILabel",
-                    "text": "Busy",
+                    "text": "Success Rate",
                     "family": "title"
                   },
                   {
                     "type": "UITimeSeries",
-                    "id": "busy"
+                    "id": "successRate"
                   }
                 ]
               },
               {
                 "type": "ColumnLayout",
                 "columns": 1,
-                "id": "runningColumn",
+                "id": "throughputColumn",
                 "verticalSpacing": 8,
                 "layoutInfo": {
                   "use-content-width": true,
@@ -187,12 +187,12 @@
                 "contents": [
                   {
                     "type": "UILabel",
-                    "text": "Running",
+                    "text": "Throughput",
                     "family": "title"
                   },
                   {
                     "type": "UITimeSeries",
-                    "id": "running"
+                    "id": "throughput"
                   }
                 ]
               },

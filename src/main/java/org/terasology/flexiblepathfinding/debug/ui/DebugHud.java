@@ -6,11 +6,8 @@ import org.terasology.flexiblepathfinding.debug.DebugClientSystem;
 import org.terasology.flexiblepathfinding.metrics.Histogram;
 import org.terasology.flexiblepathfinding.metrics.TimeSeries;
 import org.terasology.registry.In;
-import org.terasology.rendering.nui.CoreScreenLayer;
 import org.terasology.rendering.nui.databinding.DefaultBinding;
 import org.terasology.rendering.nui.layers.hud.CoreHudWidget;
-
-import java.util.Map;
 
 public class DebugHud extends CoreHudWidget {
     @In
@@ -25,9 +22,9 @@ public class DebugHud extends CoreHudWidget {
         UIHistogram depths = find("depths", UIHistogram.class);
         UIHistogram explored = find("explored", UIHistogram.class);
 
-        UITimeSeries running = find("running", UITimeSeries.class);
+        UITimeSeries throughput = find("throughput", UITimeSeries.class);
         UITimeSeries pending = find("pending", UITimeSeries.class);
-        UITimeSeries busy = find("busy", UITimeSeries.class);
+        UITimeSeries successRate = find("successRate", UITimeSeries.class);
 
         successTimes.bindValue(new DefaultBinding<Histogram>() {
             @Override
@@ -71,10 +68,10 @@ public class DebugHud extends CoreHudWidget {
             }
         });
 
-        running.bindValue(new DefaultBinding<TimeSeries>() {
+        throughput.bindValue(new DefaultBinding<TimeSeries>() {
             @Override
             public TimeSeries get() {
-                return system.running;
+                return system.throughput;
             }
         });
 
@@ -85,10 +82,10 @@ public class DebugHud extends CoreHudWidget {
             }
         });
 
-        busy.bindValue(new DefaultBinding<TimeSeries>() {
+        successRate.bindValue(new DefaultBinding<TimeSeries>() {
             @Override
             public TimeSeries get() {
-                return system.busy;
+                return system.successRate;
             }
         });
     }

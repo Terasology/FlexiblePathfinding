@@ -48,9 +48,9 @@ public class DebugClientSystem extends BaseComponentSystem implements UpdateSubs
     public Histogram depths;
     public Histogram explored;
 
-    public TimeSeries running = new TimeSeries();
+    public TimeSeries throughput = new TimeSeries();
     public TimeSeries pending = new TimeSeries();
-    public TimeSeries busy = new TimeSeries();
+    public TimeSeries successRate = new TimeSeries();
 
     @In
     private Time time;
@@ -86,13 +86,12 @@ public class DebugClientSystem extends BaseComponentSystem implements UpdateSubs
         explored = new Histogram(event.pathMetrics, 30, (PathMetric x) -> x.nodesExplored);
 
         if (event.pathfinderMetrics.size() > 0) {
-            running.add(event.pathfinderMetrics.get(event.pathfinderMetrics.size() - 1).runningTasks);
+            throughput.add(event.pathfinderMetrics.get(event.pathfinderMetrics.size() - 1).recentlyCompletedTasks);
             pending.add(event.pathfinderMetrics.get(event.pathfinderMetrics.size() - 1).pendingTasks);
 
             // percentage of samples where tasks were running
-            long busySamples = event.pathfinderMetrics.stream().filter((x) -> x.runningTasks > 0).count();
-            double busyProportion =  (double) busySamples / (double) event.pathfinderMetrics.size();
-            busy.add(busyProportion);
+            double successProportion =  (double) successes.size() / (double) event.pathMetrics.size();
+            successRate.add(successProportion);
         }
     }
 

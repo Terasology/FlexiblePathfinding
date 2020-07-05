@@ -9,4 +9,5 @@ package org.terasology.flexiblepathfinding.metrics;
 public class PathfinderMetric {
     public double pendingTasks;
     public double runningTasks;
+    public double recentlyCompletedTasks;
 }

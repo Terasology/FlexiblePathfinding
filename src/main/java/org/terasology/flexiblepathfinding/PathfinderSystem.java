@@ -64,6 +64,8 @@ public class PathfinderSystem extends BaseComponentSystem implements UpdateSubsc
     private static final Logger logger = LoggerFactory.getLogger(PathfinderSystem.class);
 
     private int nextId;
+    private int pendingTasks;
+    private int completedTasksSinceLastCollection;
     private final Set<EntityRef> entitiesWithPendingTasks = Sets.newHashSet();
 
     private final TaskMaster<PathfinderTask> workerTaskMaster = TaskMaster.createFIFOTaskMaster("PathfinderWorker", 4);
@@ -127,6 +129,7 @@ public class PathfinderSystem extends BaseComponentSystem implements UpdateSubsc
 
         PathfinderTask task = new PathfinderTask(world, config, callback);
         taskMaster.offer(task);
+        pendingTasks++;
         return nextId++;
     }
 
@@ -135,7 +138,9 @@ public class PathfinderSystem extends BaseComponentSystem implements UpdateSubsc
     }
 
     public void completePathFor(EntityRef requestor) {
-        if(requestor == null) {
+        pendingTasks--;
+        completedTasksSinceLastCollection++;
+        if (requestor == null) {
             return;
         }
         entitiesWithPendingTasks.remove(requestor);
@@ -160,10 +165,13 @@ public class PathfinderSystem extends BaseComponentSystem implements UpdateSubsc
         if (executor == null) {
             return;
         }
-        
+
         PathfinderMetric metric = new PathfinderMetric();
         metric.runningTasks = executor.getActiveCount();
-        metric.pendingTasks = executor.getQueue().size();
+        metric.pendingTasks = pendingTasks;
+        metric.recentlyCompletedTasks = completedTasksSinceLastCollection;
         PathfinderMetricsRecorder.recordPathfinderMetric(metric);
+
+        completedTasksSinceLastCollection = 0;
     }
 }
