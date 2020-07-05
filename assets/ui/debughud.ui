@@ -147,78 +147,78 @@
               }
             ]
           },
-                    {
-                      "type": "rowLayout",
-                      "layoutInfo": {
-                        "use-content-width": true,
-                        "use-content-height": true
-                      },
-                      "contents": [
-                        {
-                          "type": "ColumnLayout",
-                          "columns": 1,
-                          "id": "runningColumn",
-                          "verticalSpacing": 8,
-                          "layoutInfo": {
-                            "use-content-width": true,
-                            "use-content-height": true
-                          },
-                          "contents": [
-                            {
-                              "type": "UILabel",
-                              "text": "Running",
-                              "family": "title"
-                            },
-                            {
-                              "type": "UITimeSeries",
-                              "id": "running"
-                            }
-                          ]
-                        },
-                        {
-                          "type": "ColumnLayout",
-                          "columns": 1,
-                          "id": "pendingColumn",
-                          "verticalSpacing": 8,
-                          "layoutInfo": {
-                            "use-content-width": true,
-                            "use-content-height": true
-                          },
-                          "contents": [
-                            {
-                              "type": "UILabel",
-                              "text": "Pending",
-                              "family": "title"
-                            },
-                            {
-                              "type": "UITimeSeries",
-                              "id": "pending"
-                            }
-                          ]
-                        }
-                      ]
-                    },
-                        {
-                          "type": "ColumnLayout",
-                          "columns": 1,
-                          "id": "busyColumn",
-                          "verticalSpacing": 8,
-                          "layoutInfo": {
-                            "use-content-width": true,
-                            "use-content-height": true
-                          },
-                          "contents": [
-                            {
-                              "type": "UILabel",
-                              "text": "Busy",
-                              "family": "title"
-                            },
-                            {
-                              "type": "UITimeSeries",
-                              "id": "busy"
-                            }
-                          ]
-                        }
+          {
+            "type": "rowLayout",
+            "layoutInfo": {
+              "use-content-width": true,
+              "use-content-height": true
+            },
+            "contents": [
+              {
+                "type": "ColumnLayout",
+                "columns": 1,
+                "id": "busyColumn",
+                "verticalSpacing": 8,
+                "layoutInfo": {
+                  "use-content-width": true,
+                  "use-content-height": true
+                },
+                "contents": [
+                  {
+                    "type": "UILabel",
+                    "text": "Busy",
+                    "family": "title"
+                  },
+                  {
+                    "type": "UITimeSeries",
+                    "id": "busy"
+                  }
+                ]
+              },
+              {
+                "type": "ColumnLayout",
+                "columns": 1,
+                "id": "runningColumn",
+                "verticalSpacing": 8,
+                "layoutInfo": {
+                  "use-content-width": true,
+                  "use-content-height": true
+                },
+                "contents": [
+                  {
+                    "type": "UILabel",
+                    "text": "Running",
+                    "family": "title"
+                  },
+                  {
+                    "type": "UITimeSeries",
+                    "id": "running"
+                  }
+                ]
+              },
+              {
+                "type": "ColumnLayout",
+                "columns": 1,
+                "id": "pendingColumn",
+                "verticalSpacing": 8,
+                "layoutInfo": {
+                  "use-content-width": true,
+                  "use-content-height": true
+                },
+                "contents": [
+                  {
+                    "type": "UILabel",
+                    "text": "Pending",
+                    "family": "title"
+                  },
+                  {
+                    "type": "UITimeSeries",
+                    "id": "pending"
+                  }
+                ]
+              }
+            ]
+          }
         ]
       }
     ]
