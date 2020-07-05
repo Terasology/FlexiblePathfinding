@@ -1,47 +1,21 @@
-/*
- * Copyright 2018 MovingBlocks
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-package org.terasology.flexiblepathfinding.debug;
+// Copyright 2020 The Terasology Foundation
+// SPDX-License-Identifier: Apache-2.0
+package org.terasology.flexiblepathfinding.debug.ui;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.terasology.entitySystem.entity.EntityManager;
-import org.terasology.entitySystem.entity.EntityRef;
-import org.terasology.logic.players.LocalPlayer;
+import org.terasology.flexiblepathfinding.debug.DebugClientSystem;
 import org.terasology.registry.In;
-import org.terasology.rendering.nui.Canvas;
-import org.terasology.rendering.nui.UIWidget;
-import org.terasology.rendering.nui.databinding.Binding;
+import org.terasology.rendering.nui.CoreScreenLayer;
 import org.terasology.rendering.nui.databinding.DefaultBinding;
-import org.terasology.rendering.nui.databinding.ReadOnlyBinding;
 import org.terasology.rendering.nui.layers.hud.CoreHudWidget;
-import org.terasology.rendering.nui.widgets.UILabel;
 
-import java.io.Serializable;
 import java.util.Map;
 
-/**
- * Created by kaen on 8/25/16.
- */
 public class DebugHud extends CoreHudWidget {
     @In
-    FlexiblePathfindingDebugClientSystem system;
+    DebugClientSystem system;
 
-    boolean bound = false;
-
-    public void bind() {
+    @Override
+    public void initialise() {
         UIHistogram successTimes = find("successTimes", UIHistogram.class);
         UIHistogram failureTimes = find("failureTimes", UIHistogram.class);
         UIHistogram sizes = find("sizes", UIHistogram.class);
@@ -90,10 +64,5 @@ public class DebugHud extends CoreHudWidget {
                 return system.getLastResponse().explored;
             }
         });
-    }
-
-    @Override
-    public void initialise() {
-        bind();
     }
 }

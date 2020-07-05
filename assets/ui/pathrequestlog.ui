@@ -1,0 +1,18 @@
+{
+  "type": "PathRequestLog",
+  "contents": {
+    "type": "relativeLayout",
+    "layoutInfo": {},
+    "contents": [
+      {
+        "type": "engine:ColumnLayout",
+        "id": "columnlayout",
+        "columns": 1,
+        "layoutInfo": {
+          "use-content-height": true
+        },
+        "contents": [            ]
+          }
+          ]
+          }
+}

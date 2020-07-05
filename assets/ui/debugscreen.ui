@@ -1,0 +1,57 @@
+{
+  "type": "DebugScreen",
+  "contents": {
+    "type": "relativeLayout",
+    "layoutInfo": {},
+    "contents": [
+      {
+        "type": "engine:ColumnLayout",
+        "id": "columnlayout",
+        "columns": 1,
+        "layoutInfo": {
+          "use-content-height": true
+        },
+        "contents": [
+          {
+            "type": "engine:UITabBox",
+            "id": "newWidget",
+            "tabBarHeight": 30,
+            "currentTab": 1,
+            "layoutInfo": {},
+            "contents": [
+              {
+                "type": "UILabel",
+                "text": "page1",
+                "family": "title"
+              },
+              {
+                "type": "UILabel",
+                "text": "page2",
+                "family": "title"
+              },
+              {
+                "type": "UILabel",
+                "text": "page3",
+                "family": "title"
+              }
+            ],
+            "buttons": [
+              {
+                "type": "UIButton",
+                "text": "page1"
+              },
+              {
+                "type": "UIButton",
+                "text": "page2"
+              },
+              {
+                "type": "UIButton",
+                "text": "page3"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

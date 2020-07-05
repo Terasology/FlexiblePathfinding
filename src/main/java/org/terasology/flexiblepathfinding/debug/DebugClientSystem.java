@@ -22,16 +22,19 @@ import org.terasology.entitySystem.systems.BaseComponentSystem;
 import org.terasology.entitySystem.systems.RegisterMode;
 import org.terasology.entitySystem.systems.RegisterSystem;
 import org.terasology.entitySystem.systems.UpdateSubscriberSystem;
+import org.terasology.flexiblepathfinding.debug.ui.DebugHud;
 import org.terasology.logic.console.commandSystem.annotations.Command;
 import org.terasology.registry.In;
 import org.terasology.registry.Share;
+import org.terasology.rendering.nui.ControlWidget;
 import org.terasology.rendering.nui.NUIManager;
 import org.terasology.world.WorldProvider;
 
-@Share(FlexiblePathfindingDebugClientSystem.class)
-@RegisterSystem(RegisterMode.CLIENT)
-public class FlexiblePathfindingDebugClientSystem extends BaseComponentSystem implements UpdateSubscriberSystem {
+import java.util.Collection;
 
+@Share(DebugClientSystem.class)
+@RegisterSystem(RegisterMode.CLIENT)
+public class DebugClientSystem extends BaseComponentSystem implements UpdateSubscriberSystem {
     @In
     private Time time;
 
@@ -66,13 +69,21 @@ public class FlexiblePathfindingDebugClientSystem extends BaseComponentSystem im
     }
 
     @Command
-    public String showPathDebugger() {
-        if (showPathDebugger) {
-            return "Already shown";
-        }
+    public String togglePathDebugger() {
+        nuiManager.toggleScreen("FlexiblePathfinding:debugscreen");
+        return "Toggled path debugger";
+    }
 
-        showPathDebugger = true;
-        nuiManager.getHUD().addHUDElement("FlexiblePathfinding:debug");
-        return "Showing path debugger";
+    @Command
+    public String togglePathHud() {
+        Collection<DebugHud> widgets = nuiManager.getHUD().findAll(DebugHud.class);
+        if (widgets.isEmpty()) {
+            nuiManager.getHUD().addHUDElement("FlexiblePathfinding:debughud");
+        } else {
+            for (DebugHud widget : widgets) {
+                nuiManager.getHUD().removeHUDElement(widget);
+            }
+        }
+        return "Toggled path hud";
     }
 }
