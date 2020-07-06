@@ -39,7 +39,7 @@ public class DebugScreen extends CoreScreenLayer {
             toggleRecording.bindText(new DefaultBinding<String>() {
                 @Override
                 public String get() {
-                    return (system.lastPathMetricsResponseEvent.recording ? "Enable" : "Disable") + " Path Metric Recording";
+                    return (system.lastPathMetricsResponseEvent.recording ? "Disable" : "Enable") + " Path Metric Recording";
                 }
             });
         }

@@ -10,6 +10,6 @@ import org.terasology.input.Keyboard;
 import org.terasology.input.RegisterBindButton;
 
 @RegisterBindButton(id = "toggle_debug_ui", description = "Toggle Debug UI", category = "flexiblepathfinding")
-@DefaultBinding(type = InputType.KEY, id = Keyboard.KeyId.F5)
+@DefaultBinding(type = InputType.KEY, id = Keyboard.KeyId.F7)
 public class ToggleDebugScreenEvent extends BindButtonEvent {
 }
