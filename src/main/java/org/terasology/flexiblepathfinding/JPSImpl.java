@@ -429,8 +429,7 @@ public class JPSImpl implements JPS {
 
         // this is the goal (or close enough to it)
         if (neighbor.distanceSquared(goal.getPosition()) <= config.goalDistance * config.goalDistance) {
-            goal = getJumpPoint(neighbor);
-            return goal;
+            return getJumpPoint(neighbor);
         }
 
         if (!isReachable(neighbor, current)) {

@@ -3,7 +3,6 @@
 package org.terasology.flexiblepathfinding.debug.ui;
 
 import org.terasology.engine.Time;
-import org.terasology.flexiblepathfinding.metrics.Histogram;
 import org.terasology.flexiblepathfinding.metrics.TimeSeries;
 import org.terasology.math.geom.Rect2i;
 import org.terasology.math.geom.Vector2i;
@@ -14,8 +13,7 @@ import org.terasology.rendering.nui.CoreWidget;
 import org.terasology.rendering.nui.databinding.Binding;
 import org.terasology.rendering.nui.databinding.DefaultBinding;
 
-import java.util.Collection;
-import java.util.Comparator;
+import java.util.Queue;
 
 public class UITimeSeries extends CoreWidget {
     public Color color = Color.WHITE;
@@ -35,7 +33,7 @@ public class UITimeSeries extends CoreWidget {
             return;
         }
 
-        Collection<Double> data = timeSeries.getValues();
+        Queue<Double> data = timeSeries.getValues();
         if (data == null || data.size() == 0) {
             return;
         }
@@ -51,7 +49,9 @@ public class UITimeSeries extends CoreWidget {
         double offsetY = canvas.size().y - statsHeight;
         double lastX = offsetX;
         double lastY = offsetY;
+        double lastN = 0;
         for (double n : data) {
+            lastN = n;
             float t = (float) (n - minY) / (float) (maxY - minY);
             int barHeight = (int) (t * graphHeight);
 
@@ -66,7 +66,7 @@ public class UITimeSeries extends CoreWidget {
         Rect2i statsRegion = Rect2i.createFromMinAndMax(0, (int) offsetY, canvas.size().x, canvas.size().y);
         double min = data.stream().min(Double::compareTo).get();
         double max = data.stream().max(Double::compareTo).get();
-        String stats = String.format("min: %.6g max: %.6g", min, max);
+        String stats = String.format("min: %.6g max: %.6g last: %.6g", min, max, lastN);
         canvas.drawText(stats, statsRegion);
     }
 
