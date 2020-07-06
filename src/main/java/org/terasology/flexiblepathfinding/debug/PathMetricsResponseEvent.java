@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 public class PathMetricsResponseEvent extends NetworkEvent {
+    public boolean recording;
     public List<PathMetric> pathMetrics = Lists.newArrayList();
     public List<PathfinderMetric> pathfinderMetrics = Lists.newArrayList();
 }

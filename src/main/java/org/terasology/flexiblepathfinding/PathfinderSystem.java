@@ -28,6 +28,7 @@ import org.terasology.entitySystem.systems.RegisterSystem;
 import org.terasology.entitySystem.systems.UpdateSubscriberSystem;
 import org.terasology.flexiblepathfinding.debug.PathMetricsRequestEvent;
 import org.terasology.flexiblepathfinding.debug.PathMetricsResponseEvent;
+import org.terasology.flexiblepathfinding.debug.ToggleRecordingNetworkEvent;
 import org.terasology.flexiblepathfinding.metrics.PathMetric;
 import org.terasology.flexiblepathfinding.metrics.PathfinderMetricsRecorder;
 import org.terasology.flexiblepathfinding.metrics.PathfinderMetric;
@@ -146,9 +147,9 @@ public class PathfinderSystem extends BaseComponentSystem implements UpdateSubsc
         entitiesWithPendingTasks.remove(requestor);
     }
 
-    @Command
-    public void recordPathStats() {
-        JPSImpl.setStatsEnabled(true);
+    @ReceiveEvent
+    public void onToggleRecording(ToggleRecordingNetworkEvent event, EntityRef entity) {
+        JPSImpl.setStatsEnabled(!JPSImpl.getStatsEnabled());
     }
 
     @ReceiveEvent
@@ -156,6 +157,7 @@ public class PathfinderSystem extends BaseComponentSystem implements UpdateSubsc
         PathMetricsResponseEvent response = new PathMetricsResponseEvent();
         response.pathMetrics.addAll(PathfinderMetricsRecorder.getPathMetrics());
         response.pathfinderMetrics.addAll(PathfinderMetricsRecorder.getPathfinderMetrics());
+        response.recording = JPSImpl.getStatsEnabled();
 
         world.getWorldEntity().send(response);
     }

@@ -76,6 +76,10 @@ public class JPSImpl implements JPS {
         JPSImpl.statsEnabled = statsEnabled;
     }
 
+    public static boolean getStatsEnabled() {
+        return JPSImpl.statsEnabled;
+    }
+
     /**
      * Performs the search using a {@link TimeLimiter} if `config.executor` was set. In either case, blocks
      * synchronously until the search completes or fails.

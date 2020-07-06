@@ -26,7 +26,8 @@ import org.terasology.flexiblepathfinding.debug.ui.DebugHud;
 import org.terasology.flexiblepathfinding.metrics.Histogram;
 import org.terasology.flexiblepathfinding.metrics.PathMetric;
 import org.terasology.flexiblepathfinding.metrics.TimeSeries;
-import org.terasology.logic.console.commandSystem.annotations.Command;
+import org.terasology.input.ButtonState;
+import org.terasology.network.ClientComponent;
 import org.terasology.registry.In;
 import org.terasology.registry.Share;
 import org.terasology.rendering.nui.NUIManager;
@@ -52,6 +53,8 @@ public class DebugClientSystem extends BaseComponentSystem implements UpdateSubs
     public TimeSeries pending = new TimeSeries();
     public TimeSeries successRate = new TimeSeries();
 
+    public PathMetricsResponseEvent lastPathMetricsResponseEvent = new PathMetricsResponseEvent();
+
     @In
     private Time time;
 
@@ -59,7 +62,7 @@ public class DebugClientSystem extends BaseComponentSystem implements UpdateSubs
     private NUIManager nuiManager;
 
     @In
-    private WorldProvider world;
+    private WorldProvider worldProvider;
 
     private float lastUpdate;
 
@@ -70,11 +73,12 @@ public class DebugClientSystem extends BaseComponentSystem implements UpdateSubs
         }
 
         lastUpdate = time.getGameTimeInMs();
-        world.getWorldEntity().send(new PathMetricsRequestEvent());
+        worldProvider.getWorldEntity().send(new PathMetricsRequestEvent());
     }
 
     @ReceiveEvent
     public void onPathMetricsResponse(PathMetricsResponseEvent event, EntityRef entity) {
+        lastPathMetricsResponseEvent = event;
         List<PathMetric> successes = event.pathMetrics.stream().filter((x) -> x.success).collect(Collectors.toList());
         List<PathMetric> failures = event.pathMetrics.stream().filter((x) -> !x.success).collect(Collectors.toList());
 
@@ -89,20 +93,13 @@ public class DebugClientSystem extends BaseComponentSystem implements UpdateSubs
             throughput.add(event.pathfinderMetrics.get(event.pathfinderMetrics.size() - 1).recentlyCompletedTasks);
             pending.add(event.pathfinderMetrics.get(event.pathfinderMetrics.size() - 1).pendingTasks);
 
-            // percentage of samples where tasks were running
             double successProportion =  (double) successes.size() / (double) event.pathMetrics.size();
             successRate.add(successProportion);
         }
     }
 
-    @Command
-    public String togglePathDebugger() {
-        nuiManager.toggleScreen("FlexiblePathfinding:debugscreen");
-        return "Toggled path debugger";
-    }
-
-    @Command
-    public String togglePathHud() {
+    @ReceiveEvent(components = ClientComponent.class)
+    public void onToggleDebugHUD(ToggleDebugHudEvent event, EntityRef entity) {
         Collection<DebugHud> widgets = nuiManager.getHUD().findAll(DebugHud.class);
         if (widgets.isEmpty()) {
             nuiManager.getHUD().addHUDElement("FlexiblePathfinding:debughud");
@@ -111,6 +108,18 @@ public class DebugClientSystem extends BaseComponentSystem implements UpdateSubs
                 nuiManager.getHUD().removeHUDElement(widget);
             }
         }
-        return "Toggled path hud";
+    }
+
+    @ReceiveEvent(components = ClientComponent.class)
+    public void onToggleDebugUI(ToggleDebugScreenEvent event, EntityRef entity) {
+        if (event.getState() == ButtonState.DOWN) {
+            nuiManager.toggleScreen("FlexiblePathfinding:debugscreen");
+            event.consume();
+        }
+    }
+
+    @ReceiveEvent(components = ClientComponent.class)
+    public void onToggleRecording(ToggleRecordingEvent event, EntityRef entity) {
+        worldProvider.getWorldEntity().send(new ToggleRecordingNetworkEvent());
     }
 }

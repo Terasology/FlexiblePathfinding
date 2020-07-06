@@ -5,52 +5,62 @@
     "layoutInfo": {},
     "contents": [
       {
-        "type": "engine:ColumnLayout",
-        "id": "columnlayout",
-        "columns": 1,
+        "type": "UIBox",
+        "id": "newWidget",
+        "skin": "engine:default",
         "layoutInfo": {
-          "use-content-height": true
+          "use-content-width": true,
+          "use-content-height": true,
+          "position-vertical-center": {},
+          "position-horizontal-center": {}
         },
-        "contents": [
-          {
-            "type": "engine:UITabBox",
-            "id": "newWidget",
-            "tabBarHeight": 30,
-            "currentTab": 1,
-            "layoutInfo": {},
-            "contents": [
-              {
-                "type": "UILabel",
-                "text": "page1",
-                "family": "title"
-              },
-              {
-                "type": "UILabel",
-                "text": "page2",
-                "family": "title"
-              },
-              {
-                "type": "UILabel",
-                "text": "page3",
-                "family": "title"
-              }
-            ],
-            "buttons": [
-              {
-                "type": "UIButton",
-                "text": "page1"
-              },
-              {
-                "type": "UIButton",
-                "text": "page2"
-              },
-              {
-                "type": "UIButton",
-                "text": "page3"
-              }
-            ]
-          }
-        ]
+        "content": {
+          "type": "ColumnLayout",
+          "id": "newWidget",
+          "layoutInfo": {},
+          "contents": [
+            {
+              "type": "engine:UILabel",
+              "id": "newWidget",
+              "layoutInfo": {},
+              "text": "FPF Debugging Menu",
+              "family": "title"
+            },
+            {
+              "type": "UISpace",
+              "id": "newWidget",
+              "size": [10, 10],
+              "layoutInfo": {}
+            },
+            {
+              "id": "toggleRecording",
+              "type": "UIButton",
+              "text": "Toggle Metrics Recording"
+            },
+            {
+              "type": "UISpace",
+              "id": "newWidget",
+              "size": [10, 10],
+              "layoutInfo": {}
+            },
+            {
+              "id": "toggleDebugHud",
+              "type": "UIButton",
+              "text": "Toggle Debug Hud"
+            },
+            {
+              "type": "UISpace",
+              "id": "newWidget",
+              "size": [10, 10],
+              "layoutInfo": {}
+            },
+            {
+              "id": "viewPathLogs",
+              "type": "UIButton",
+              "text": "View Path Logs"
+            }
+          ]
+        }
       }
     ]
   }

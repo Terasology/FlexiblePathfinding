@@ -1,18 +1,21 @@
 {
   "type": "PathRequestLog",
-  "contents": {
-    "type": "relativeLayout",
-    "layoutInfo": {},
-    "contents": [
-      {
-        "type": "engine:ColumnLayout",
-        "id": "columnlayout",
-        "columns": 1,
-        "layoutInfo": {
-          "use-content-height": true
-        },
-        "contents": [            ]
-          }
-          ]
-          }
+  "contents":
+    {
+      "type": "engine:ScrollableArea",
+      "layoutInfo": {
+
+      },
+      "contents": [    {
+                         "type": "engine:UIText",
+                         "id": "pathMetricLogs",
+                         "text": "test",
+                         "multiline": true,
+                         "readOnly": true,
+                         "layoutInfo": {
+
+                         }
+                       }]
+    }
+
 }

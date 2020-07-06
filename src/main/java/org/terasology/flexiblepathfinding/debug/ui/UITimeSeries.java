@@ -19,6 +19,7 @@ import java.util.Comparator;
 
 public class UITimeSeries extends CoreWidget {
     public Color color = Color.WHITE;
+    private final double padding = 2.0;
 
     private Binding<TimeSeries> binding = new DefaultBinding(new TimeSeries());
 
@@ -41,12 +42,12 @@ public class UITimeSeries extends CoreWidget {
 
         final int statsHeight = 50;
 
-        double columnSize = (double) canvas.size().x / data.size();
+        double columnSize = (canvas.size().x - padding * 2) / data.size();
         int graphHeight = Math.min((int) (canvas.size().x / 1.618f), canvas.size().y - statsHeight);
         double minY = 0; // data.values().stream().min(Integer::compareTo).get();
         double maxY = Math.max(1, data.stream().max(Double::compareTo).get());
 
-        double offsetX = 0;
+        double offsetX = padding;
         double offsetY = canvas.size().y - statsHeight;
         double lastX = offsetX;
         double lastY = offsetY;

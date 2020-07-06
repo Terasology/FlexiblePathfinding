@@ -25,4 +25,9 @@ public class PathMetric {
     public double maxDepth;
     public double nodesExplored;
     public boolean success;
+
+    @Override
+    public String toString() {
+        return String.format("success: %s time: %s cost: %s size: %s", success, time, cost, size);
+    }
 }
