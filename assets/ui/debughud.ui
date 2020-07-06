@@ -1,0 +1,229 @@
+{
+  "type": "DebugHud",
+  "contents": {
+    "type": "relativeLayout",
+    "layoutInfo": {},
+    "contents": [
+      {
+        "type": "engine:UIBox",
+        "skin": "engine:solid",
+        "layoutInfo": {
+          "use-content-height": true
+        },
+        "content": {
+          "type": "ColumnLayout",
+          "layoutInfo": {},
+          "contents": [
+            {
+              "type": "rowLayout",
+              "layoutInfo": {
+                "use-content-width": true,
+                "use-content-height": true
+              },
+              "contents": [
+                {
+                  "type": "ColumnLayout",
+                  "id": "successColumn",
+                  "columns": 1,
+                  "verticalSpacing": 8,
+                  "layoutInfo": {
+                    "use-content-width": true,
+                    "use-content-height": true
+                  },
+                  "contents": [
+                    {
+                      "type": "UILabel",
+                      "text": "Success Times",
+                      "family": "title"
+                    },
+                    {
+                      "type": "UIHistogram",
+                      "id": "successTimes"
+                    }
+                  ]
+                },
+                {
+                  "type": "ColumnLayout",
+                  "id": "failureColumn",
+                  "columns": 1,
+                  "verticalSpacing": 8,
+                  "layoutInfo": {
+                    "use-content-width": true,
+                    "use-content-height": true
+                  },
+                  "contents": [
+                    {
+                      "type": "UILabel",
+                      "text": "Failure Times",
+                      "family": "title"
+                    },
+                    {
+                      "type": "UIHistogram",
+                      "id": "failureTimes"
+                    }
+                  ]
+                },
+                {
+                  "type": "ColumnLayout",
+                  "columns": 1,
+                  "id": "costsColumn",
+                  "verticalSpacing": 8,
+                  "layoutInfo": {
+                    "use-content-width": true,
+                    "use-content-height": true
+                  },
+                  "contents": [
+                    {
+                      "type": "UILabel",
+                      "text": "Costs",
+                      "family": "title"
+                    },
+                    {
+                      "type": "UIHistogram",
+                      "id": "costs"
+                    }
+                  ]
+                },
+                {
+                  "type": "ColumnLayout",
+                  "columns": 1,
+                  "id": "sizesColumn",
+                  "verticalSpacing": 8,
+                  "layoutInfo": {
+                    "use-content-width": true,
+                    "use-content-height": true
+                  },
+                  "contents": [
+                    {
+                      "type": "UILabel",
+                      "text": "Sizes",
+                      "family": "title"
+                    },
+                    {
+                      "type": "UIHistogram",
+                      "id": "sizes"
+                    }
+                  ]
+                },
+                {
+                  "type": "ColumnLayout",
+                  "columns": 1,
+                  "id": "depthsColumn",
+                  "verticalSpacing": 8,
+                  "layoutInfo": {
+                    "use-content-width": true,
+                    "use-content-height": true
+                  },
+                  "contents": [
+                    {
+                      "type": "UILabel",
+                      "text": "Depths",
+                      "family": "title"
+                    },
+                    {
+                      "type": "UIHistogram",
+                      "id": "depths"
+                    }
+                  ]
+                },
+                {
+                  "type": "ColumnLayout",
+                  "columns": 1,
+                  "id": "exploredColumn",
+                  "verticalSpacing": 8,
+                  "layoutInfo": {
+                    "use-content-width": true,
+                    "use-content-height": true
+                  },
+                  "contents": [
+                    {
+                      "type": "UILabel",
+                      "text": "Explored",
+                      "family": "title"
+                    },
+                    {
+                      "type": "UIHistogram",
+                      "id": "explored"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "rowLayout",
+              "layoutInfo": {
+                "use-content-width": true,
+                "use-content-height": true
+              },
+              "contents": [
+                {
+                  "type": "ColumnLayout",
+                  "columns": 1,
+                  "id": "successRateColumn",
+                  "verticalSpacing": 8,
+                  "layoutInfo": {
+                    "use-content-width": true,
+                    "use-content-height": true
+                  },
+                  "contents": [
+                    {
+                      "type": "UILabel",
+                      "text": "Success Rate",
+                      "family": "title"
+                    },
+                    {
+                      "type": "UITimeSeries",
+                      "id": "successRate"
+                    }
+                  ]
+                },
+                {
+                  "type": "ColumnLayout",
+                  "columns": 1,
+                  "id": "throughputColumn",
+                  "verticalSpacing": 8,
+                  "layoutInfo": {
+                    "use-content-width": true,
+                    "use-content-height": true
+                  },
+                  "contents": [
+                    {
+                      "type": "UILabel",
+                      "text": "Throughput",
+                      "family": "title"
+                    },
+                    {
+                      "type": "UITimeSeries",
+                      "id": "throughput"
+                    }
+                  ]
+                },
+                {
+                  "type": "ColumnLayout",
+                  "columns": 1,
+                  "id": "pendingColumn",
+                  "verticalSpacing": 8,
+                  "layoutInfo": {
+                    "use-content-width": true,
+                    "use-content-height": true
+                  },
+                  "contents": [
+                    {
+                      "type": "UILabel",
+                      "text": "Pending",
+                      "family": "title"
+                    },
+                    {
+                      "type": "UITimeSeries",
+                      "id": "pending"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

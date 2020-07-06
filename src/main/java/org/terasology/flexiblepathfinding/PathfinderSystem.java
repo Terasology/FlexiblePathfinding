@@ -19,16 +19,19 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.terasology.engine.Time;
 import org.terasology.entitySystem.entity.EntityRef;
 import org.terasology.entitySystem.event.ReceiveEvent;
 import org.terasology.entitySystem.systems.BaseComponentSystem;
 import org.terasology.entitySystem.systems.RegisterMode;
 import org.terasology.entitySystem.systems.RegisterSystem;
+import org.terasology.entitySystem.systems.UpdateSubscriberSystem;
 import org.terasology.flexiblepathfinding.debug.PathMetricsRequestEvent;
 import org.terasology.flexiblepathfinding.debug.PathMetricsResponseEvent;
-import org.terasology.flexiblepathfinding.metrics.Histogram;
+import org.terasology.flexiblepathfinding.debug.ToggleRecordingNetworkEvent;
 import org.terasology.flexiblepathfinding.metrics.PathMetric;
-import org.terasology.flexiblepathfinding.metrics.PathMetricsRecorder;
+import org.terasology.flexiblepathfinding.metrics.PathfinderMetricsRecorder;
+import org.terasology.flexiblepathfinding.metrics.PathfinderMetric;
 import org.terasology.logic.console.commandSystem.annotations.Command;
 import org.terasology.math.geom.Vector3i;
 import org.terasology.registry.In;
@@ -39,7 +42,7 @@ import org.terasology.world.WorldProvider;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.concurrent.ThreadPoolExecutor;
 
 /**
  * This systems helps finding a paths through the game world.
@@ -57,21 +60,27 @@ import java.util.stream.Collectors;
  */
 @RegisterSystem(RegisterMode.AUTHORITY)
 @Share(value = PathfinderSystem.class)
-public class PathfinderSystem extends BaseComponentSystem {
-
+public class PathfinderSystem extends BaseComponentSystem implements UpdateSubscriberSystem {
+    private static final float METRIC_COLLECTION_INTERVAL_MILLIS = 1000.0f / 12.0f;
     private static final Logger logger = LoggerFactory.getLogger(PathfinderSystem.class);
 
     private int nextId;
-    private Set<EntityRef> entitiesWithPendingTasks = Sets.newHashSet();
+    private int pendingTasks;
+    private int completedTasksSinceLastCollection;
+    private final Set<EntityRef> entitiesWithPendingTasks = Sets.newHashSet();
 
-    private TaskMaster<PathfinderTask> workerTaskMaster = TaskMaster.createFIFOTaskMaster("PathfinderWorker", 4);
+    private final TaskMaster<PathfinderTask> workerTaskMaster = TaskMaster.createFIFOTaskMaster("PathfinderWorker", 4);
 
-    private TaskMaster<PathfinderTask> taskMaster = TaskMaster.createPriorityTaskMaster(
+    private final TaskMaster<PathfinderTask> taskMaster = TaskMaster.createPriorityTaskMaster(
             "PathfinderQueue", 1, 1024
     );
 
     @In
     private WorldProvider world;
+
+    @In
+    private Time time;
+    private float lastUpdate;
 
     @Override
     public void initialise() {
@@ -79,6 +88,16 @@ public class PathfinderSystem extends BaseComponentSystem {
 
         // TODO: HACK: We offer this taskmaster a shutdown task just to use its raw executor service directly
         workerTaskMaster.offer(new ShutdownTask(null, null, null));
+    }
+
+    @Override
+    public void update(float delta) {
+        if (time.getGameTimeInMs() < lastUpdate + METRIC_COLLECTION_INTERVAL_MILLIS) {
+            return;
+        }
+
+        lastUpdate = time.getGameTimeInMs();
+        collectPathfinderMetrics();
     }
 
     @Override
@@ -98,19 +117,20 @@ public class PathfinderSystem extends BaseComponentSystem {
     }
 
     public int requestPath(JPSConfig config, PathfinderCallback callback) {
-        if(config.requester != null && config.requester.exists()) {
-            if(entitiesWithPendingTasks.contains(config.requester)) {
+        if (config.requester != null && config.requester.exists()) {
+            if (entitiesWithPendingTasks.contains(config.requester)) {
                 return -1;
             }
             entitiesWithPendingTasks.add(config.requester);
         }
 
-        if(config.executor == null) {
+        if (config.executor == null) {
             config.executor = workerTaskMaster.getExecutorService();
         }
 
         PathfinderTask task = new PathfinderTask(world, config, callback);
         taskMaster.offer(task);
+        pendingTasks++;
         return nextId++;
     }
 
@@ -119,50 +139,41 @@ public class PathfinderSystem extends BaseComponentSystem {
     }
 
     public void completePathFor(EntityRef requestor) {
-        if(requestor == null) {
+        pendingTasks--;
+        completedTasksSinceLastCollection++;
+        if (requestor == null) {
             return;
         }
         entitiesWithPendingTasks.remove(requestor);
     }
 
-    @Command
-    public void recordPathStats() {
-        JPSImpl.setStatsEnabled(true);
-    }
-
-    @Command
-    public void printPathStats() {
-        logger.info(PathMetricsRecorder.getStats());
+    @ReceiveEvent
+    public void onToggleRecording(ToggleRecordingNetworkEvent event, EntityRef entity) {
+        JPSImpl.setStatsEnabled(!JPSImpl.getStatsEnabled());
     }
 
     @ReceiveEvent
     public void onPathMetricsRequest(PathMetricsRequestEvent event, EntityRef entity) {
         PathMetricsResponseEvent response = new PathMetricsResponseEvent();
-        Collection<PathMetric> metrics = PathMetricsRecorder.getPathMetrics();
+        response.pathMetrics.addAll(PathfinderMetricsRecorder.getPathMetrics());
+        response.pathfinderMetrics.addAll(PathfinderMetricsRecorder.getPathfinderMetrics());
+        response.recording = JPSImpl.getStatsEnabled();
 
-        if(metrics.size() == 0) {
+        world.getWorldEntity().send(response);
+    }
+
+    private void collectPathfinderMetrics() {
+        ThreadPoolExecutor executor = (ThreadPoolExecutor) workerTaskMaster.getExecutorService();
+        if (executor == null) {
             return;
         }
 
-        Histogram successTime = new Histogram();
-        Histogram failTime = new Histogram();
-        Histogram size = new Histogram();
-        Histogram cost = new Histogram();
-        Histogram depth = new Histogram();
-        Histogram explored = new Histogram();
+        PathfinderMetric metric = new PathfinderMetric();
+        metric.runningTasks = executor.getActiveCount();
+        metric.pendingTasks = pendingTasks;
+        metric.recentlyCompletedTasks = completedTasksSinceLastCollection;
+        PathfinderMetricsRecorder.recordPathfinderMetric(metric);
 
-        Collection<PathMetric> successes = metrics.stream().filter(stat -> stat.success).collect(Collectors.toList());
-        Collection<PathMetric> failures = metrics.stream().filter(stat -> !stat.success).collect(Collectors.toList());
-
-        int buckets = 5;
-        response.sizes = size.analyze(successes, pathMetric -> pathMetric.size, buckets);
-        response.costs = cost.analyze(successes, pathMetric -> pathMetric.cost, buckets);
-        response.depths = depth.analyze(successes, pathMetric -> pathMetric.maxDepth, buckets);
-        response.explored = explored.analyze(successes, pathMetric -> pathMetric.nodesExplored, buckets);
-        response.successTimes = successTime.analyze(successes, pathMetric -> pathMetric.time, buckets);
-        response.failureTimes = failTime.analyze(failures, pathMetric -> pathMetric.time, buckets);
-
-
-        world.getWorldEntity().send(response);
+        completedTasksSinceLastCollection = 0;
     }
 }

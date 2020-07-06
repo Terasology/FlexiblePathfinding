@@ -1,0 +1,67 @@
+{
+  "type": "DebugScreen",
+  "contents": {
+    "type": "relativeLayout",
+    "layoutInfo": {},
+    "contents": [
+      {
+        "type": "UIBox",
+        "id": "newWidget",
+        "skin": "engine:default",
+        "layoutInfo": {
+          "use-content-width": true,
+          "use-content-height": true,
+          "position-vertical-center": {},
+          "position-horizontal-center": {}
+        },
+        "content": {
+          "type": "ColumnLayout",
+          "id": "newWidget",
+          "layoutInfo": {},
+          "contents": [
+            {
+              "type": "engine:UILabel",
+              "id": "newWidget",
+              "layoutInfo": {},
+              "text": "FPF Debugging Menu",
+              "family": "title"
+            },
+            {
+              "type": "UISpace",
+              "id": "newWidget",
+              "size": [10, 10],
+              "layoutInfo": {}
+            },
+            {
+              "id": "toggleRecording",
+              "type": "UIButton",
+              "text": "Toggle Metrics Recording"
+            },
+            {
+              "type": "UISpace",
+              "id": "newWidget",
+              "size": [10, 10],
+              "layoutInfo": {}
+            },
+            {
+              "id": "toggleDebugHud",
+              "type": "UIButton",
+              "text": "Toggle Debug Hud"
+            },
+            {
+              "type": "UISpace",
+              "id": "newWidget",
+              "size": [10, 10],
+              "layoutInfo": {}
+            },
+            {
+              "id": "viewPathLogs",
+              "type": "UIButton",
+              "text": "View Path Logs"
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "type": "PathRequestLog",
+  "contents":
+    {
+      "type": "engine:ScrollableArea",
+      "layoutInfo": {
+
+      },
+      "contents": [    {
+                         "type": "engine:UIText",
+                         "id": "pathMetricLogs",
+                         "text": "test",
+                         "multiline": true,
+                         "readOnly": true,
+                         "layoutInfo": {
+
+                         }
+                       }]
+    }
+
+}

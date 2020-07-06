@@ -26,7 +26,7 @@ import com.google.common.util.concurrent.TimeLimiter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.terasology.flexiblepathfinding.metrics.PathMetric;
-import org.terasology.flexiblepathfinding.metrics.PathMetricsRecorder;
+import org.terasology.flexiblepathfinding.metrics.PathfinderMetricsRecorder;
 import org.terasology.math.geom.Vector3i;
 
 import java.util.Comparator;
@@ -74,6 +74,10 @@ public class JPSImpl implements JPS {
 
     public static void setStatsEnabled(boolean statsEnabled) {
         JPSImpl.statsEnabled = statsEnabled;
+    }
+
+    public static boolean getStatsEnabled() {
+        return JPSImpl.statsEnabled;
     }
 
     /**
@@ -425,8 +429,7 @@ public class JPSImpl implements JPS {
 
         // this is the goal (or close enough to it)
         if (neighbor.distanceSquared(goal.getPosition()) <= config.goalDistance * config.goalDistance) {
-            goal = getJumpPoint(neighbor);
-            return goal;
+            return getJumpPoint(neighbor);
         }
 
         if (!isReachable(neighbor, current)) {
@@ -478,7 +481,7 @@ public class JPSImpl implements JPS {
         metric.cost = goal.getCost();
         metric.size = path.size();
         metric.time = System.currentTimeMillis() - startMillis;
-        PathMetricsRecorder.recordMetrics(metric);
+        PathfinderMetricsRecorder.recordPathMetric(metric);
     }
 
     /**
