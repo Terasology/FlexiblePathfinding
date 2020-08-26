@@ -17,20 +17,16 @@ package org.terasology.flexiblepathfinding.debug;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import org.joml.Rectanglei;
+import org.joml.Vector2i;
 import org.terasology.engine.Time;
-import org.terasology.entitySystem.Component;
-import org.terasology.math.geom.Rect2i;
-import org.terasology.math.TeraMath;
-import org.terasology.math.geom.Vector2i;
+import org.terasology.nui.Canvas;
+import org.terasology.nui.Color;
+import org.terasology.nui.CoreWidget;
+import org.terasology.nui.databinding.Binding;
+import org.terasology.nui.databinding.DefaultBinding;
 import org.terasology.registry.CoreRegistry;
-import org.terasology.rendering.assets.texture.TextureRegion;
-import org.terasology.rendering.nui.*;
-import org.terasology.rendering.nui.databinding.Binding;
-import org.terasology.rendering.nui.databinding.DefaultBinding;
-import org.terasology.rendering.nui.widgets.UIList;
-import org.terasology.world.generation.Region;
 
-import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -65,14 +61,13 @@ public class UIHistogram extends CoreWidget {
         List<Comparable> keys = Lists.newArrayList(data.keySet());
         Collections.sort(keys);
         for(Comparable key : keys) {
-            Integer value = data.get(key);
-            float t = (float) (value - minY) / (float) (maxY - minY);
+            Integer v = data.get(key);
+            float t = (float) (v - minY) / (float) (maxY - minY);
             int barWidth = (int) (t * width);
-            Rect2i rect = Rect2i.createFromMinAndMax(offsetX, offsetY, offsetX + barWidth, offsetY + rowSize - 2);
-            Color color = Color.WHITE;
-            canvas.drawFilledRectangle(rect, color);
+            Rectanglei rect = new Rectanglei(offsetX, offsetY, offsetX + barWidth, offsetY + rowSize - 2);
+            canvas.drawFilledRectangle(rect, Color.WHITE);
 
-            Rect2i textRect = Rect2i.createFromMinAndMax(0, offsetY, offsetX, offsetY + rowSize - 2);
+            Rectanglei textRect = new Rectanglei(0, offsetY, offsetX, offsetY + rowSize - 2);
             canvas.drawText(key.toString().substring(0,Math.min(key.toString().length() - 1, 4)), textRect);
             offsetY += rowSize;
         }
