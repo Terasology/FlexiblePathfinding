@@ -1,39 +1,34 @@
-/*
- * Copyright 2018 MovingBlocks
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// Copyright 2020 The Terasology Foundation
+// SPDX-License-Identifier: Apache-2.0
 package org.terasology.flexiblepathfinding;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.terasology.engine.world.WorldProvider;
 import org.terasology.flexiblepathfinding.helpers.MapWorldProvider;
 import org.terasology.flexiblepathfinding.helpers.TestDataPojo;
 import org.terasology.flexiblepathfinding.plugins.basic.FlyingPlugin;
 import org.terasology.math.geom.Vector3i;
-import org.terasology.world.WorldProvider;
 
 public class LineOfSightTest {
+    static WorldProvider runLineOfSight(boolean expected, String[] ground, String[] pathData) {
+        TestDataPojo testData = new TestDataPojo();
+        MapWorldProvider worldProvider = new MapWorldProvider(ground);
+        MapWorldProvider.parseExpectedPath(pathData, testData);
+        Assert.assertEquals(expected, new LineOfSight3d(worldProvider).inSight(testData.start, testData.stop));
+        return worldProvider;
+    }
+
     @Test
     public void testSimple() {
         runLineOfSight(true, new String[]{
-            "XXX",
-            "XXX",
-            "XXX"
+                "XXX",
+                "XXX",
+                "XXX"
         }, new String[]{
-            "?  ",
-            "   ",
-            "  !"
+                "?  ",
+                "   ",
+                "  !"
         });
     }
 
@@ -50,7 +45,6 @@ public class LineOfSightTest {
         });
     }
 
-
     @Test
     public void simple3d() throws InterruptedException {
         WorldProvider worldProvider = runLineOfSight(true, new String[]{
@@ -63,7 +57,7 @@ public class LineOfSightTest {
                 "   |   |   ",
         });
 
-        JPSConfig config = new JPSConfig(Vector3i.zero(), new Vector3i(2,2,1));
+        JPSConfig config = new JPSConfig(Vector3i.zero(), new Vector3i(2, 2, 1));
         config.useLineOfSight = true;
         config.plugin = new FlyingPlugin(worldProvider, 0, 0);
         JPSImpl jps = new JPSImpl(config);
@@ -83,13 +77,5 @@ public class LineOfSightTest {
                 "   |   |   ",
                 "   |   |  !",
         });
-    }
-
-    static WorldProvider runLineOfSight(boolean expected, String[] ground, String[] pathData) {
-        TestDataPojo testData = new TestDataPojo();
-        MapWorldProvider worldProvider = new MapWorldProvider(ground);
-        worldProvider.parseExpectedPath(pathData, testData);
-        Assert.assertEquals(expected, new LineOfSight3d(worldProvider).inSight(testData.start, testData.stop));
-        return worldProvider;
     }
 }

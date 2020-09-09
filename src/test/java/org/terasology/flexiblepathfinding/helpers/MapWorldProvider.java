@@ -1,18 +1,5 @@
-/*
- * Copyright 2018 MovingBlocks
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// Copyright 2020 The Terasology Foundation
+// SPDX-License-Identifier: Apache-2.0
 package org.terasology.flexiblepathfinding.helpers;
 
 import com.google.common.collect.Maps;
@@ -20,17 +7,17 @@ import org.joml.Vector3fc;
 import org.joml.Vector3ic;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.terasology.entitySystem.entity.EntityRef;
-import org.terasology.math.Region3i;
+import org.terasology.engine.entitySystem.entity.EntityRef;
+import org.terasology.engine.math.Region3i;
+import org.terasology.engine.world.WorldChangeListener;
+import org.terasology.engine.world.WorldProvider;
+import org.terasology.engine.world.block.Block;
+import org.terasology.engine.world.block.BlockUri;
+import org.terasology.engine.world.internal.ChunkViewCore;
+import org.terasology.engine.world.internal.WorldInfo;
+import org.terasology.engine.world.time.WorldTime;
 import org.terasology.math.geom.Vector3f;
 import org.terasology.math.geom.Vector3i;
-import org.terasology.world.WorldChangeListener;
-import org.terasology.world.WorldProvider;
-import org.terasology.world.block.Block;
-import org.terasology.world.block.BlockUri;
-import org.terasology.world.internal.ChunkViewCore;
-import org.terasology.world.internal.WorldInfo;
-import org.terasology.world.time.WorldTime;
 
 import java.util.Collection;
 import java.util.Map;
@@ -40,11 +27,11 @@ public class MapWorldProvider implements WorldProvider {
     private static final char AIR = 'X';
     private static final char WATER = '~';
     private static final char NEW_LEVEL = '|';
-    private static Logger logger = LoggerFactory.getLogger(MapWorldProvider.class);
-    private Map<Vector3i, Block> blocks = Maps.newHashMap();
-    private Block airBlock = new Block();
-    private Block groundBlock = new Block();
-    private Block waterBlock = new Block();
+    private static final Logger logger = LoggerFactory.getLogger(MapWorldProvider.class);
+    private final Map<Vector3i, Block> blocks = Maps.newHashMap();
+    private final Block airBlock = new Block();
+    private final Block groundBlock = new Block();
+    private final Block waterBlock = new Block();
 
     public MapWorldProvider(String[] map) {
         airBlock.setPenetrable(true);
@@ -195,7 +182,7 @@ public class MapWorldProvider implements WorldProvider {
 
     @Override
     public Block getBlock(Vector3fc pos) {
-        return getBlock((int)pos.x(),(int)pos.y(),(int)pos.z());
+        return getBlock((int) pos.x(), (int) pos.y(), (int) pos.z());
     }
 
     @Override

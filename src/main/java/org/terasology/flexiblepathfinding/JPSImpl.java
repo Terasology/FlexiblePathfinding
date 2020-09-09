@@ -1,18 +1,5 @@
-/*
- * Copyright 2018 MovingBlocks
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// Copyright 2020 The Terasology Foundation
+// SPDX-License-Identifier: Apache-2.0
 package org.terasology.flexiblepathfinding;
 
 import com.google.common.cache.CacheBuilder;
@@ -40,18 +27,19 @@ import java.util.concurrent.TimeUnit;
 /**
  * @author kaen
  *         <p>
- *         An implementation of the algorithm presented in http://users.cecs.anu.edu.au/~dharabor/data/papers/harabor-grastien-aaai11.pdf
+ *         An implementation of the algorithm presented in http://users.cecs.anu.edu
+ *         .au/~dharabor/data/papers/harabor-grastien-aaai11.pdf
  *         <p>
  *         The implementation is adapted to 3D but is constructed with references to the original paper.
  */
 public class JPSImpl implements JPS {
     private static boolean statsEnabled = false;
 
-    private Logger logger = LoggerFactory.getLogger(JPSImpl.class);
-    private JPSConfig config;
-    private Map<Vector3i, JPSJumpPoint> points = Maps.newHashMap();
-    private List<Vector3i> path = Lists.newArrayList();
-    private List<JPSJumpPoint> open = Lists.newArrayList();
+    private final Logger logger = LoggerFactory.getLogger(JPSImpl.class);
+    private final JPSConfig config;
+    private final Map<Vector3i, JPSJumpPoint> points = Maps.newHashMap();
+    private final List<Vector3i> path = Lists.newArrayList();
+    private final List<JPSJumpPoint> open = Lists.newArrayList();
     private JPSJumpPoint start;
     private JPSJumpPoint goal;
     private double startMillis;
@@ -87,7 +75,8 @@ public class JPSImpl implements JPS {
         boolean result = false;
         if (this.timeLimiter != null) {
             try {
-                result = timeLimiter.callWithTimeout(callable, (long) (config.maxTime * 1000.0f), TimeUnit.MILLISECONDS);
+                result = timeLimiter.callWithTimeout(callable, (long) (config.maxTime * 1000.0f),
+                        TimeUnit.MILLISECONDS);
             } catch (Exception e) {
                 logger.warn("Timeout of {} exceeded: {}", config.maxTime, e.toString());
             }
@@ -188,9 +177,9 @@ public class JPSImpl implements JPS {
             // updates parent if this is optimal path so far
             current.setSuccessor(neighbor.getKey(), jumpedNeighbor);
 
-            if(null != jumpedNeighbor &&
+            if (null != jumpedNeighbor &&
                     jumpedNeighbor.getPosition().distanceSquared(goal.getPosition()) <= config.goalDistance * config.goalDistance
-                    ) {
+            ) {
                 goal = jumpedNeighbor;
                 return Lists.newArrayList(jumpedNeighbor);
             }
@@ -234,35 +223,31 @@ public class JPSImpl implements JPS {
      * <p>
      * Briefly, key nodes are the nodes which determine whether there is an alternative optimal path to one or more
      * potential forced neighbors. By iterating over the key nodes and potential forced neighbors, and comparing the
-     * "optimality" of paths through the adjacency cube, we can determine whether a given neighbor is actually "forced".
-     *
+     * "optimality" of paths through the adjacency cube, we can determine whether a given neighbor is actually
+     * "forced".
+     * <p>
      * Recall the general definition of a forced neighbor:
-     *
-     * Definition 1. A node n ∈ neighbours(x) is forced if:
-     *  1. n is not a natural neighbour of x
-     *  2. len( p(x), x, ni ) < len( p(x), ... , ni \ x )
-     *
+     * <p>
+     * Definition 1. A node n ∈ neighbours(x) is forced if: 1. n is not a natural neighbour of x 2. len( p(x), x, ni ) <
+     * len( p(x), ... , ni \ x )
+     * <p>
      * Also the specific definitions for straight and diagonal pruning rules:
-     *
-     *  Straight Moves: We prune any node n ∈ neighbours(x)
-     *  which satisfies the following dominance constraint:
-     *  len( p(x), ... , ni \ x ) ≤ len( p(x), x, ni )
-     *
-     *  Diagonal Moves: This case is similar to the pruning rules
-     *  we developed for straight moves; the only difference is that
-     *  the path which excludes x must be strictly dominant:
-     *  len( p(x), ... , ni \ x ) < len( p(x), x, ni )
-     *
+     * <p>
+     * Straight Moves: We prune any node n ∈ neighbours(x) which satisfies the following dominance constraint: len(
+     * p(x), ... , ni \ x ) ≤ len( p(x), x, ni )
+     * <p>
+     * Diagonal Moves: This case is similar to the pruning rules we developed for straight moves; the only difference is
+     * that the path which excludes x must be strictly dominant: len( p(x), ... , ni \ x ) < len( p(x), x, ni )
+     * <p>
      * "Strictly dominant" means that the path has diagonals before the path against which it is being compared. To
      * extend this into 3D, a path is strictly dominant if its cost is less than or equal to another's, and the
      * manhatten distance of each delta vector in the first path is greater than or equal to the corresponding delta
      * vector in the other path.
      *
-     *
      * @param parent
      * @param current
-     * @see JPSDirection
      * @return
+     * @see JPSDirection
      */
     private List<Vector3i> findForcedNeighbors(Vector3i parent, Vector3i current) {
         // reusable vectors
@@ -324,7 +309,8 @@ public class JPSImpl implements JPS {
                         continue;
                     }
 
-                    // if the paths are equal in length, we compare the distance (and therefore the number of axes traveled)
+                    // if the paths are equal in length, we compare the distance (and therefore the number of axes 
+                    // traveled)
                     // for each step. The first path with a higher distance step is deemed the optimal path, and if this
                     // is the current node then the neighbor is forced
                     if (nearlyEqual) {

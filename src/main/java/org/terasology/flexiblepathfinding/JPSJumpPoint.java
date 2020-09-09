@@ -1,18 +1,5 @@
-/*
- * Copyright 2018 MovingBlocks
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// Copyright 2020 The Terasology Foundation
+// SPDX-License-Identifier: Apache-2.0
 package org.terasology.flexiblepathfinding;
 
 import org.terasology.math.geom.Vector3i;
@@ -20,6 +7,19 @@ import org.terasology.math.geom.Vector3i;
 public class JPSJumpPoint {
 
     private JPSJumpPoint parent;
+    // direction of travel from the parent to this point
+    private JPSDirection parentDirection;
+    private double cost = 0;
+    private double heurisitic = 0;
+    private final Vector3i position;
+    private final JPSJumpPoint[] successors = new JPSJumpPoint[JPSDirection.values().length];
+    public JPSJumpPoint(Vector3i position) {
+        this.position = position;
+    }
+    public JPSJumpPoint(Vector3i position, JPSDirection parentDirection) {
+        this.parentDirection = parentDirection;
+        this.position = position;
+    }
 
     public JPSDirection getParentDirection() {
         return parentDirection;
@@ -28,13 +28,6 @@ public class JPSJumpPoint {
     public void setParentDirection(JPSDirection parentDirection) {
         this.parentDirection = parentDirection;
     }
-
-    // direction of travel from the parent to this point
-    private JPSDirection parentDirection;
-    private double cost = 0;
-    private double heurisitic = 0;
-    private Vector3i position;
-    private JPSJumpPoint successors[] = new JPSJumpPoint[JPSDirection.values().length];
 
     public JPSJumpPoint getParent() {
         return parent;
@@ -60,20 +53,11 @@ public class JPSJumpPoint {
         this.heurisitic = heurisitic;
     }
 
-    public JPSJumpPoint(Vector3i position) {
-        this.position = position;
-    }
-
-    public JPSJumpPoint(Vector3i position, JPSDirection parentDirection) {
-        this.parentDirection = parentDirection;
-        this.position = position;
-    }
-
     public void setSuccessor(JPSDirection dir, JPSJumpPoint successor) {
         successors[dir.ordinal()] = successor;
-        if(successor != null) {
+        if (successor != null) {
             double dist = successor.getPosition().distance(getPosition());
-            if(successor.getParent() == null || successor.getCost() > getCost() + dist) {
+            if (successor.getParent() == null || successor.getCost() > getCost() + dist) {
                 successor.setCost(getCost() + dist);
                 successor.setParent(this);
                 successor.setParentDirection(dir);

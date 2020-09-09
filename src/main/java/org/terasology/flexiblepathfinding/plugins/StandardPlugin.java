@@ -1,32 +1,17 @@
-/*
- * Copyright 2018 MovingBlocks
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// Copyright 2020 The Terasology Foundation
+// SPDX-License-Identifier: Apache-2.0
 package org.terasology.flexiblepathfinding.plugins;
 
+import org.terasology.engine.math.Region3i;
+import org.terasology.engine.world.WorldProvider;
 import org.terasology.flexiblepathfinding.LineOfSight3d;
-import org.terasology.math.Region3i;
 import org.terasology.math.geom.Vector3i;
-import org.terasology.world.WorldProvider;
-
-import java.math.RoundingMode;
 
 public abstract class StandardPlugin implements JPSPlugin {
     public final WorldProvider world;
 
-    private float width;
-    private float height;
+    private final float width;
+    private final float height;
 
     public StandardPlugin(WorldProvider world, float width, float height) {
         this.world = world;
@@ -41,6 +26,7 @@ public abstract class StandardPlugin implements JPSPlugin {
 
     /**
      * Get the region occupied by the subject based on padding when located at position
+     *
      * @return
      */
     public Region3i getOccupiedRegionRelative() {
@@ -62,6 +48,7 @@ public abstract class StandardPlugin implements JPSPlugin {
 
     /**
      * Get the region of blocks immediately under the subject based on padding
+     *
      * @return
      */
     public Region3i getSupportingRegionRelative() {

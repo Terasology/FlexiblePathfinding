@@ -1,39 +1,26 @@
-/*
- * Copyright 2018 MovingBlocks
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// Copyright 2020 The Terasology Foundation
+// SPDX-License-Identifier: Apache-2.0
 package org.terasology.flexiblepathfinding;
 
 import com.google.common.collect.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.terasology.engine.registry.CoreRegistry;
+import org.terasology.engine.utilities.concurrency.Task;
+import org.terasology.engine.world.WorldProvider;
 import org.terasology.math.geom.Vector3i;
-import org.terasology.registry.CoreRegistry;
-import org.terasology.utilities.concurrency.Task;
-import org.terasology.world.WorldProvider;
 
 import java.util.List;
 
 public class PathfinderTask implements Task, Comparable<PathfinderTask> {
-    private JPSConfig config;
+    private static int nextPriority = 0;
+    private final JPSConfig config;
+    private final PathfinderCallback callback;
+    private final WorldProvider world;
+    private final Logger logger = LoggerFactory.getLogger(PathfinderTask.class);
+    private final int priority;
     private Vector3i start;
     private Vector3i stop;
-    private PathfinderCallback callback;
-    private WorldProvider world;
-    private Logger logger = LoggerFactory.getLogger(PathfinderTask.class);
-    private static int nextPriority = 0;
-    private int priority;
 
     public PathfinderTask(WorldProvider world, JPSConfig config, PathfinderCallback callback) {
         this.world = world;
@@ -52,7 +39,7 @@ public class PathfinderTask implements Task, Comparable<PathfinderTask> {
         JPSImpl jps = new JPSImpl(config);
         List<Vector3i> path = Lists.newArrayList();
         try {
-            if(jps.run()) {
+            if (jps.run()) {
                 path = jps.getPath();
             }
         } catch (InterruptedException e) {
@@ -69,7 +56,7 @@ public class PathfinderTask implements Task, Comparable<PathfinderTask> {
 
     @Override
     public int compareTo(PathfinderTask o) {
-        if(this.priority < o.priority) {
+        if (this.priority < o.priority) {
             return -1;
         }
         return 1;

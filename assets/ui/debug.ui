@@ -20,19 +20,19 @@
         },
         "contents": [
           {
-            "type" : "ColumnLayout",
+            "type": "ColumnLayout",
             "id": "successColumn",
-            "columns" : 1,
-            "verticalSpacing" : 8,
-            "layoutInfo" : {
-              "use-content-width" : true,
-              "use-content-height" : true
+            "columns": 1,
+            "verticalSpacing": 8,
+            "layoutInfo": {
+              "use-content-width": true,
+              "use-content-height": true
             },
-            "contents" : [
+            "contents": [
               {
-                "type" : "UILabel",
-                "text" : "Success Times",
-                "family" : "title"
+                "type": "UILabel",
+                "text": "Success Times",
+                "family": "title"
               },
               {
                 "type": "UIHistogram",
@@ -41,19 +41,19 @@
             ]
           },
           {
-            "type" : "ColumnLayout",
+            "type": "ColumnLayout",
             "id": "failureColumn",
-            "columns" : 1,
-            "verticalSpacing" : 8,
-            "layoutInfo" : {
-              "use-content-width" : true,
-              "use-content-height" : true
+            "columns": 1,
+            "verticalSpacing": 8,
+            "layoutInfo": {
+              "use-content-width": true,
+              "use-content-height": true
             },
-            "contents" : [
+            "contents": [
               {
-                "type" : "UILabel",
-                "text" : "Failure Times",
-                "family" : "title"
+                "type": "UILabel",
+                "text": "Failure Times",
+                "family": "title"
               },
               {
                 "type": "UIHistogram",
@@ -62,19 +62,19 @@
             ]
           },
           {
-            "type" : "ColumnLayout",
-            "columns" : 1,
+            "type": "ColumnLayout",
+            "columns": 1,
             "id": "costsColumn",
-            "verticalSpacing" : 8,
-            "layoutInfo" : {
-              "use-content-width" : true,
-              "use-content-height" : true
+            "verticalSpacing": 8,
+            "layoutInfo": {
+              "use-content-width": true,
+              "use-content-height": true
             },
-            "contents" : [
+            "contents": [
               {
-                "type" : "UILabel",
-                "text" : "Costs",
-                "family" : "title"
+                "type": "UILabel",
+                "text": "Costs",
+                "family": "title"
               },
               {
                 "type": "UIHistogram",
@@ -83,19 +83,19 @@
             ]
           },
           {
-            "type" : "ColumnLayout",
-            "columns" : 1,
+            "type": "ColumnLayout",
+            "columns": 1,
             "id": "sizesColumn",
-            "verticalSpacing" : 8,
-            "layoutInfo" : {
-              "use-content-width" : true,
-              "use-content-height" : true
+            "verticalSpacing": 8,
+            "layoutInfo": {
+              "use-content-width": true,
+              "use-content-height": true
             },
-            "contents" : [
+            "contents": [
               {
-                "type" : "UILabel",
-                "text" : "Sizes",
-                "family" : "title"
+                "type": "UILabel",
+                "text": "Sizes",
+                "family": "title"
               },
               {
                 "type": "UIHistogram",
@@ -104,19 +104,19 @@
             ]
           },
           {
-            "type" : "ColumnLayout",
-            "columns" : 1,
+            "type": "ColumnLayout",
+            "columns": 1,
             "id": "depthsColumn",
-            "verticalSpacing" : 8,
-            "layoutInfo" : {
-              "use-content-width" : true,
-              "use-content-height" : true
+            "verticalSpacing": 8,
+            "layoutInfo": {
+              "use-content-width": true,
+              "use-content-height": true
             },
-            "contents" : [
+            "contents": [
               {
-                "type" : "UILabel",
-                "text" : "depths",
-                "family" : "title"
+                "type": "UILabel",
+                "text": "depths",
+                "family": "title"
               },
               {
                 "type": "UIHistogram",
@@ -125,19 +125,19 @@
             ]
           },
           {
-            "type" : "ColumnLayout",
-            "columns" : 1,
+            "type": "ColumnLayout",
+            "columns": 1,
             "id": "exploredColumn",
-            "verticalSpacing" : 8,
-            "layoutInfo" : {
-              "use-content-width" : true,
-              "use-content-height" : true
+            "verticalSpacing": 8,
+            "layoutInfo": {
+              "use-content-width": true,
+              "use-content-height": true
             },
-            "contents" : [
+            "contents": [
               {
-                "type" : "UILabel",
-                "text" : "explored",
-                "family" : "title"
+                "type": "UILabel",
+                "text": "explored",
+                "family": "title"
               },
               {
                 "type": "UIHistogram",
