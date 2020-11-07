@@ -1,26 +1,17 @@
-/*
- * Copyright 2018 MovingBlocks
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// Copyright 2020 The Terasology Foundation
+// SPDX-License-Identifier: Apache-2.0
 package org.terasology.flexiblepathfinding;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import org.terasology.math.geom.Vector3i;
+import org.joml.Vector3i;
 
-import java.util.*;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 
 public enum JPSDirection {
     NORTH,
@@ -57,7 +48,7 @@ public enum JPSDirection {
     private static List<Vector3i>[] keyNodesCache = new List[JPSDirection.values().length];
 
     public static JPSDirection fromVector(Vector3i vec) {
-        if(directionVectors == null) {
+        if (directionVectors == null) {
             bakeDirectionVectors();
         }
         return vectorToDirection.get(vec);
@@ -65,14 +56,14 @@ public enum JPSDirection {
 
     public static List<Vector3i> valuesAsVectors() {
         List<Vector3i> result = Lists.newArrayList();
-        for(JPSDirection dir : values()) {
+        for (JPSDirection dir : values()) {
             result.add(dir.getVector());
         }
         return result;
     }
 
     public Vector3i getVector() {
-        if(directionVectors == null) {
+        if (directionVectors == null) {
             bakeDirectionVectors();
         }
         return new Vector3i(directionVectors[this.ordinal()]);
@@ -80,10 +71,10 @@ public enum JPSDirection {
 
     private static void bakeDirectionVectors() {
         directionVectors = new Vector3i[JPSDirection.values().length];
-        for(JPSDirection dir : JPSDirection.values()) {
+        for (JPSDirection dir : JPSDirection.values()) {
             String parts[] = dir.name().split("_");
             Vector3i vector = new Vector3i();
-            for(String part : parts) {
+            for (String part : parts) {
                 switch (part) {
                     case "EAST":
                         vector.x = 1;
@@ -113,7 +104,7 @@ public enum JPSDirection {
 
     public List<Vector3i> getComponentPermutations() {
         List<Vector3i> permutations = componentPermutations[ordinal()];
-        if(permutations == null) {
+        if (permutations == null) {
             componentPermutations[ordinal()] = Lists.newArrayList();
             permutations = componentPermutations[ordinal()];
 
@@ -133,8 +124,8 @@ public enum JPSDirection {
             permutations.addAll(tmp);
 
             // remove zero vectors
-            while(permutations.contains(Vector3i.zero())) {
-                permutations.remove(Vector3i.zero());
+            while (permutations.contains(new Vector3i(0, 0, 0))) {
+                permutations.remove(new Vector3i(0, 0, 0));
             }
 
             // sort the result by manhatten distance
@@ -143,11 +134,11 @@ public enum JPSDirection {
                 public int compare(Vector3i o1, Vector3i o2) {
                     int m1 = manhatten(o1);
                     int m2 = manhatten(o2);
-                    if(m1 < m2) {
+                    if (m1 < m2) {
                         return -1;
                     }
 
-                    if(m1 == m2) {
+                    if (m1 == m2) {
                         return 0;
                     }
 
@@ -160,7 +151,7 @@ public enum JPSDirection {
 
 
     public List<Vector3i> getKeyNodes() {
-        if(keyNodesCache[ordinal()] == null) {
+        if (keyNodesCache[ordinal()] == null) {
             Vector3i parentDelta = getVector().mul(-1);
             List<Vector3i> keyNodes = JPSDirection.vectorsAdjacentTo(parentDelta);
             keyNodes.remove(parentDelta);
@@ -170,7 +161,7 @@ public enum JPSDirection {
     }
 
     public List<Vector3i> getPotentialForcedNeighbors() {
-        if(potentialForcedNeighborsCache[ordinal()] == null) {
+        if (potentialForcedNeighborsCache[ordinal()] == null) {
             Vector3i parentDelta = getVector().mul(-1);
             List<Vector3i> potentialForcedNeighbors = JPSDirection.valuesAsVectors();
 //            potentialForcedNeighbors.removeAll(getComponentPermutations());
@@ -192,7 +183,7 @@ public enum JPSDirection {
                 continue;
             }
             Vector3i b = dir.getVector();
-            if (b.add(a) != Vector3i.zero()) {
+            if (b.add(a).equals(0, 0, 0)) {
                 result.add(dir);
             }
         }
@@ -201,10 +192,10 @@ public enum JPSDirection {
 
     public static List<Vector3i> vectorsAdjacentTo(Vector3i parentDelta) {
         List<Vector3i> result = Lists.newArrayList();
-        for(Vector3i vec : valuesAsVectors()) {
+        for (Vector3i vec : valuesAsVectors()) {
             Vector3i delta = new Vector3i(parentDelta).sub(vec);
             delta.absolute();
-            if(Math.max(Math.max(delta.x, delta.y), delta.z) <= 1) {
+            if (Math.max(Math.max(delta.x, delta.y), delta.z) <= 1) {
                 result.add(vec);
             }
         }

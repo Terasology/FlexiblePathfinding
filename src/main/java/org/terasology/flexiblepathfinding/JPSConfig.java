@@ -1,22 +1,10 @@
-/*
- * Copyright 2018 MovingBlocks
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// Copyright 2020 The Terasology Foundation
+// SPDX-License-Identifier: Apache-2.0
 package org.terasology.flexiblepathfinding;
 
+import org.joml.Vector3i;
+import org.joml.Vector3ic;
 import org.terasology.entitySystem.entity.EntityRef;
-import org.terasology.math.geom.Vector3i;
 import org.terasology.flexiblepathfinding.plugins.JPSPlugin;
 import org.terasology.flexiblepathfinding.plugins.basic.WalkingPlugin;
 import org.terasology.registry.CoreRegistry;
@@ -27,17 +15,17 @@ import java.util.concurrent.ExecutorService;
 public class JPSConfig {
     public int maxDepth = 100;
     public float maxTime = 3.0f;
-    public Vector3i start = Vector3i.zero();
-    public Vector3i stop = Vector3i.zero();
+    public Vector3i start = new Vector3i();
+    public Vector3i stop = new Vector3i();
     public EntityRef requester;
     public JPSPlugin plugin;
     public double goalDistance;
     public boolean useLineOfSight;
     public ExecutorService executor;
 
-    public JPSConfig(Vector3i start, Vector3i stop) {
-        this.start = start;
-        this.stop = stop;
+    public JPSConfig(Vector3ic start, Vector3ic stop) {
+        this.start = new Vector3i(start);
+        this.stop = new Vector3i(stop);
         this.maxDepth = (int) stop.distance(start) * 10;
         this.plugin = new WalkingPlugin(CoreRegistry.get(WorldProvider.class), 0.4f, 0.4f);
     }

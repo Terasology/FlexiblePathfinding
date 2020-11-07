@@ -1,26 +1,11 @@
-/*
- * Copyright 2018 MovingBlocks
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// Copyright 2020 The Terasology Foundation
+// SPDX-License-Identifier: Apache-2.0
 package org.terasology.flexiblepathfinding.plugins;
 
+import org.joml.Vector3ic;
 import org.terasology.flexiblepathfinding.LineOfSight3d;
-import org.terasology.math.Region3i;
-import org.terasology.math.geom.Vector3i;
 import org.terasology.world.WorldProvider;
-
-import java.math.RoundingMode;
+import org.terasology.world.block.BlockRegion;
 
 public abstract class StandardPlugin implements JPSPlugin {
     public final WorldProvider world;
@@ -35,7 +20,7 @@ public abstract class StandardPlugin implements JPSPlugin {
     }
 
     @Override
-    public boolean inSight(Vector3i start, Vector3i stop) {
+    public boolean inSight(Vector3ic start, Vector3ic stop) {
         return new LineOfSight3d(world).inSight(start, stop);
     }
 
@@ -43,7 +28,7 @@ public abstract class StandardPlugin implements JPSPlugin {
      * Get the region occupied by the subject based on padding when located at position
      * @return
      */
-    public Region3i getOccupiedRegionRelative() {
+    public BlockRegion getOccupiedRegionRelative() {
         double halfHeight = height / 2.0f;
         double halfWidth = width / 2.0f;
 
@@ -55,16 +40,14 @@ public abstract class StandardPlugin implements JPSPlugin {
         int y1 = (int) Math.floor(0.5f + yOffset - halfHeight);
         int y2 = (int) Math.floor(0.5f + yOffset + halfHeight);
 
-        Vector3i min = new Vector3i(x1, y1, x1);
-        Vector3i max = new Vector3i(x2, y2, x2);
-        return Region3i.createBounded(min, max);
+        return new BlockRegion(x1, y1, x1, x2, y2, x2);
     }
 
     /**
      * Get the region of blocks immediately under the subject based on padding
      * @return
      */
-    public Region3i getSupportingRegionRelative() {
+    public BlockRegion getSupportingRegionRelative() {
         double halfHeight = height / 2.0f;
         double halfWidth = width / 2.0f;
 
@@ -74,9 +57,6 @@ public abstract class StandardPlugin implements JPSPlugin {
         int x1 = (int) Math.floor(0.5f - halfWidth);
         int x2 = (int) Math.floor(0.5f + halfWidth);
         int y1 = (int) Math.floor(0.5f + yOffset - halfHeight) - 1;
-
-        Vector3i min = new Vector3i(x1, y1, x1);
-        Vector3i max = new Vector3i(x2, y1, x2);
-        return Region3i.createBounded(min, max);
+        return new BlockRegion(x1, y1, x1, x2, y1, x2);
     }
 }

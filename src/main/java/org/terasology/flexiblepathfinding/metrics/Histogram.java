@@ -1,18 +1,5 @@
-/*
- * Copyright 2018 MovingBlocks
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// Copyright 2020 The Terasology Foundation
+// SPDX-License-Identifier: Apache-2.0
 package org.terasology.flexiblepathfinding.metrics;
 
 
@@ -33,8 +20,8 @@ public class Histogram {
     public <T> void build(Collection<T> source, Function<T, Double> fn) {
         data = new int[buckets];
         try {
-            min = source.stream().map(fn).min((o1, o2) -> Double.compare(o1, o2)).get();
-            max = source.stream().map(fn).max((o1, o2) -> Double.compare(o1, o2)).get();
+            min = source.stream().map(fn).min(Double::compare).get();
+            max = source.stream().map(fn).max(Double::compare).get();
         } catch (NoSuchElementException e) {
             min = 0;
             max = 1000;

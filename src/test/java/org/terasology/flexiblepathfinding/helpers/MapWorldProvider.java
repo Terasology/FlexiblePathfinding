@@ -21,6 +21,7 @@ import org.joml.Vector3ic;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.terasology.entitySystem.entity.EntityRef;
+import org.terasology.math.JomlUtil;
 import org.terasology.math.Region3i;
 import org.terasology.math.geom.Vector3f;
 import org.terasology.math.geom.Vector3i;
@@ -84,8 +85,8 @@ public class MapWorldProvider implements WorldProvider {
             pos.y = 0;
         }
 
-        expected.put(0, testData.start);
-        expected.put(testData.expectedSize, testData.stop);
+        expected.put(0, JomlUtil.from(testData.start));
+        expected.put(testData.expectedSize, JomlUtil.from(testData.stop));
         for (int i : expected.keySet()) {
             logger.warn("{}: e {}", i, expected.get(i));
         }
@@ -98,11 +99,11 @@ public class MapWorldProvider implements WorldProvider {
         Vector3i vec = new Vector3i(pos);
         switch (value) {
             case '?':
-                testData.start = vec;
+                testData.start = JomlUtil.from(vec);
                 logger.warn("Start: {}", vec);
                 break;
             case '!':
-                testData.stop = vec;
+                testData.stop = JomlUtil.from(vec);
                 logger.warn("End: {}", vec);
                 break;
             default:

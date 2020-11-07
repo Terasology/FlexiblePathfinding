@@ -15,12 +15,12 @@
  */
 package org.terasology.flexiblepathfinding.helpers;
 
+import org.joml.Vector3i;
 import org.junit.Assert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.terasology.flexiblepathfinding.JPSConfig;
 import org.terasology.flexiblepathfinding.JPSImpl;
-import org.terasology.math.geom.Vector3i;
 import org.terasology.flexiblepathfinding.plugins.StandardPlugin;
 import org.terasology.world.WorldProvider;
 
