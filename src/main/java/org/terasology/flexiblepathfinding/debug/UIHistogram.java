@@ -17,7 +17,7 @@ package org.terasology.flexiblepathfinding.debug;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import org.joml.Rectanglei;
+import org.joml.primitives.Rectanglei;
 import org.joml.Vector2i;
 import org.terasology.engine.Time;
 import org.terasology.nui.Canvas;
