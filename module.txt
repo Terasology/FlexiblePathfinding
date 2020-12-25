@@ -1,6 +1,6 @@
 {
     "id": "FlexiblePathfinding",
-    "version": "1.0.0",
+    "version": "1.0.0-SNAPSHOT",
     "author": "The Terasology Foundation",
     "displayName": "Flexible Pathfinding",
     "description": "This library module allows for flexible ways of pathfinding.",
