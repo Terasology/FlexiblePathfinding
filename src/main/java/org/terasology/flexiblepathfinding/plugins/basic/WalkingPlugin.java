@@ -9,7 +9,6 @@ import org.slf4j.LoggerFactory;
 import org.terasology.flexiblepathfinding.plugins.StandardPlugin;
 import org.terasology.world.WorldProvider;
 import org.terasology.world.block.BlockRegion;
-import org.terasology.world.block.BlockRegionIterable;
 
 public class WalkingPlugin extends StandardPlugin {
     private static final Logger logger = LoggerFactory.getLogger(WalkingPlugin.class);
@@ -25,14 +24,14 @@ public class WalkingPlugin extends StandardPlugin {
         }
 
         // check that all blocks passed through by this movement are penetrable
-        for (Vector3ic occupiedBlock : BlockRegionIterable.region(getOccupiedRegionRelative()).build()) {
+        for (Vector3ic occupiedBlock : getOccupiedRegionRelative()) {
 
             // the start/stop for this block in the occupied region
             Vector3i occupiedBlockTo = new Vector3i(to).add(occupiedBlock);
             Vector3i occupiedBlockFrom = new Vector3i(from).add(occupiedBlock);
 
-            BlockRegion movementBounds = new BlockRegion().union(occupiedBlockTo).union(occupiedBlockFrom);
-            for (Vector3ic block : BlockRegionIterable.region(movementBounds).build()) {
+            BlockRegion movementBounds = new BlockRegion(occupiedBlockTo).union(occupiedBlockFrom);
+            for (Vector3ic block : movementBounds) {
                 if (!world.getBlock(block).isPenetrable()) {
                     return false;
                 }
@@ -44,7 +43,7 @@ public class WalkingPlugin extends StandardPlugin {
 
     public boolean isWalkable(Vector3ic a) {
         Vector3i walkablePos = new Vector3i();
-        for (Vector3ic supportingBlockPos : BlockRegionIterable.region(getSupportingRegionRelative()).build()) {
+        for (Vector3ic supportingBlockPos : getSupportingRegionRelative()) {
             walkablePos.set(supportingBlockPos).add(a);
             if (!world.getBlock(walkablePos).isPenetrable()) {
                 return true;

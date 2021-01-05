@@ -9,7 +9,6 @@ import org.slf4j.LoggerFactory;
 import org.terasology.flexiblepathfinding.plugins.StandardPlugin;
 import org.terasology.world.WorldProvider;
 import org.terasology.world.block.BlockRegion;
-import org.terasology.world.block.BlockRegionIterable;
 
 public class SwimmingPlugin extends StandardPlugin {
     private static final Logger logger = LoggerFactory.getLogger(SwimmingPlugin.class);
@@ -26,14 +25,14 @@ public class SwimmingPlugin extends StandardPlugin {
         }
 
         // check that all blocks passed through by this movement are penetrable
-        for (Vector3ic occupiedBlock : BlockRegionIterable.region(getOccupiedRegionRelative()).build()) {
+        for (Vector3ic occupiedBlock : getOccupiedRegionRelative()) {
 
             // the start/stop for this block in the occupied region
             Vector3i blockA = new Vector3i(a).add(occupiedBlock);
             Vector3i blockB = new Vector3i(b).add(occupiedBlock);
 
-            BlockRegion movementBounds = new BlockRegion().union(blockA).union(blockB);
-            for (Vector3ic pos : BlockRegionIterable.region(movementBounds).build()) {
+            BlockRegion movementBounds = new BlockRegion(blockA).union(blockB);
+            for (Vector3ic pos : movementBounds) {
                 if (!world.getBlock(pos).isLiquid()) {
                     return false;
                 }
