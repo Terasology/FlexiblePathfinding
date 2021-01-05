@@ -1,18 +1,5 @@
-/*
- * Copyright 2018 MovingBlocks
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// Copyright 2020 The Terasology Foundation
+// SPDX-License-Identifier: Apache-2.0
 package org.terasology.flexiblepathfinding;
 
 import com.google.common.cache.CacheBuilder;
@@ -23,11 +10,12 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.common.util.concurrent.SimpleTimeLimiter;
 import com.google.common.util.concurrent.TimeLimiter;
+import org.joml.Vector3i;
+import org.joml.Vector3ic;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.terasology.flexiblepathfinding.metrics.PathMetric;
 import org.terasology.flexiblepathfinding.metrics.PathMetricsRecorder;
-import org.terasology.math.geom.Vector3i;
 
 import java.util.Comparator;
 import java.util.List;
@@ -117,8 +105,8 @@ public class JPSImpl implements JPS {
 
         if (start == goal || (config.useLineOfSight && config.plugin.inSight(start.getPosition(), goal.getPosition()))) {
             path.clear();
-            path.add(start.getPosition());
-            path.add(goal.getPosition());
+            path.add(new Vector3i(start.getPosition()));
+            path.add(new Vector3i(goal.getPosition()));
             logger.debug("Start and goal are within line of sight");
             return true;
         }
@@ -154,10 +142,10 @@ public class JPSImpl implements JPS {
         }
 
         path.clear();
-        path.add(goal.getPosition());
+        path.add(new Vector3i(goal.getPosition()));
         JPSJumpPoint parent = goal.getParent();
         while (parent != null) {
-            path.add(0, parent.getPosition());
+            path.add(0, new Vector3i(parent.getPosition()));
             parent = parent.getParent();
         }
         logger.debug("Found path: {}", path);
@@ -183,7 +171,7 @@ public class JPSImpl implements JPS {
             if (neighbor.getValue() == start || (neighbor.getValue().getParent() != null && neighbor.getValue().getCost() < current.getCost() + dist)) {
                 continue;
             }
-            JPSJumpPoint jumpedNeighbor = jump(current.getPosition(), neighbor.getKey(), start, goal);
+            JPSJumpPoint jumpedNeighbor = jump(new Vector3i(current.getPosition()), neighbor.getKey(), start, goal);
 
             // updates parent if this is optimal path so far
             current.setSuccessor(neighbor.getKey(), jumpedNeighbor);
@@ -264,7 +252,7 @@ public class JPSImpl implements JPS {
      * @see JPSDirection
      * @return
      */
-    private List<Vector3i> findForcedNeighbors(Vector3i parent, Vector3i current) {
+    private List<Vector3i> findForcedNeighbors(Vector3ic parent, Vector3ic current) {
         // reusable vectors
         Vector3i keyPos = new Vector3i();
         Vector3i neighborPos = new Vector3i();
@@ -347,7 +335,7 @@ public class JPSImpl implements JPS {
     }
 
     // proof is left as an excercise to the reader :)
-    private List<Vector3i> findNaturalNeighbors(Vector3i parent, Vector3i current) {
+    private List<Vector3i> findNaturalNeighbors(Vector3i parent, Vector3ic current) {
         return Lists.newArrayList(JPSDirection.fromVector(new Vector3i(current).sub(parent)).getComponentPermutations());
     }
 
@@ -364,8 +352,8 @@ public class JPSImpl implements JPS {
             return getNeighbors(current);
         }
 
-        Vector3i parentPos = current.getPosition().sub(dir.getVector());
-        Vector3i currentPos = current.getPosition();
+        Vector3i parentPos = new Vector3i(current.getPosition()).sub(dir.getVector());
+        Vector3ic currentPos = current.getPosition();
         Vector3i pos = new Vector3i();
         for (Vector3i vec : findNaturalNeighbors(parentPos, current.getPosition())) {
             pos.set(vec).add(currentPos);
@@ -457,7 +445,7 @@ public class JPSImpl implements JPS {
         return path;
     }
 
-    private boolean isReachable(Vector3i a, Vector3i b) {
+    private boolean isReachable(Vector3ic a, Vector3ic b) {
         try {
             return reachabilityCache.get(new VectorPair(a, b));
         } catch (ExecutionException e) {
@@ -485,17 +473,19 @@ public class JPSImpl implements JPS {
      * Used as a cache key for `reachabilityCache`
      */
     private class VectorPair {
-        Vector3i a;
-        Vector3i b;
+        Vector3ic a;
+        Vector3ic b;
 
-        public VectorPair(Vector3i a, Vector3i b) {
-            this.a = a;
-            this.b = b;
+        public VectorPair(Vector3ic a, Vector3ic b) {
+            this.a = new Vector3i(a);
+            this.b = new Vector3i(b);
         }
 
         @Override
         public boolean equals(Object o) {
-            if (this == o) return true;
+            if (this == o) {
+                return true;
+            }
             return hashCode() == o.hashCode();
         }
 

@@ -1,22 +1,10 @@
-/*
- * Copyright 2018 MovingBlocks
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// Copyright 2020 The Terasology Foundation
+// SPDX-License-Identifier: Apache-2.0
 package org.terasology.flexiblepathfinding;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import org.joml.Vector3i;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.terasology.entitySystem.entity.EntityRef;
@@ -30,7 +18,6 @@ import org.terasology.flexiblepathfinding.metrics.Histogram;
 import org.terasology.flexiblepathfinding.metrics.PathMetric;
 import org.terasology.flexiblepathfinding.metrics.PathMetricsRecorder;
 import org.terasology.logic.console.commandSystem.annotations.Command;
-import org.terasology.math.geom.Vector3i;
 import org.terasology.registry.In;
 import org.terasology.registry.Share;
 import org.terasology.utilities.concurrency.TaskMaster;
@@ -67,7 +54,7 @@ public class PathfinderSystem extends BaseComponentSystem {
     private TaskMaster<PathfinderTask> workerTaskMaster = TaskMaster.createFIFOTaskMaster("PathfinderWorker", 4);
 
     private TaskMaster<PathfinderTask> taskMaster = TaskMaster.createPriorityTaskMaster(
-            "PathfinderQueue", 1, 1024
+        "PathfinderQueue", 1, 1024
     );
 
     @In
@@ -98,14 +85,14 @@ public class PathfinderSystem extends BaseComponentSystem {
     }
 
     public int requestPath(JPSConfig config, PathfinderCallback callback) {
-        if(config.requester != null && config.requester.exists()) {
-            if(entitiesWithPendingTasks.contains(config.requester)) {
+        if (config.requester != null && config.requester.exists()) {
+            if (entitiesWithPendingTasks.contains(config.requester)) {
                 return -1;
             }
             entitiesWithPendingTasks.add(config.requester);
         }
 
-        if(config.executor == null) {
+        if (config.executor == null) {
             config.executor = workerTaskMaster.getExecutorService();
         }
 
@@ -119,7 +106,7 @@ public class PathfinderSystem extends BaseComponentSystem {
     }
 
     public void completePathFor(EntityRef requestor) {
-        if(requestor == null) {
+        if (requestor == null) {
             return;
         }
         entitiesWithPendingTasks.remove(requestor);
@@ -140,7 +127,7 @@ public class PathfinderSystem extends BaseComponentSystem {
         PathMetricsResponseEvent response = new PathMetricsResponseEvent();
         Collection<PathMetric> metrics = PathMetricsRecorder.getPathMetrics();
 
-        if(metrics.size() == 0) {
+        if (metrics.size() == 0) {
             return;
         }
 

@@ -15,7 +15,8 @@
  */
 package org.terasology.flexiblepathfinding.helpers;
 
-import org.terasology.math.geom.Vector3i;
+
+import org.joml.Vector3i;
 
 public class TestDataPojo {
     public int expectedSize = 1;

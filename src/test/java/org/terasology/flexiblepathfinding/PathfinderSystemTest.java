@@ -15,12 +15,12 @@
  */
 package org.terasology.flexiblepathfinding;
 
+import org.joml.Vector3i;
 import org.junit.Assert;
 import org.junit.Test;
 import org.terasology.entitySystem.entity.EntityManager;
 import org.terasology.entitySystem.entity.EntityRef;
 import org.terasology.entitySystem.entity.internal.PojoEntityManager;
-import org.terasology.math.geom.Vector3i;
 
 public class PathfinderSystemTest {
     @Test
@@ -29,7 +29,7 @@ public class PathfinderSystemTest {
         EntityManager entityManager = new PojoEntityManager();
         EntityRef entity = entityManager.create();
 
-        JPSConfig config = new JPSConfig(Vector3i.zero(), Vector3i.north());
+        JPSConfig config = new JPSConfig(new Vector3i(), new Vector3i(0,0,1));
         config.requester = entity;
 
         Assert.assertEquals(pathfinderSystem.requestPath(config, null), 0);

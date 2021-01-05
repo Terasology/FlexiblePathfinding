@@ -1,18 +1,5 @@
-/*
- * Copyright 2018 MovingBlocks
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// Copyright 2020 The Terasology Foundation
+// SPDX-License-Identifier: Apache-2.0
 package org.terasology.flexiblepathfinding.debug;
 
 import com.google.common.collect.Lists;
@@ -34,7 +21,8 @@ import java.util.Map;
 /**
  */
 public class UIHistogram extends CoreWidget {
-    private Binding<Map<? extends Comparable, Integer>> value = new DefaultBinding<Map<? extends Comparable, Integer>>(Maps.newHashMap());
+    private Binding<Map<? extends Comparable, Integer>> value =
+        new DefaultBinding<Map<? extends Comparable, Integer>>(Maps.newHashMap());
     private Time time = CoreRegistry.get(Time.class);
     private int defaultHeight = 100;
     private int defaultWidth = 100;
@@ -42,7 +30,7 @@ public class UIHistogram extends CoreWidget {
     @Override
     public void onDraw(Canvas canvas) {
         Map<? extends Comparable, Integer> data = value.get();
-        if(data == null || data.size() == 0) {
+        if (data == null || data.size() == 0) {
             return;
         }
 
@@ -51,7 +39,7 @@ public class UIHistogram extends CoreWidget {
         int minY = 0; // data.values().stream().min(Integer::compareTo).get();
         int maxY = data.values().stream().max(Integer::compareTo).get();
 
-        if(maxY - minY == 0) {
+        if (maxY - minY == 0) {
             maxY = minY + 1;
         }
 
@@ -60,7 +48,7 @@ public class UIHistogram extends CoreWidget {
 
         List<Comparable> keys = Lists.newArrayList(data.keySet());
         Collections.sort(keys);
-        for(Comparable key : keys) {
+        for (Comparable key : keys) {
             Integer v = data.get(key);
             float t = (float) (v - minY) / (float) (maxY - minY);
             int barWidth = (int) (t * width);
@@ -68,7 +56,7 @@ public class UIHistogram extends CoreWidget {
             canvas.drawFilledRectangle(rect, Color.WHITE);
 
             Rectanglei textRect = new Rectanglei(0, offsetY, offsetX, offsetY + rowSize - 2);
-            canvas.drawText(key.toString().substring(0,Math.min(key.toString().length() - 1, 4)), textRect);
+            canvas.drawText(key.toString().substring(0, Math.min(key.toString().length() - 1, 4)), textRect);
             offsetY += rowSize;
         }
     }
@@ -83,7 +71,7 @@ public class UIHistogram extends CoreWidget {
         super.update(delta);
     }
 
-    public void bindValue( Binding<Map<? extends Comparable, Integer>> binding) {
+    public void bindValue(Binding<Map<? extends Comparable, Integer>> binding) {
         value = binding;
     }
 }
