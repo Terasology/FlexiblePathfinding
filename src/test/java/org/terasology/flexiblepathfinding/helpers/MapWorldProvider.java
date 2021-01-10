@@ -277,7 +277,7 @@ public class MapWorldProvider implements WorldProvider {
     }
 
     @Override
-    public ChunkViewCore getLocalView(Vector3i chunkPos) {
+    public ChunkViewCore getLocalView(Vector3ic chunkPos) {
         return null;
     }
 
