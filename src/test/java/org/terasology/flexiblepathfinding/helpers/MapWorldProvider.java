@@ -172,17 +172,7 @@ public class MapWorldProvider implements WorldProvider {
     }
 
     @Override
-    public boolean isBlockRelevant(Vector3i pos) {
-        return false;
-    }
-
-    @Override
     public boolean isBlockRelevant(Vector3ic pos) {
-        return false;
-    }
-
-    @Override
-    public boolean isBlockRelevant(Vector3f pos) {
         return false;
     }
 
@@ -192,52 +182,37 @@ public class MapWorldProvider implements WorldProvider {
     }
 
     @Override
-    public Block getBlock(Vector3f pos) {
-        return getBlock((int) pos.x, (int) pos.y, (int) pos.z);
-    }
-
-    @Override
     public Block getBlock(Vector3fc pos) {
         return getBlock((int)pos.x(),(int)pos.y(),(int)pos.z());
     }
 
     @Override
-    public Block getBlock(Vector3i pos) {
-        return getBlock(pos.x, pos.y, pos.z);
-    }
-
-    @Override
-    public Block getBlock(Vector3ic pos) {
-        return getBlock(pos.x(), pos.y(), pos.z());
-    }
-
-    @Override
-    public byte getLight(Vector3f pos) {
+    public byte getLight(Vector3fc pos) {
         return 0;
     }
 
     @Override
-    public byte getSunlight(Vector3f pos) {
+    public byte getSunlight(Vector3fc pos) {
         return 0;
     }
 
     @Override
-    public byte getTotalLight(Vector3f pos) {
+    public byte getTotalLight(Vector3fc pos) {
         return 0;
     }
 
     @Override
-    public byte getLight(Vector3i pos) {
+    public byte getLight(Vector3ic pos) {
         return 0;
     }
 
     @Override
-    public byte getSunlight(Vector3i pos) {
+    public byte getSunlight(Vector3ic pos) {
         return 0;
     }
 
     @Override
-    public byte getTotalLight(Vector3i pos) {
+    public byte getTotalLight(Vector3ic pos) {
         return 0;
     }
 
@@ -282,7 +257,7 @@ public class MapWorldProvider implements WorldProvider {
     }
 
     @Override
-    public ChunkViewCore getWorldViewAround(Vector3i chunk) {
+    public ChunkViewCore getWorldViewAround(Vector3ic chunk) {
         return null;
     }
 
@@ -292,18 +267,8 @@ public class MapWorldProvider implements WorldProvider {
     }
 
     @Override
-    public boolean isRegionRelevant(Region3i region) {
-        return false;
-    }
-
-    @Override
     public boolean isRegionRelevant(BlockRegionc region) {
         return false;
-    }
-
-    @Override
-    public Block setBlock(Vector3i pos, Block type) {
-        return null;
     }
 
     @Override
@@ -342,11 +307,6 @@ public class MapWorldProvider implements WorldProvider {
     }
 
     @Override
-    public int getExtraData(int index, Vector3i pos) {
-        return 0;
-    }
-
-    @Override
     public int setExtraData(int index, int x, int y, int z, int value) {
         return 0;
     }
@@ -357,17 +317,7 @@ public class MapWorldProvider implements WorldProvider {
     }
 
     @Override
-    public int getExtraData(String fieldName, Vector3i pos) {
-        return 0;
-    }
-
-    @Override
     public int setExtraData(String fieldName, int x, int y, int z, int value) {
-        return 0;
-    }
-
-    @Override
-    public int setExtraData(String fieldName, Vector3i pos, int value) {
         return 0;
     }
 
@@ -377,7 +327,7 @@ public class MapWorldProvider implements WorldProvider {
     }
 
     @Override
-    public int setExtraData(int index, Vector3i pos, int value) {
+    public int setExtraData(int index, Vector3ic pos, int value) {
         return 0;
     }
 }
