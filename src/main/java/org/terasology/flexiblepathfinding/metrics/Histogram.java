@@ -4,6 +4,7 @@ package org.terasology.flexiblepathfinding.metrics;
 
 
 import com.google.common.collect.Maps;
+
 import java.util.Collection;
 import java.util.Map;
 import java.util.NoSuchElementException;

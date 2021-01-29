@@ -4,9 +4,9 @@ package org.terasology.flexiblepathfinding.debug;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import org.terasology.joml.geom.Rectanglei;
 import org.joml.Vector2i;
 import org.terasology.engine.Time;
+import org.terasology.joml.geom.Rectanglei;
 import org.terasology.nui.Canvas;
 import org.terasology.nui.Color;
 import org.terasology.nui.CoreWidget;
