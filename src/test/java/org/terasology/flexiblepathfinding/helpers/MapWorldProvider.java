@@ -1,28 +1,14 @@
-/*
- * Copyright 2018 MovingBlocks
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// Copyright 2021 The Terasology Foundation
+// SPDX-License-Identifier: Apache-2.0
 package org.terasology.flexiblepathfinding.helpers;
 
 import com.google.common.collect.Maps;
 import org.joml.Vector3fc;
+import org.joml.Vector3i;
 import org.joml.Vector3ic;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.terasology.entitySystem.entity.EntityRef;
-import org.terasology.math.JomlUtil;
-import org.terasology.math.geom.Vector3i;
 import org.terasology.world.WorldChangeListener;
 import org.terasology.world.WorldProvider;
 import org.terasology.world.block.Block;
@@ -64,7 +50,7 @@ public class MapWorldProvider implements WorldProvider {
     }
 
     public static Map<Integer, Vector3i> parseExpectedPath(String[] pathData, final TestDataPojo testData) {
-        Vector3i pos = Vector3i.zero();
+        Vector3i pos = new Vector3i(0, 0, 0);
         Map<Integer, Vector3i> expected = Maps.newHashMap();
         for (String line : pathData) {
             for (char c : line.toCharArray()) {
@@ -85,8 +71,8 @@ public class MapWorldProvider implements WorldProvider {
             pos.y = 0;
         }
 
-        expected.put(0, JomlUtil.from(testData.start));
-        expected.put(testData.expectedSize, JomlUtil.from(testData.stop));
+        expected.put(0, testData.start);
+        expected.put(testData.expectedSize, testData.stop);
         for (int i : expected.keySet()) {
             logger.warn("{}: e {}", i, expected.get(i));
         }
@@ -99,11 +85,11 @@ public class MapWorldProvider implements WorldProvider {
         Vector3i vec = new Vector3i(pos);
         switch (value) {
             case '?':
-                testData.start = JomlUtil.from(vec);
+                testData.start = vec;
                 logger.warn("Start: {}", vec);
                 break;
             case '!':
-                testData.stop = JomlUtil.from(vec);
+                testData.stop = vec;
                 logger.warn("End: {}", vec);
                 break;
             default:
@@ -126,7 +112,7 @@ public class MapWorldProvider implements WorldProvider {
     }
 
     private void parseMap(String[] map) {
-        Vector3i pos = Vector3i.zero();
+        Vector3i pos = new Vector3i(0, 0, 0);
         for (String line : map) {
             for (char c : line.toCharArray()) {
                 Vector3i vec = new Vector3i(pos);
