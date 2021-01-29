@@ -1,18 +1,5 @@
-/*
- * Copyright 2018 MovingBlocks
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// Copyright 2021 The Terasology Foundation
+// SPDX-License-Identifier: Apache-2.0
 package org.terasology.flexiblepathfinding.helpers;
 
 import org.joml.Vector3i;
@@ -22,12 +9,10 @@ import org.slf4j.LoggerFactory;
 import org.terasology.flexiblepathfinding.JPSConfig;
 import org.terasology.flexiblepathfinding.JPSImpl;
 import org.terasology.flexiblepathfinding.plugins.StandardPlugin;
-import org.terasology.math.JomlUtil;
 import org.terasology.world.WorldProvider;
 
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class JPSTestHelper {
     private static final char NEW_LEVEL = '|';
@@ -37,9 +22,7 @@ public class JPSTestHelper {
         pathData) throws InterruptedException {
         TestDataPojo testData = new TestDataPojo();
         MapWorldProvider worldProvider = new MapWorldProvider(ground);
-        final Map<Integer, Vector3i> expected = worldProvider.parseExpectedPath(pathData, testData).entrySet().stream().collect(Collectors.toMap(
-            Map.Entry::getKey,
-            v -> JomlUtil.from(v.getValue())));
+        final Map<Integer, Vector3i> expected = worldProvider.parseExpectedPath(pathData, testData);
         List<Vector3i> path = runJps(0, pluginClass, testData, worldProvider);
         Assert.assertEquals(0, path.size());
     }
@@ -47,9 +30,7 @@ public class JPSTestHelper {
     public static <T extends StandardPlugin> void runTest(Class<T> pluginClass, String[] ground, String[] pathData) throws InterruptedException {
         TestDataPojo testData = new TestDataPojo();
         MapWorldProvider worldProvider = new MapWorldProvider(ground);
-        final Map<Integer, Vector3i> expected = worldProvider.parseExpectedPath(pathData, testData).entrySet().stream().collect(Collectors.toMap(
-            Map.Entry::getKey,
-            v -> JomlUtil.from(v.getValue())));
+        final Map<Integer, Vector3i> expected = worldProvider.parseExpectedPath(pathData, testData);
         List<Vector3i> path = runJps(0, pluginClass, testData, worldProvider);
         assertPathsEqual(expected, path);
     }
@@ -60,9 +41,7 @@ public class JPSTestHelper {
         MapWorldProvider worldProvider
     ) throws InterruptedException {
         TestDataPojo testData = new TestDataPojo();
-        final Map<Integer, Vector3i> expected = worldProvider.parseExpectedPath(pathData, testData).entrySet().stream().collect(Collectors.toMap(
-            Map.Entry::getKey,
-            v -> JomlUtil.from(v.getValue())));
+        final Map<Integer, Vector3i> expected = worldProvider.parseExpectedPath(pathData, testData);
         List<Vector3i> path = runJps(testData, worldProvider, config);
         assertPathsEqual(expected, path);
     }
@@ -73,9 +52,7 @@ public class JPSTestHelper {
         MapWorldProvider worldProvider
     ) throws InterruptedException {
         TestDataPojo testData = new TestDataPojo();
-        final Map<Integer, Vector3i> expected = worldProvider.parseExpectedPath(pathData, testData).entrySet().stream().collect(Collectors.toMap(
-            Map.Entry::getKey,
-            v -> JomlUtil.from(v.getValue())));
+        final Map<Integer, Vector3i> expected = worldProvider.parseExpectedPath(pathData, testData);
         List<Vector3i> path = runJps(testData, worldProvider, config);
         Assert.assertEquals(0, path.size());
     }
@@ -89,9 +66,7 @@ public class JPSTestHelper {
     public static <T extends StandardPlugin> List<Vector3i> runTestWithGoalDistance(float goalDistance, Class<T> pluginClass, String[] ground, String[] pathData) throws InterruptedException {
         TestDataPojo testData = new TestDataPojo();
         MapWorldProvider worldProvider = new MapWorldProvider(ground);
-        final Map<Integer, Vector3i> expected = worldProvider.parseExpectedPath(pathData, testData).entrySet().stream().collect(Collectors.toMap(
-            Map.Entry::getKey,
-            v -> JomlUtil.from(v.getValue())));
+        final Map<Integer, Vector3i> expected = worldProvider.parseExpectedPath(pathData, testData);
         expected.remove(expected.size() - 1);
         List<Vector3i> path = runJps(goalDistance, pluginClass, testData, worldProvider);
         assertPathsWithinGoalDistance(goalDistance, expected, path);
