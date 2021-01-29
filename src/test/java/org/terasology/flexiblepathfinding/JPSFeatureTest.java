@@ -18,10 +18,9 @@ package org.terasology.flexiblepathfinding;
 import org.joml.Vector3i;
 import org.junit.Assert;
 import org.junit.Test;
+import org.mockito.Mockito;
 import org.terasology.flexiblepathfinding.plugins.basic.FreeMovementPlugin;
 import org.terasology.world.WorldProvider;
-
-import org.mockito.Mockito;
 import org.terasology.world.time.WorldTime;
 
 public class JPSFeatureTest {
