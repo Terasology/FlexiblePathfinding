@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 package org.terasology.flexiblepathfinding.helpers;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
 import org.joml.Vector3fc;
 import org.joml.Vector3i;
@@ -12,14 +13,12 @@ import org.terasology.entitySystem.entity.EntityRef;
 import org.terasology.world.WorldChangeListener;
 import org.terasology.world.WorldProvider;
 import org.terasology.world.block.Block;
-import org.terasology.world.block.BlockRegion;
 import org.terasology.world.block.BlockRegionc;
 import org.terasology.world.block.BlockUri;
 import org.terasology.world.internal.ChunkViewCore;
 import org.terasology.world.internal.WorldInfo;
 import org.terasology.world.time.WorldTime;
 
-import java.util.Collection;
 import java.util.Map;
 
 public class MapWorldProvider implements WorldProvider {
@@ -286,7 +285,7 @@ public class MapWorldProvider implements WorldProvider {
     }
 
     @Override
-    public Collection<BlockRegion> getRelevantRegions() {
+    public ImmutableList<BlockRegionc> getRelevantRegions() {
         return null;
     }
 
