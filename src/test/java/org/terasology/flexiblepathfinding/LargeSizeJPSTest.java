@@ -15,7 +15,7 @@
  */
 package org.terasology.flexiblepathfinding;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.terasology.flexiblepathfinding.helpers.JPSTestHelper;
 import org.terasology.flexiblepathfinding.helpers.MapWorldProvider;
 import org.terasology.flexiblepathfinding.plugins.basic.CompositePlugin;
@@ -82,7 +82,7 @@ public class LargeSizeJPSTest {
     private void executeExample(String[] ground, String[] pathData) throws InterruptedException {
         JPSConfig config = new JPSConfig();
         config.useLineOfSight = false;
-        
+
         MapWorldProvider worldProvider = new MapWorldProvider(ground);
         CompositePlugin plugin = new CompositePlugin(
                 new WalkingPlugin(worldProvider, 2.9f, 2.9f),
