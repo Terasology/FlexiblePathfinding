@@ -17,7 +17,7 @@ package org.terasology.flexiblepathfinding;
 
 import org.joml.Vector3i;
 import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.terasology.flexiblepathfinding.helpers.MapWorldProvider;
 import org.terasology.flexiblepathfinding.helpers.TestDataPojo;
 import org.terasology.flexiblepathfinding.plugins.basic.FlyingPlugin;

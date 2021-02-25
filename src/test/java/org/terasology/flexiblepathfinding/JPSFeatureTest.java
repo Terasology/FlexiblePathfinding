@@ -16,12 +16,14 @@
 package org.terasology.flexiblepathfinding;
 
 import org.joml.Vector3i;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.terasology.flexiblepathfinding.plugins.basic.FreeMovementPlugin;
 import org.terasology.world.WorldProvider;
 import org.terasology.world.time.WorldTime;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class JPSFeatureTest {
     @Test
@@ -33,11 +35,11 @@ public class JPSFeatureTest {
         WorldProvider world = Mockito.mock(WorldProvider.class);
         Mockito.when(world.getTime()).thenReturn(time);
 
-        JPSConfig config = new JPSConfig(new Vector3i(), new Vector3i(0,0,1).mul(10));
+        JPSConfig config = new JPSConfig(new Vector3i(), new Vector3i(0, 0, 1).mul(10));
         config.plugin = new FreeMovementPlugin(null, 0, 0);
         config.maxDepth = 0;
         JPSImpl jps = new JPSImpl(config);
-        Assert.assertFalse(jps.run());
+        assertFalse(jps.run());
     }
 
     @Test
@@ -45,14 +47,14 @@ public class JPSFeatureTest {
         JPSConfig config = new JPSConfig(new Vector3i(), new Vector3i());
         config.plugin = new FreeMovementPlugin(null, 0, 0);
         JPSImpl jps = new JPSImpl(config);
-        Assert.assertTrue(jps.run());
+        assertTrue(jps.run());
     }
 
     @Test
     public void pathAdjacent() throws InterruptedException {
-        JPSConfig config = new JPSConfig(new Vector3i(), new Vector3i(1,1,1));
+        JPSConfig config = new JPSConfig(new Vector3i(), new Vector3i(1, 1, 1));
         config.plugin = new FreeMovementPlugin(null, 0, 0);
         JPSImpl jps = new JPSImpl(config);
-        Assert.assertTrue(jps.run());
+        assertTrue(jps.run());
     }
 }
