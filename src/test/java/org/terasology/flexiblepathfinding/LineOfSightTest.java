@@ -16,12 +16,14 @@
 package org.terasology.flexiblepathfinding;
 
 import org.joml.Vector3i;
-import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.terasology.flexiblepathfinding.helpers.MapWorldProvider;
 import org.terasology.flexiblepathfinding.helpers.TestDataPojo;
 import org.terasology.flexiblepathfinding.plugins.basic.FlyingPlugin;
 import org.terasology.world.WorldProvider;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class LineOfSightTest {
     @Test
@@ -67,8 +69,8 @@ public class LineOfSightTest {
         config.useLineOfSight = true;
         config.plugin = new FlyingPlugin(worldProvider, 0, 0);
         JPSImpl jps = new JPSImpl(config);
-        Assert.assertTrue(jps.run());
-        Assert.assertEquals(2, jps.getPath().size());
+        assertTrue(jps.run());
+        assertEquals(2, jps.getPath().size());
     }
 
     @Test
@@ -89,7 +91,7 @@ public class LineOfSightTest {
         TestDataPojo testData = new TestDataPojo();
         MapWorldProvider worldProvider = new MapWorldProvider(ground);
         worldProvider.parseExpectedPath(pathData, testData);
-        Assert.assertEquals(expected, new LineOfSight3d(worldProvider).inSight(testData.start, testData.stop));
+        assertEquals(expected, new LineOfSight3d(worldProvider).inSight(testData.start, testData.stop));
         return worldProvider;
     }
 }
