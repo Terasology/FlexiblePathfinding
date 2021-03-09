@@ -4,11 +4,11 @@ package org.terasology.flexiblepathfinding;
 
 import org.joml.Vector3i;
 import org.joml.Vector3ic;
-import org.terasology.entitySystem.entity.EntityRef;
+import org.terasology.engine.entitySystem.entity.EntityRef;
+import org.terasology.engine.registry.CoreRegistry;
+import org.terasology.engine.world.WorldProvider;
 import org.terasology.flexiblepathfinding.plugins.JPSPlugin;
 import org.terasology.flexiblepathfinding.plugins.basic.WalkingPlugin;
-import org.terasology.registry.CoreRegistry;
-import org.terasology.world.WorldProvider;
 
 import java.util.concurrent.ExecutorService;
 

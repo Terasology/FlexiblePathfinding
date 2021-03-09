@@ -2,18 +2,18 @@
 // SPDX-License-Identifier: Apache-2.0
 package org.terasology.flexiblepathfinding.debug;
 
-import org.terasology.engine.Time;
-import org.terasology.entitySystem.entity.EntityRef;
-import org.terasology.entitySystem.event.ReceiveEvent;
-import org.terasology.entitySystem.systems.BaseComponentSystem;
-import org.terasology.entitySystem.systems.RegisterMode;
-import org.terasology.entitySystem.systems.RegisterSystem;
-import org.terasology.entitySystem.systems.UpdateSubscriberSystem;
-import org.terasology.logic.console.commandSystem.annotations.Command;
-import org.terasology.registry.In;
-import org.terasology.registry.Share;
-import org.terasology.rendering.nui.NUIManager;
-import org.terasology.world.WorldProvider;
+import org.terasology.engine.core.Time;
+import org.terasology.engine.entitySystem.entity.EntityRef;
+import org.terasology.engine.entitySystem.event.ReceiveEvent;
+import org.terasology.engine.entitySystem.systems.BaseComponentSystem;
+import org.terasology.engine.entitySystem.systems.RegisterMode;
+import org.terasology.engine.entitySystem.systems.RegisterSystem;
+import org.terasology.engine.entitySystem.systems.UpdateSubscriberSystem;
+import org.terasology.engine.logic.console.commandSystem.annotations.Command;
+import org.terasology.engine.registry.In;
+import org.terasology.engine.registry.Share;
+import org.terasology.engine.rendering.nui.NUIManager;
+import org.terasology.engine.world.WorldProvider;
 
 @Share(FlexiblePathfindingDebugClientSystem.class)
 @RegisterSystem(RegisterMode.CLIENT)

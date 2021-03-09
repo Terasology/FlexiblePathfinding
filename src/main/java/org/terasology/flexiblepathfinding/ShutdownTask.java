@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 package org.terasology.flexiblepathfinding;
 
-import org.terasology.world.WorldProvider;
+import org.terasology.engine.world.WorldProvider;
 
 public class ShutdownTask extends PathfinderTask {
     public ShutdownTask(WorldProvider world, JPSConfig config, PathfinderCallback callback) {

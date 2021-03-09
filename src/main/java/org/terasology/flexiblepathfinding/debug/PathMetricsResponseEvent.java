@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 package org.terasology.flexiblepathfinding.debug;
 
-import org.terasology.network.NetworkEvent;
+import org.terasology.engine.network.NetworkEvent;
 
 import java.util.Map;
 

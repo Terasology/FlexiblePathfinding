@@ -17,9 +17,9 @@ package org.terasology.flexiblepathfinding;
 
 import org.joml.Vector3i;
 import org.junit.jupiter.api.Test;
-import org.terasology.entitySystem.entity.EntityManager;
-import org.terasology.entitySystem.entity.EntityRef;
-import org.terasology.entitySystem.entity.internal.PojoEntityManager;
+import org.terasology.engine.entitySystem.entity.EntityManager;
+import org.terasology.engine.entitySystem.entity.EntityRef;
+import org.terasology.engine.entitySystem.entity.internal.PojoEntityManager;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

@@ -3,8 +3,8 @@
 package org.terasology.flexiblepathfinding.plugins.basic;
 
 import org.joml.Vector3ic;
+import org.terasology.engine.world.WorldProvider;
 import org.terasology.flexiblepathfinding.plugins.StandardPlugin;
-import org.terasology.world.WorldProvider;
 
 public class FreeMovementPlugin extends StandardPlugin {
     public FreeMovementPlugin(WorldProvider world, float width, float height) {

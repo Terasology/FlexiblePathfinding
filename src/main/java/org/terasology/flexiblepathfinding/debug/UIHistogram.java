@@ -5,14 +5,14 @@ package org.terasology.flexiblepathfinding.debug;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.joml.Vector2i;
-import org.terasology.engine.Time;
+import org.terasology.engine.core.Time;
+import org.terasology.engine.registry.CoreRegistry;
 import org.terasology.joml.geom.Rectanglei;
 import org.terasology.nui.Canvas;
 import org.terasology.nui.Color;
 import org.terasology.nui.CoreWidget;
 import org.terasology.nui.databinding.Binding;
 import org.terasology.nui.databinding.DefaultBinding;
-import org.terasology.registry.CoreRegistry;
 
 import java.util.Collections;
 import java.util.List;

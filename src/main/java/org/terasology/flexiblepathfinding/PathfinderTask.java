@@ -6,9 +6,9 @@ import com.google.common.collect.Lists;
 import org.joml.Vector3i;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.terasology.registry.CoreRegistry;
-import org.terasology.utilities.concurrency.Task;
-import org.terasology.world.WorldProvider;
+import org.terasology.engine.registry.CoreRegistry;
+import org.terasology.engine.utilities.concurrency.Task;
+import org.terasology.engine.world.WorldProvider;
 
 import java.util.List;
 

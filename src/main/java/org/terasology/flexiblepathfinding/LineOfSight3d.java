@@ -3,8 +3,8 @@
 package org.terasology.flexiblepathfinding;
 
 import org.joml.Vector3ic;
-import org.terasology.world.WorldProvider;
-import org.terasology.world.block.Block;
+import org.terasology.engine.world.WorldProvider;
+import org.terasology.engine.world.block.Block;
 
 /**
  * Created by synopia on 01.02.14.

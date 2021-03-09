@@ -18,9 +18,9 @@ package org.terasology.flexiblepathfinding;
 import org.joml.Vector3i;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.terasology.engine.world.WorldProvider;
+import org.terasology.engine.world.time.WorldTime;
 import org.terasology.flexiblepathfinding.plugins.basic.FreeMovementPlugin;
-import org.terasology.world.WorldProvider;
-import org.terasology.world.time.WorldTime;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;

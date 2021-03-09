@@ -19,8 +19,8 @@ import org.joml.Vector3i;
 import org.joml.Vector3ic;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.terasology.world.WorldProvider;
-import org.terasology.world.block.BlockRegion;
+import org.terasology.engine.world.WorldProvider;
+import org.terasology.engine.world.block.BlockRegion;
 
 public class LeapingPlugin extends WalkingPlugin {
     private static final Logger logger = LoggerFactory.getLogger(LeapingPlugin.class);

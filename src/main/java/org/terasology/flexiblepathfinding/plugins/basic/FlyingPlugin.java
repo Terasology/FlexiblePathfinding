@@ -4,8 +4,8 @@ package org.terasology.flexiblepathfinding.plugins.basic;
 
 import org.joml.Vector3i;
 import org.joml.Vector3ic;
-import org.terasology.world.WorldProvider;
-import org.terasology.world.block.BlockRegion;
+import org.terasology.engine.world.WorldProvider;
+import org.terasology.engine.world.block.BlockRegion;
 
 public class FlyingPlugin extends WalkingPlugin {
     public FlyingPlugin(WorldProvider world, float width, float height) {

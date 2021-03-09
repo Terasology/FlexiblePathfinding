@@ -2,9 +2,9 @@
 // SPDX-License-Identifier: Apache-2.0
 package org.terasology.flexiblepathfinding.debug;
 
+import org.terasology.engine.registry.In;
+import org.terasology.engine.rendering.nui.layers.hud.CoreHudWidget;
 import org.terasology.nui.databinding.DefaultBinding;
-import org.terasology.registry.In;
-import org.terasology.rendering.nui.layers.hud.CoreHudWidget;
 
 import java.util.Map;
 

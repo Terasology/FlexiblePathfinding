@@ -3,9 +3,9 @@
 package org.terasology.flexiblepathfinding.plugins;
 
 import org.joml.Vector3ic;
+import org.terasology.engine.world.WorldProvider;
+import org.terasology.engine.world.block.BlockRegion;
 import org.terasology.flexiblepathfinding.LineOfSight3d;
-import org.terasology.world.WorldProvider;
-import org.terasology.world.block.BlockRegion;
 
 public abstract class StandardPlugin implements JPSPlugin {
     public final WorldProvider world;

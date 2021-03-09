@@ -17,10 +17,10 @@ package org.terasology.flexiblepathfinding;
 
 import org.joml.Vector3i;
 import org.junit.jupiter.api.Test;
+import org.terasology.engine.world.WorldProvider;
 import org.terasology.flexiblepathfinding.helpers.MapWorldProvider;
 import org.terasology.flexiblepathfinding.helpers.TestDataPojo;
 import org.terasology.flexiblepathfinding.plugins.basic.FlyingPlugin;
-import org.terasology.world.WorldProvider;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;

@@ -5,10 +5,10 @@ package org.terasology.flexiblepathfinding.helpers;
 import org.joml.Vector3i;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.terasology.engine.world.WorldProvider;
 import org.terasology.flexiblepathfinding.JPSConfig;
 import org.terasology.flexiblepathfinding.JPSImpl;
 import org.terasology.flexiblepathfinding.plugins.StandardPlugin;
-import org.terasology.world.WorldProvider;
 
 import java.util.List;
 import java.util.Map;
