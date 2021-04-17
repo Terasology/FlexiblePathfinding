@@ -245,6 +245,9 @@ public class MapWorldProvider implements WorldProvider {
     }
 
     @Override
+    public ChunkViewCore getWorldViewAround(BlockRegionc region) { return null; }
+
+    @Override
     public boolean isBlockRelevant(int x, int y, int z) {
         return false;
     }
