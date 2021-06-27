@@ -4,15 +4,19 @@ package org.terasology.flexiblepathfinding;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.functions.Consumer;
 import org.joml.Vector3i;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.terasology.engine.core.GameThread;
 import org.terasology.engine.entitySystem.entity.EntityRef;
 import org.terasology.engine.entitySystem.event.ReceiveEvent;
 import org.terasology.engine.entitySystem.systems.BaseComponentSystem;
 import org.terasology.engine.entitySystem.systems.RegisterMode;
 import org.terasology.engine.entitySystem.systems.RegisterSystem;
 import org.terasology.engine.logic.console.commandSystem.annotations.Command;
+import org.terasology.engine.registry.CoreRegistry;
 import org.terasology.engine.registry.In;
 import org.terasology.engine.registry.Share;
 import org.terasology.engine.utilities.concurrency.TaskMaster;
@@ -51,11 +55,6 @@ public class PathfinderSystem extends BaseComponentSystem {
     private int nextId;
     private Set<EntityRef> entitiesWithPendingTasks = Sets.newHashSet();
 
-    private TaskMaster<PathfinderTask> workerTaskMaster = TaskMaster.createFIFOTaskMaster("PathfinderWorker", 4);
-
-    private TaskMaster<PathfinderTask> taskMaster = TaskMaster.createPriorityTaskMaster(
-        "PathfinderQueue", 1, 1024
-    );
 
     @In
     private WorldProvider world;
@@ -63,15 +62,10 @@ public class PathfinderSystem extends BaseComponentSystem {
     @Override
     public void initialise() {
         logger.info("PathfinderSystem started");
-
-        // TODO: HACK: We offer this taskmaster a shutdown task just to use its raw executor service directly
-        workerTaskMaster.offer(new ShutdownTask(null, null, null));
     }
 
     @Override
     public void shutdown() {
-        taskMaster.shutdown(new ShutdownTask(null, null, null), false);
-        workerTaskMaster.shutdown(new ShutdownTask(null, null, null), false);
     }
 
     public int requestPath(EntityRef requester, Vector3i target, List<Vector3i> start) {
@@ -84,6 +78,20 @@ public class PathfinderSystem extends BaseComponentSystem {
         return requestPath(config, callback);
     }
 
+    private void processPath(ConfigWrapper wrapper) {
+        JPSImpl jps = new JPSImpl(wrapper.config);
+        List<Vector3i> path = Lists.newArrayList();
+        try {
+            if (jps.run()) {
+                path = jps.getPath();
+            }
+        } catch (InterruptedException e) {
+            // do nothing
+        }
+        this.completePathFor(wrapper.config.requester);
+        wrapper.callback.pathReady(path, new Vector3i()); // unusued :??
+    }
+
     public int requestPath(JPSConfig config, PathfinderCallback callback) {
         if (config.requester != null && config.requester.exists()) {
             if (entitiesWithPendingTasks.contains(config.requester)) {
@@ -91,14 +99,21 @@ public class PathfinderSystem extends BaseComponentSystem {
             }
             entitiesWithPendingTasks.add(config.requester);
         }
+        Observable.just(new ConfigWrapper(callback, config))
+                .subscribeOn(GameThread.io())
+                .subscribe(this::processPath);
+        return nextId++;
+    }
 
-        if (config.executor == null) {
-            config.executor = workerTaskMaster.getExecutorService();
+    private static class ConfigWrapper {
+        PathfinderCallback callback;
+        JPSConfig config;
+
+        public ConfigWrapper(PathfinderCallback callback, JPSConfig config) {
+            this.callback = callback;
+            this.config = config;
         }
 
-        PathfinderTask task = new PathfinderTask(world, config, callback);
-        taskMaster.offer(task);
-        return nextId++;
     }
 
     public int requestPath(Vector3i start, Vector3i target, PathfinderCallback callback) {

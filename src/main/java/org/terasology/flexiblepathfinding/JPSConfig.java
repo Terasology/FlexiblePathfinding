@@ -21,7 +21,6 @@ public class JPSConfig {
     public JPSPlugin plugin;
     public double goalDistance;
     public boolean useLineOfSight;
-    public ExecutorService executor;
 
     public JPSConfig(Vector3ic start, Vector3ic stop) {
         this.start = new Vector3i(start);

@@ -10,10 +10,14 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.common.util.concurrent.SimpleTimeLimiter;
 import com.google.common.util.concurrent.TimeLimiter;
+import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.core.Single;
+import io.reactivex.rxjava3.functions.Consumer;
 import org.joml.Vector3i;
 import org.joml.Vector3ic;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.terasology.engine.core.GameThread;
 import org.terasology.flexiblepathfinding.metrics.PathMetric;
 import org.terasology.flexiblepathfinding.metrics.PathMetricsRecorder;
 
@@ -50,14 +54,9 @@ public class JPSImpl implements JPS {
 
     // some helper classes from Guava
     private LoadingCache<VectorPair, Boolean> reachabilityCache;
-    private TimeLimiter timeLimiter;
 
     public JPSImpl(JPSConfig config) {
         this.config = config;
-
-        if (config.executor != null) {
-            this.timeLimiter = SimpleTimeLimiter.create(config.executor);
-        }
     }
 
     public static void setStatsEnabled(boolean statsEnabled) {
@@ -70,21 +69,17 @@ public class JPSImpl implements JPS {
      */
     public boolean run() throws InterruptedException {
         startMillis = System.currentTimeMillis();
-
-        Callable<Boolean> callable = () -> performSearch();
-        boolean result = false;
-        if (this.timeLimiter != null) {
-            try {
-                result = timeLimiter.callWithTimeout(callable, (long) (config.maxTime * 1000.0f), TimeUnit.MILLISECONDS);
-            } catch (Exception e) {
-                logger.warn("Timeout of {} exceeded: {}", config.maxTime, e.toString());
-            }
-        } else {
-            result = performSearch();
+        try {
+            Boolean result = Single.fromCallable(this::performSearch)
+                    .timeout((long) (config.maxTime * 1000.0f), TimeUnit.MILLISECONDS)
+                    .blockingGet();
+            recordMetrics();
+            return result;
+        } catch (RuntimeException exception) {
+            logger.error("Timeout of {}", config.maxTime, exception);
+            recordMetrics();
+            return false;
         }
-
-        recordMetrics();
-        return result;
     }
 
     @Override
