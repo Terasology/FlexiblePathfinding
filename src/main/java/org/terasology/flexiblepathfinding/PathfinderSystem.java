@@ -4,28 +4,25 @@ package org.terasology.flexiblepathfinding;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import io.reactivex.rxjava3.core.Observable;
-import io.reactivex.rxjava3.functions.Consumer;
 import org.joml.Vector3i;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.terasology.engine.core.GameThread;
+import org.terasology.engine.core.GameScheduler;
 import org.terasology.engine.entitySystem.entity.EntityRef;
 import org.terasology.engine.entitySystem.event.ReceiveEvent;
 import org.terasology.engine.entitySystem.systems.BaseComponentSystem;
 import org.terasology.engine.entitySystem.systems.RegisterMode;
 import org.terasology.engine.entitySystem.systems.RegisterSystem;
 import org.terasology.engine.logic.console.commandSystem.annotations.Command;
-import org.terasology.engine.registry.CoreRegistry;
 import org.terasology.engine.registry.In;
 import org.terasology.engine.registry.Share;
-import org.terasology.engine.utilities.concurrency.TaskMaster;
 import org.terasology.engine.world.WorldProvider;
 import org.terasology.flexiblepathfinding.debug.PathMetricsRequestEvent;
 import org.terasology.flexiblepathfinding.debug.PathMetricsResponseEvent;
 import org.terasology.flexiblepathfinding.metrics.Histogram;
 import org.terasology.flexiblepathfinding.metrics.PathMetric;
 import org.terasology.flexiblepathfinding.metrics.PathMetricsRecorder;
+import reactor.core.publisher.Mono;
 
 import java.util.Collection;
 import java.util.List;
@@ -99,9 +96,9 @@ public class PathfinderSystem extends BaseComponentSystem {
             }
             entitiesWithPendingTasks.add(config.requester);
         }
-        Observable.just(new ConfigWrapper(callback, config))
-                .subscribeOn(GameThread.io())
-                .subscribe(this::processPath);
+        Mono.just(new ConfigWrapper(callback, config))
+            .subscribeOn(GameScheduler.boundedElastic())
+            .subscribe(this::processPath);
         return nextId++;
     }
 

@@ -8,26 +8,22 @@ import com.google.common.cache.LoadingCache;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import com.google.common.util.concurrent.SimpleTimeLimiter;
 import com.google.common.util.concurrent.TimeLimiter;
-import io.reactivex.rxjava3.core.Observable;
-import io.reactivex.rxjava3.core.Single;
-import io.reactivex.rxjava3.functions.Consumer;
 import org.joml.Vector3i;
 import org.joml.Vector3ic;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.terasology.engine.core.GameThread;
+import org.terasology.engine.core.GameScheduler;
 import org.terasology.flexiblepathfinding.metrics.PathMetric;
 import org.terasology.flexiblepathfinding.metrics.PathMetricsRecorder;
+import reactor.core.publisher.Mono;
 
+import java.time.Duration;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @author kaen
@@ -70,9 +66,9 @@ public class JPSImpl implements JPS {
     public boolean run() throws InterruptedException {
         startMillis = System.currentTimeMillis();
         try {
-            Boolean result = Single.fromCallable(this::performSearch)
-                    .timeout((long) (config.maxTime * 1000.0f), TimeUnit.MILLISECONDS)
-                    .blockingGet();
+            boolean result = Mono.fromCallable(this::performSearch)
+                .subscribeOn(GameScheduler.boundedElastic())
+                .block(Duration.ofMillis((long) (config.maxTime * 1000.0f)));
             recordMetrics();
             return result;
         } catch (RuntimeException exception) {
