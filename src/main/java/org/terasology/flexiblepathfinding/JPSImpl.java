@@ -8,22 +8,22 @@ import com.google.common.cache.LoadingCache;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import com.google.common.util.concurrent.SimpleTimeLimiter;
 import com.google.common.util.concurrent.TimeLimiter;
 import org.joml.Vector3i;
 import org.joml.Vector3ic;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.terasology.engine.core.GameScheduler;
 import org.terasology.flexiblepathfinding.metrics.PathMetric;
 import org.terasology.flexiblepathfinding.metrics.PathMetricsRecorder;
+import reactor.core.publisher.Mono;
 
+import java.time.Duration;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @author kaen
@@ -50,14 +50,9 @@ public class JPSImpl implements JPS {
 
     // some helper classes from Guava
     private LoadingCache<VectorPair, Boolean> reachabilityCache;
-    private TimeLimiter timeLimiter;
 
     public JPSImpl(JPSConfig config) {
         this.config = config;
-
-        if (config.executor != null) {
-            this.timeLimiter = SimpleTimeLimiter.create(config.executor);
-        }
     }
 
     public static void setStatsEnabled(boolean statsEnabled) {
@@ -70,21 +65,17 @@ public class JPSImpl implements JPS {
      */
     public boolean run() throws InterruptedException {
         startMillis = System.currentTimeMillis();
-
-        Callable<Boolean> callable = () -> performSearch();
-        boolean result = false;
-        if (this.timeLimiter != null) {
-            try {
-                result = timeLimiter.callWithTimeout(callable, (long) (config.maxTime * 1000.0f), TimeUnit.MILLISECONDS);
-            } catch (Exception e) {
-                logger.warn("Timeout of {} exceeded: {}", config.maxTime, e.toString());
-            }
-        } else {
-            result = performSearch();
+        try {
+            boolean result = Mono.fromCallable(this::performSearch)
+                .subscribeOn(GameScheduler.boundedElastic())
+                .block(Duration.ofMillis((long) (config.maxTime * 1000.0f)));
+            recordMetrics();
+            return result;
+        } catch (RuntimeException exception) {
+            logger.error("Timeout of {}", config.maxTime, exception);
+            recordMetrics();
+            return false;
         }
-
-        recordMetrics();
-        return result;
     }
 
     @Override
